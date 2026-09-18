@@ -84,6 +84,12 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
 
+    def handle(self):
+        try:
+            super().handle()
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+            pass   # 页面关掉 / 刷新时把连接掐了，正常现象，不往日志里刷一屏报错
+
     def send_json(self, obj, code=200):
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
@@ -192,32 +198,52 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"ok": False, "error": f"{type(e).__name__}: {e}"}, 500)
         return self.send_json({"ok": False, "error": "没有这个接口"}, 404)
 
+    def send_file(self, f):
+        """发静态文件。带 Last-Modified：浏览器下次带 If-Modified-Since 来问，文件没变就回 304，
+        不再每刷新一次页面就把 20 MB 的字体和大图重下一遍。"""
+        from email.utils import formatdate, parsedate_to_datetime
+        mtime = int(f.stat().st_mtime)
+        since = self.headers.get("If-Modified-Since")
+        if since:
+            try:
+                if int(parsedate_to_datetime(since).timestamp()) >= mtime:
+                    self.send_response(304)
+                    self.send_header("cache-control", "no-cache")
+                    self.end_headers()
+                    return
+            except (TypeError, ValueError):
+                pass
+        data = f.read_bytes()
+        self.send_response(200)
+        self.send_header("content-type", TYPES.get(f.suffix.lower(), "application/octet-stream"))
+        self.send_header("content-length", str(len(data)))
+        self.send_header("last-modified", formatdate(mtime, usegmt=True))
+        self.send_header("cache-control", "no-cache")
+        self.end_headers()
+        self.wfile.write(data)
+
     def static(self, path):
         path = unquote(path)   # 酒图是中文文件名
         if path.startswith("/assets/bar/") and path.count("/") == 3:   # 玩家自己配的酒图优先：存档文件夹/images/酒名.png
             mine = (_lib.vault_path() / "images" / path.rsplit("/", 1)[1]).resolve()
             if mine.is_file() and (_lib.vault_path() / "images").resolve() in mine.parents:
-                data = mine.read_bytes()
-                self.send_response(200)
-                self.send_header("content-type", TYPES.get(mine.suffix.lower(), "application/octet-stream"))
-                self.send_header("content-length", str(len(data)))
-                self.send_header("cache-control", "no-cache")
-                self.end_headers()
-                self.wfile.write(data)
-                return
+                return self.send_file(mine)
         rel = "index.html" if path in ("", "/") else path.lstrip("/")
         f = (WEB / rel).resolve()
         if WEB.resolve() not in f.parents and f != WEB.resolve() or not f.is_file():
             self.send_response(404)
             self.end_headers()
             return
-        data = f.read_bytes()
-        self.send_response(200)
-        self.send_header("content-type", TYPES.get(f.suffix.lower(), "application/octet-stream"))
-        self.send_header("content-length", str(len(data)))
-        self.send_header("cache-control", "no-cache")
-        self.end_headers()
-        self.wfile.write(data)
+        self.send_file(f)
+
+
+class Server(ThreadingHTTPServer):
+    daemon_threads = True
+
+    def handle_error(self, request, client_address):
+        if isinstance(sys.exc_info()[1], (BrokenPipeError, ConnectionResetError, ConnectionAbortedError)):
+            return
+        super().handle_error(request, client_address)
 
 
 HOST, PORT, PORT_TRIES = "127.0.0.1", int(os.environ.get("BAR_PORT") or 8766), 10
@@ -240,7 +266,7 @@ def serve(port=None):
     last = None
     for p in range(first, first + PORT_TRIES):
         try:
-            return ThreadingHTTPServer((HOST, p), Handler), p
+            return Server((HOST, p), Handler), p
         except OSError as e:
             last = e
             if bar_already_at(p):

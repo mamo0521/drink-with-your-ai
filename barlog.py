@@ -24,6 +24,7 @@ def to_player(text):
     import bar_games
     me = bar_games.player_name()
     lines = [l for l in str(text).split("\n") if not l.startswith(("双方由程序随机", "局号："))]
+    lines = [re.sub(r"（题面里的 Ta 或“我”(?:都是)?指你）", "", l) for l in lines]   # 写给小机的注，玩家这边不显示
     out = []
     for part in re.split(r"(「[^」]*」)", "\n".join(lines)):
         if part.startswith("「"):

@@ -117,6 +117,9 @@ def settle_bar_game(game_id, name, std, session):
         r = {"id": game_id, "name": name, "std": std, "before": before, "after": after,
              "increase": round(after - before, 3), "session": session, "at": _now().isoformat(timespec="seconds")}
         receipts[game_id] = r
+        # bar_drink 的回执是随机号，不会有人拿旧号重放：留 30 天就够，免得存档越喝越大。游戏局号的回执永久保留（防重放）。
+        cutoff = (_now().timestamp() - 30 * 86400)
+        receipts = {k: v for k, v in receipts.items() if v.get("session") != "bar-drink" or datetime.fromisoformat(v["at"]).timestamp() >= cutoff}
         d["bar_game_receipts"], d["alcohol"] = receipts, after
         save(d)
         return dict(r)
