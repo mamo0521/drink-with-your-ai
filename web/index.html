@@ -17,11 +17,16 @@
 *{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink)}
 body{font:15px/1.7 MamoWenKai,'Noto Serif SC',serif;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
-main{width:min(100%,392px);margin:auto;padding:26px 16px 40px;display:flex;flex-direction:column;gap:18px}
-.home-head{text-align:center}
+main{position:relative;isolation:isolate;width:min(100%,392px);min-height:900px;margin:18px auto;padding:72px 28px 44px;display:flex;flex-direction:column;gap:18px}
+main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-style:solid;border-width:150px 14px 34px;border-image:url('/assets/bar/ui/menu-frame.svg') 150 14 34 fill / 150px 14px 34px / 0 stretch}
+.home-head{text-align:center;position:relative}
+.home-head>.bar-star{top:-70px}
+.home-scene{position:relative;margin:16px -5px 0;aspect-ratio:4/3;isolation:isolate}
+.home-scene img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.home-scene:after{content:'';position:absolute;inset:8% -8px;z-index:-1;background:radial-gradient(circle,#d9a05475 .65px,transparent .9px) 0 0/5px 5px;mask-image:radial-gradient(ellipse,#000 20%,transparent 70%);pointer-events:none}
 .home-head h1{margin:0;color:var(--red);font:italic 600 30px/36px PlayfairLocal,MamoKai,serif;letter-spacing:3px}
-.home-head p{margin:2px 0 0;font:14px/22px MamoKai,serif;letter-spacing:4px;color:var(--ink)}
-#act-bar.bar-strip{margin:4px -16px -6px;width:calc(100% + 32px);max-width:none}
+.home-head p{margin:2px 0 0;font:400 14px/22px PlayfairLocal,MamoKai,serif;letter-spacing:5.6px;color:var(--ink)}
+#act-bar.bar-strip{margin:4px -18px -6px;width:calc(100% + 36px);max-width:none}
 .home-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-hex{position:relative;isolation:isolate;min-height:44px;color:var(--card);font:15px/20px MamoWenKai,serif;letter-spacing:2px}
 .home-hex:before{content:'';position:absolute;inset:0;z-index:-1;background:var(--red);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
@@ -29,7 +34,8 @@ main{width:min(100%,392px);margin:auto;padding:26px 16px 40px;display:flex;flex-
 .home-hex.ghost:after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--card);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
 .home-line{display:flex;align-items:center;gap:10px;color:var(--red);font:16px/18px MamoKai,serif;letter-spacing:2.8px}
 .home-line:before,.home-line:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}.home-line:after{transform:scaleX(-1)}
-.home-tools{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.home-tools{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:12px;color:var(--muted)}
+.home-tools .home-link{flex:none;white-space:nowrap}
 .home-link{color:var(--red);text-decoration:underline;text-underline-offset:3px;font-size:13px}
 #log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 #log li{background:var(--card);border:1px solid #d9a05480;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:start}
@@ -38,6 +44,9 @@ main{width:min(100%,392px);margin:auto;padding:26px 16px 40px;display:flex;flex-
 #log .copy{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 #log .unseen .who:after{content:' · Ta 还没看到';color:var(--red)}
 .home-empty{text-align:center;color:var(--muted);font-size:13px;margin:6px 0}
+.home-foot{margin-top:auto;padding-top:24px;display:flex;justify-content:center;align-items:center;gap:12px;color:var(--muted);font:italic 12px/18px PlayfairLocal,serif;letter-spacing:2px}
+.home-foot img{width:25px;height:25px}
+@media(max-width:430px){main{margin:0 auto;min-height:100svh;padding-bottom:34px}}
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);max-width:min(88vw,340px);background:var(--ink);color:var(--card);padding:9px 16px;border-radius:4px;font-size:13px;line-height:20px;z-index:2000;opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.on{opacity:1}
 button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
@@ -46,16 +55,18 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 </head>
 <body>
 <main>
-  <header class="home-head"><h1>AFTERHOURS</h1><p>和小机喝一杯</p></header>
+  <header class="home-head"><span class="bar-star" aria-hidden="true"><img class="bar-star-base" src="/assets/bar/ui/star-base.svg" alt=""><img class="bar-star-lines" src="/assets/bar/ui/star-lines.svg" alt=""><img class="bar-star-ray bar-star-ne" src="/assets/bar/ui/star-ne.svg" alt=""><img class="bar-star-ray bar-star-se" src="/assets/bar/ui/star-se.svg" alt=""><img class="bar-star-ray bar-star-nw" src="/assets/bar/ui/star-nw.svg" alt=""><img class="bar-star-ray bar-star-sw" src="/assets/bar/ui/star-sw.svg" alt=""></span><h1 id="home-title">OUR</h1><p id="home-sub">AFTERHOURS</p></header>
+  <figure class="home-scene"><img src="/assets/home/bar-shelves.png" width="1200" height="900" alt="暖灯下的三层酒架，吧台上放着两杯酒" fetchpriority="high"></figure>
   <div id="act-bar"></div>
   <div class="home-actions">
-    <button class="home-hex" id="open-menu" type="button">✦ 酒单</button>
-    <button class="home-hex ghost" id="open-games" type="button">游戏</button>
+    <button class="home-hex ghost" id="close-night" type="button">结束营业</button>
+    <button class="home-hex" id="open-menu" type="button">✦ 打开酒单</button>
   </div>
   <div class="home-line">今晚的记录</div>
   <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span><button class="home-link" id="copy-now" type="button">复制现状给 Ta</button></div>
   <ul id="log" aria-live="polite"></ul>
   <p class="home-empty" id="log-empty" hidden>还没有记录。点一杯，或者上赌桌。</p>
+  <footer class="home-foot" aria-hidden="true"><span>just us</span><img src="/assets/bar/ui/footer-star.svg" alt=""><span>after hours</span></footer>
 </main>
 <div id="toast" role="status"></div>
 <script src="/bar-bank.js"></script><script src="/bar-ui.js"></script><script src="/bar-strip.js"></script><script src="/bar-flight.js"></script>
@@ -69,6 +80,8 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   const copy=async text=>{try{await navigator.clipboard.writeText(text);toast('已复制，去聊天里粘给 Ta');}catch(e){window.prompt('复制这段话发给 Ta：',text);}};
   const WHO={me:'you',ta:'Ta',bar:'the bar'};
   let barDef={},stripState=null;
+  // 招牌跟酒单里「吧台名称」填的一致：第一行是谁的，第二行 AFTERHOURS。
+  async function loadSign(){try{const d=await api('/barfile?which=bar'),m=MamoBarUI.readMeta(d.text||'');$('home-title').textContent=m.title||'OUR';$('home-sub').textContent=m.subtitle??'AFTERHOURS';}catch(e){}}
   async function loadDef(){const d=await api('/activities');barDef=(d.activities||[]).find(a=>a.id==='bar')||{};MamoBarResult.setPlayer(barDef.player_name);return barDef;}
   function paintStrip(){MamoBarStrip.render($('act-bar'),stripState,null,{open:openMenu,close(){},flight:MamoBarFlight.stripText(flight.flight()),openFlight:()=>flight.open()});const x=$('act-bar').querySelector('.bar-strip-close');if(x)x.hidden=true;}
   async function refresh(){
@@ -93,7 +106,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   const games=MamoBarGames.create({onClose:openMenu,onCarry:async p=>{try{await api('/bar/result',{result:p});toast('记下了。Ta 用「看吧台」就能看到');}catch(e){toast(e.message);}refresh();}});
   const ui=MamoBarUI.create({
     makeSpecial:special,
-    onClose:refresh,
+    onClose:()=>{loadSign();refresh();},
     onConfirm:async it=>{try{await api('/bar/serve',{name:it.name,std:it.special?it.std:undefined,desc:it.special?it.desc:undefined});toast('这杯放到 Ta 面前了。喝不喝，由 Ta');}catch(e){toast(e.message);}refresh();},
     onHandMenu:async()=>{try{await api('/bar/note',{kind:'menu'});toast('酒单递过去了');}catch(e){toast(e.message);}refresh();},
     onInviteGame:async()=>{try{await api('/bar/note',{kind:'invite'});toast('请 Ta 来挑游戏');}catch(e){toast(e.message);}refresh();},
@@ -103,11 +116,12 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   });
   async function openMenu(){try{await loadDef();}catch(e){toast(e.message);}ui.open(barDef);}
   $('open-menu').onclick=openMenu;
-  $('open-games').onclick=async()=>{try{await loadDef();}catch(e){}games.open(barDef);};
+  // 结束营业：把今晚的记录收进历史、首页清空；小机的醉意不动（照常慢慢醒），没揭完的盲品也留着。
+  $('close-night').onclick=async()=>{if(!$('log').children.length){toast('今晚还没开张呢');return;}if(!confirm('结束营业？今晚的记录会收进历史，首页清空。\nTa 的醉意不会清零，没揭完的盲品也还在。'))return;try{await api('/bar/close',{});toast('打烊了。明晚见');}catch(e){toast(e.message);}refresh();};
   $('copy-now').onclick=async()=>{try{const d=await api('/bar/context');copy(d.text||'吧台现在没什么要说的。');}catch(e){toast(e.message);}};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
   setInterval(()=>{if(!document.hidden&&!document.querySelector('.bar-screen:not([hidden]),.bf-panel'))refresh();},8000);
-  loadDef().catch(()=>{}).finally(refresh);
+  loadSign();loadDef().catch(()=>{}).finally(refresh);
 })();
 </script>
 </body>

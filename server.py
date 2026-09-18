@@ -182,6 +182,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not text:
                     return self.send_json({"ok": False, "error": "未知便条"}, 400)
                 return self.send_json({"ok": True, "text": barlog.add("me", text, "note")["text"]})
+            if u.path == "/bar/close":   # 结束营业：今晚的记录收进历史
+                return self.send_json({"ok": True, "archived": barlog.close_night()})
             if u.path == "/bar/ai":      # 没有 MCP 的接法：你的程序替小机转发工具调用
                 return self.send_json({"ok": True, "result": bar_ai.run(b.get("tool"), b.get("input") or {})})
         except Exception as e:

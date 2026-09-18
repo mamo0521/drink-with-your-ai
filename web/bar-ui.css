@@ -128,6 +128,8 @@
 .bar-code-editor textarea{color:transparent;caret-color:var(--bar-red);-webkit-text-fill-color:transparent;outline:none}
 .bar-code-editor textarea::selection{background:rgba(217,160,84,.25)}
 .bar-code-editor .md-heading,.bar-code-editor .md-strong{color:var(--bar-red)}
+.bar-code-editor .md-strong{font-weight:700}
+.bar-code-editor .md-rule{color:var(--bar-gold)}
 .bar-code-editor .md-comment,.bar-code-editor .md-marker{color:var(--bar-muted)}
 .bar-editor-status{display:flex;gap:8px;justify-content:space-between;min-height:24px;padding-top:8px;color:var(--bar-muted);font:italic 11px/16px 'PlayfairLocal','MamoWenKai',serif}
 .bar-editor-actions{display:flex;gap:10px;padding:10px 26px 34px;flex:none}

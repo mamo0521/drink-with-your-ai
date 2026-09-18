@@ -64,6 +64,7 @@
     return String(raw).split('\n').map(line=>{
       if(/^\s*<!--/.test(line))return '<span class="md-comment">'+escape(line)+'</span>';
       if(/^#{1,6}\s/.test(line))return '<span class="md-heading">'+escape(line)+'</span>';
+      if(/^\s*-{3,}\s*$/.test(line))return '<span class="md-rule">'+escape(line)+'</span>';
       return line.split(/(\*\*[^*]+\*\*)/g).map(part=>/^\*\*/.test(part)?'<span class="md-strong">'+escape(part)+'</span>':escape(part)).join('');
     }).join('\n')+'\n';
   }
@@ -91,7 +92,7 @@
     function shell(editor=false){
       screen.classList.toggle('bar-editor',editor);screen.replaceChildren();layout=el('div','bar-layout');
       layout.append(el('div','bar-frame'));const header=el('header','bar-header');
-      const back=button('bar-back','',()=>editor?exitEditor():leave());back.setAttribute('aria-label',editor?'返回酒单':'返回聊天');back.append(icon('back-arrow'));header.append(back);
+      const back=button('bar-back','',()=>editor?exitEditor():leave());back.setAttribute('aria-label',editor?'返回酒单':'返回首页');back.append(icon('back-arrow'));header.append(back);
       if(editor)titleNodes('EDIT MENU','编辑酒单',header);
       else{
         const star=el('div','bar-star');
@@ -99,7 +100,7 @@
         const leftStar=el('span','bar-header-corner left');leftStar.append(icon('header-corners'));
         const rightStar=el('span','bar-header-corner right');rightStar.append(icon('header-corners'));
         header.append(star,leftStar,rightStar);
-        titleNodes(meta.title||"AFTERHOURS",meta.subtitle??'和小机喝一杯',header);
+        titleNodes(meta.title||"OUR",meta.subtitle??'AFTERHOURS',header);
         const guide=button('bar-edit-link bar-guide-link','',()=>openGuide());guide.append(icon('guide'),el('span','','guide'));guide.setAttribute('aria-label','吧台玩法说明');header.append(guide);
         const edit=button('bar-edit-link','',()=>openEditor());edit.append(icon('edit'),el('span','','edit'));edit.setAttribute('aria-label','编辑酒单');header.append(edit);
       }
@@ -228,7 +229,7 @@
       if(version!==editorVersion)return;save.disabled=false;status(editorDirty?'有未保存的修改':'');
       const updateCount=()=>count.textContent=Array.from(drafts[field]||'').length.toLocaleString()+' 字';updateCount();
       if(editorTab==='names'){
-        content.className='bar-name-editor';const current={...readMeta(drafts.bar)};delete current.drinkNames;current.title??=meta.title||"AFTERHOURS";current.subtitle??=meta.subtitle??'和小机喝一杯';
+        content.className='bar-name-editor';const current={...readMeta(drafts.bar)};delete current.drinkNames;current.title??=meta.title||"OUR";current.subtitle??=meta.subtitle??'AFTERHOURS';
         const preview=el('div','bar-name-preview');titleNodes(current.title,current.subtitle,preview);content.append(preview);
         const change=()=>{drafts.bar=withMeta(drafts.bar,current);editorDirty=true;status('有未保存的修改');updateCount();preview.replaceChildren();titleNodes(current.title,current.subtitle,preview);};
         const fieldInput=(label,value,onChange)=>{const l=el('label','',label),input=el('input');input.value=value;input.autocomplete='off';input.oninput=()=>{onChange(input.value);change();};l.append(input);content.append(l);};
@@ -245,7 +246,7 @@
         // Save only the active document. Switching tabs preserves other drafts.
         const field=FIELDS[editorTab]||'bar';
         let text=drafts[field];
-        if(field==='bar'){const m=readMeta(text);text=withMeta(text,{...m,title:m.title??meta.title??"AFTERHOURS",subtitle:m.subtitle??meta.subtitle??'和小机喝一杯'});}
+        if(field==='bar'){const m=readMeta(text);text=withMeta(text,{...m,title:m.title??meta.title??"OUR",subtitle:m.subtitle??meta.subtitle??'AFTERHOURS'});}
         await json('/barfile/save',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({which:field,text})});
         drafts[field]=base[field]=text;
         if(field==='bar'){

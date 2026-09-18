@@ -57,6 +57,22 @@ def recent(limit=30):
     return [dict(r, show=to_player(r["text"])) for r in rows]
 
 
+def close_night():
+    """结束营业：把今晚的记录整份挪进 bar_log_history/，首页清空。小机还没看过的那几条先留着——看过才算交到。"""
+    with _gamestore.file_lock(_path()):
+        rows = _read()
+        if not rows:
+            return 0
+        keep = [r for r in rows if not r.get("seen")]
+        done = [r for r in rows if r.get("seen")]
+        if done:
+            h = _path().parent / "bar_log_history"
+            h.mkdir(parents=True, exist_ok=True)
+            _gamestore.atomic_write_json(h / (_lib.now().strftime("%Y%m%d-%H%M%S") + ".json"), done)
+        _gamestore.atomic_write_json(_path(), keep)
+        return len(done)
+
+
 def unseen_for_ta(mark=True):
     """小机还没看过的、不是它自己做的那些事。看过就标记。"""
     with _gamestore.file_lock(_path()):
