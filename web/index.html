@@ -17,7 +17,7 @@
 *{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink)}
 body{font:15px/1.7 MamoWenKai,'Noto Serif SC',serif;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
-main{position:relative;isolation:isolate;width:min(100%,392px);min-height:900px;margin:18px auto;padding:72px 28px 44px;display:flex;flex-direction:column;gap:18px}
+main{position:relative;isolation:isolate;width:min(100%,392px);min-height:calc(100svh - 36px - env(safe-area-inset-top) - env(safe-area-inset-bottom));margin:18px auto;padding:72px 28px 44px;display:flex;flex-direction:column;gap:18px}
 main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-style:solid;border-width:150px 14px 34px;border-image:url('/assets/bar/ui/menu-frame.svg') 150 14 34 fill / 150px 14px 34px / 0 stretch}
 .home-head{text-align:center;position:relative}
 .home-head>.bar-star{top:-70px}
@@ -26,7 +26,8 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 .home-scene:after{content:'';position:absolute;inset:8% -8px;z-index:-1;background:radial-gradient(circle,#d9a05475 .65px,transparent .9px) 0 0/5px 5px;mask-image:radial-gradient(ellipse,#000 20%,transparent 70%);pointer-events:none}
 .home-head h1{margin:0;color:var(--red);font:italic 600 30px/36px PlayfairLocal,MamoKai,serif;letter-spacing:3px}
 .home-head p{margin:2px 0 0;font:400 14px/22px PlayfairLocal,MamoKai,serif;letter-spacing:5.6px;color:var(--ink)}
-#act-bar.bar-strip{margin:4px -18px -6px;width:calc(100% + 36px);max-width:none}
+.home-controls{margin-top:auto;padding-top:4px;display:flex;flex-direction:column;gap:18px;flex:none}
+#act-bar.bar-strip{margin:0 -18px -6px;width:calc(100% + 36px);max-width:none}
 .home-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-hex{position:relative;isolation:isolate;min-height:44px;color:var(--card);font:15px/20px MamoWenKai,serif;letter-spacing:2px}
 .home-hex:before{content:'';position:absolute;inset:0;z-index:-1;background:var(--red);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
@@ -35,20 +36,20 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 .home-line{display:flex;align-items:center;gap:10px;color:var(--red);font:16px/18px MamoKai,serif;letter-spacing:2.8px}
 .home-line:before,.home-line:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}.home-line:after{transform:scaleX(-1)}
 .home-records{border:1px solid var(--gold);padding:16px 12px;display:flex;flex-direction:column;gap:16px;min-width:0}
-.home-tools{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:12px;color:var(--muted)}
+.home-tools{text-align:center;font-size:12px;color:var(--muted)}
 .home-tools .home-link{flex:none;white-space:nowrap}
 .home-link{color:var(--red);text-decoration:underline;text-underline-offset:3px;font-size:13px}
 #log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-#log li{background:var(--card);border:1px solid #d9a05480;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:start}
+#log li{background:var(--card);border:1px solid #d9a05480;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
 #log .who{grid-column:1/-1;font:italic 11px/14px PlayfairLocal,MamoKai,serif;letter-spacing:1px;color:var(--gold)}
 #log .text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:22px}
 #log .copy{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 #log .unseen .who:after{content:' · Ta 还没看到';color:var(--red)}
 .home-where{margin:0;text-align:center;font-size:11px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}.home-where .home-link{font-size:11px;color:var(--muted)}
 .home-empty{text-align:center;color:var(--muted);font-size:13px;margin:6px 0}
-.home-foot{margin-top:auto;padding-top:24px;display:flex;justify-content:center;align-items:center;gap:12px;color:var(--muted);font:italic 12px/18px PlayfairLocal,serif;letter-spacing:2px}
+.home-foot{padding-top:4px;display:flex;justify-content:center;align-items:center;gap:12px;color:var(--muted);font:italic 12px/18px PlayfairLocal,serif;letter-spacing:2px}
 .home-foot img{width:25px;height:25px}
-@media(max-width:430px){main{margin:0 auto;min-height:100svh;padding-bottom:34px}}
+@media(max-width:430px){main{margin:0 auto;min-height:calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom));padding-bottom:34px}}
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);max-width:min(88vw,340px);background:var(--ink);color:var(--card);padding:9px 16px;border-radius:4px;font-size:13px;line-height:20px;z-index:2000;opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.on{opacity:1}
 button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
@@ -61,10 +62,11 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   <figure class="home-scene"><img src="/assets/home/bar-shelves.png" width="1200" height="900" alt="暖灯下的三层酒架，吧台上放着两杯酒" fetchpriority="high"></figure>
   <section class="home-records" aria-labelledby="records-title">
     <div class="home-line" id="records-title">今晚的记录</div>
-    <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span><button class="home-link" id="copy-now" type="button">复制现状给 Ta</button></div>
+    <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span></div>
     <ul id="log" aria-live="polite"></ul>
     <p class="home-empty" id="log-empty" hidden>还没有记录。点一杯，或者上赌桌。</p>
   </section>
+  <div class="home-controls">
   <div id="act-bar"></div>
   <div class="home-actions">
     <button class="home-hex ghost" id="close-night" type="button">结束营业</button>
@@ -72,6 +74,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   </div>
   <p class="home-where" id="home-where" hidden>你的酒单、题库和存档放在：<button type="button" class="home-link" id="copy-where"></button></p>
   <footer class="home-foot" aria-hidden="true"><span>just us</span><img src="/assets/bar/ui/footer-star.svg" alt=""><span>after hours</span></footer>
+  </div>
 </main>
 <div id="toast" role="status"></div>
 <script src="/bar-bank.js"></script><script src="/bar-ui.js"></script><script src="/bar-strip.js"></script><script src="/bar-flight.js"></script>
@@ -97,8 +100,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
       for(const r of rows){const li=document.createElement('li');if(!r.seen)li.className='unseen';
         const who=document.createElement('span');who.className='who';who.textContent=WHO[r.who]||r.who;
         const text=document.createElement('span');text.className='text';text.textContent=r.show||r.text;
-        const c=document.createElement('button');c.type='button';c.className='copy';c.textContent='复制给 Ta';c.title='复制的是写给 Ta 看的那一版';c.onclick=()=>copy(r.text);
-        li.append(who,text,c);list.append(li);}
+        li.append(who,text);list.append(li);}
     }catch(e){}
   }
   // 今日特调：每点一次摇一次，随机名字、配方和杯数（0.8–1.8）。
@@ -123,7 +125,6 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   $('open-menu').onclick=openMenu;
   // 结束营业：把今晚的记录收进历史、首页清空；小机的醉意不动（照常慢慢醒），没揭完的盲品也留着。
   $('close-night').onclick=async()=>{if(!$('log').children.length){toast('今晚还没开张呢');return;}if(!confirm('结束营业？今晚的记录会收进历史，首页清空。\nTa 的醉意不会清零，没揭完的盲品也还在。'))return;try{await api('/bar/close',{});toast('打烊了。明晚见');}catch(e){toast(e.message);}refresh();};
-  $('copy-now').onclick=async()=>{try{const d=await api('/bar/context');copy(d.text||'吧台现在没什么要说的。');}catch(e){toast(e.message);}};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
   setInterval(()=>{if(!document.hidden&&!document.querySelector('.bar-screen:not([hidden]),.bf-panel'))refresh();},8000);
   loadSign();loadDef().catch(()=>{}).finally(refresh);
