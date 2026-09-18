@@ -2,6 +2,7 @@
 """给小机的三个工具，功能只写这一份：MCP 服务器和 POST /bar/ai 都调这里。
 bar_game = 玩游戏；bar_drink = 喝一杯；bar_look = 看吧台（坐下先看一眼）。"""
 import math
+import re
 import uuid
 
 import _lib
@@ -75,7 +76,7 @@ def look(inp):
     parts.append(_now_line())
     if (inp or {}).get("need_menu"):
         # 整份酒单原文：每一杯的讲究和吧台规矩都在里面，是小机自己的口吻（只靠工具的客户端没有别的地方能看到它）
-        parts.append("你的酒单与吧台规矩（「我」是你，「你」是对方）：\n\n" + _lib.parse_frontmatter(menu._bar_text())[1].strip())
+        parts.append("你的酒单与吧台规矩（「我」是你，「你」是对方）：\n\n" + re.sub(r"(?m)^>.*\n?", "", _lib.parse_frontmatter(menu._bar_text())[1]).strip())   # `>` 行是写给玩家的说明
     return "\n\n".join(parts)
 
 

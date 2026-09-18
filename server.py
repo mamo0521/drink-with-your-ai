@@ -105,7 +105,8 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if u.path == "/activities":
                 return self.send_json({"activities": [{"id": "bar", "name": "吧台", "menu": menu._bar_menu(),
-                                                       "menu_title": menu._bar_title(), "player_name": bar_games.player_name()}]})
+                                                       "menu_title": menu._bar_title(), "player_name": bar_games.player_name()}],
+                                       "data_dir": str(_lib.vault_path())})
             if u.path == "/state":
                 return self.send_json(state.summary())
             if u.path == "/barfile":
@@ -192,6 +193,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def static(self, path):
         path = unquote(path)   # 酒图是中文文件名
+        if path.startswith("/assets/bar/") and path.count("/") == 3:   # 玩家自己配的酒图优先：存档文件夹/images/酒名.png
+            mine = (_lib.vault_path() / "images" / path.rsplit("/", 1)[1]).resolve()
+            if mine.is_file() and (_lib.vault_path() / "images").resolve() in mine.parents:
+                data = mine.read_bytes()
+                self.send_response(200)
+                self.send_header("content-type", TYPES.get(mine.suffix.lower(), "application/octet-stream"))
+                self.send_header("content-length", str(len(data)))
+                self.send_header("cache-control", "no-cache")
+                self.end_headers()
+                self.wfile.write(data)
+                return
         rel = "index.html" if path in ("", "/") else path.lstrip("/")
         f = (WEB / rel).resolve()
         if WEB.resolve() not in f.parents and f != WEB.resolve() or not f.is_file():

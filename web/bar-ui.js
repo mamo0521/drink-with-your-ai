@@ -65,6 +65,8 @@
       if(/^\s*<!--/.test(line))return '<span class="md-comment">'+escape(line)+'</span>';
       if(/^#{1,6}\s/.test(line))return '<span class="md-heading">'+escape(line)+'</span>';
       if(/^\s*-{3,}\s*$/.test(line))return '<span class="md-rule">'+escape(line)+'</span>';
+      // 我们写给玩家看的说明：`> ` 开头的行，或整行加粗的一句话（酒名条目带「·」或很短，不算）。橘色，和玩家自己写的字分开。
+      if(/^\s*>/.test(line)||(/^\*\*[^*·]{12,}\*\*\s*$/.test(line)))return '<span class="md-note">'+escape(line)+'</span>';
       return line.split(/(\*\*[^*]+\*\*)/g).map(part=>/^\*\*/.test(part)?'<span class="md-strong">'+escape(part)+'</span>':escape(part)).join('');
     }).join('\n')+'\n';
   }
@@ -214,7 +216,7 @@
       layout.append(tabs);const body=el('div','bar-editor-body');const hint=el('p','bar-editor-hint');
       if(editorTab==='questions'){   // 定稿文案，游戏名红字
         for(const part of [['真心话',1],'（你问 Ta 的）、',['大冒险',1],'（你让 Ta 做的）、',['盲品',1],'（盲喝的游戏中 Ta 让你做的，难度分三档——轻 / 中 / 重）各一段。\n按现有格式写。\n每个题库里的「## 亲密」只在开关打开时用。'])hint.append(Array.isArray(part)?el('strong','bar-hint-game',part[0]):doc.createTextNode(part));
-      }else hint.textContent=editorTab==='names'?'招牌支持中文和英文，上下两行分别填写。':editorTab==='bar'?'按照原有格式写，加额外的酒时可暂用占位图\n英文名可留空；填写时在酒名下一行写「英文名：Whisky」。':'按照原有格式写。';
+      }else hint.textContent=editorTab==='names'?'招牌支持中文和英文，上下两行分别填写。':editorTab==='bar'?'橘色的字是说明，可以删；其余按原有格式写。':'按照原有格式写。';
       body.append(hint);layout.append(body);
       const field=FIELDS[editorTab]||'bar';
       const content=el('div','bar-code-editor');body.append(content);

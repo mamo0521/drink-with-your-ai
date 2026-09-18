@@ -34,6 +34,7 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 .home-hex.ghost:after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--card);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
 .home-line{display:flex;align-items:center;gap:10px;color:var(--red);font:16px/18px MamoKai,serif;letter-spacing:2.8px}
 .home-line:before,.home-line:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}.home-line:after{transform:scaleX(-1)}
+.home-records{border:1px solid var(--gold);padding:16px 12px;display:flex;flex-direction:column;gap:16px;min-width:0}
 .home-tools{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:12px;color:var(--muted)}
 .home-tools .home-link{flex:none;white-space:nowrap}
 .home-link{color:var(--red);text-decoration:underline;text-underline-offset:3px;font-size:13px}
@@ -43,6 +44,7 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 #log .text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:22px}
 #log .copy{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 #log .unseen .who:after{content:' · Ta 还没看到';color:var(--red)}
+.home-where{margin:0;text-align:center;font-size:11px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}.home-where .home-link{font-size:11px;color:var(--muted)}
 .home-empty{text-align:center;color:var(--muted);font-size:13px;margin:6px 0}
 .home-foot{margin-top:auto;padding-top:24px;display:flex;justify-content:center;align-items:center;gap:12px;color:var(--muted);font:italic 12px/18px PlayfairLocal,serif;letter-spacing:2px}
 .home-foot img{width:25px;height:25px}
@@ -57,15 +59,18 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 <main>
   <header class="home-head"><span class="bar-star" aria-hidden="true"><img class="bar-star-base" src="/assets/bar/ui/star-base.svg" alt=""><img class="bar-star-lines" src="/assets/bar/ui/star-lines.svg" alt=""><img class="bar-star-ray bar-star-ne" src="/assets/bar/ui/star-ne.svg" alt=""><img class="bar-star-ray bar-star-se" src="/assets/bar/ui/star-se.svg" alt=""><img class="bar-star-ray bar-star-nw" src="/assets/bar/ui/star-nw.svg" alt=""><img class="bar-star-ray bar-star-sw" src="/assets/bar/ui/star-sw.svg" alt=""></span><h1 id="home-title">OUR</h1><p id="home-sub">AFTERHOURS</p></header>
   <figure class="home-scene"><img src="/assets/home/bar-shelves.png" width="1200" height="900" alt="暖灯下的三层酒架，吧台上放着两杯酒" fetchpriority="high"></figure>
+  <section class="home-records" aria-labelledby="records-title">
+    <div class="home-line" id="records-title">今晚的记录</div>
+    <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span><button class="home-link" id="copy-now" type="button">复制现状给 Ta</button></div>
+    <ul id="log" aria-live="polite"></ul>
+    <p class="home-empty" id="log-empty" hidden>还没有记录。点一杯，或者上赌桌。</p>
+  </section>
   <div id="act-bar"></div>
   <div class="home-actions">
     <button class="home-hex ghost" id="close-night" type="button">结束营业</button>
     <button class="home-hex" id="open-menu" type="button">✦ 打开酒单</button>
   </div>
-  <div class="home-line">今晚的记录</div>
-  <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span><button class="home-link" id="copy-now" type="button">复制现状给 Ta</button></div>
-  <ul id="log" aria-live="polite"></ul>
-  <p class="home-empty" id="log-empty" hidden>还没有记录。点一杯，或者上赌桌。</p>
+  <p class="home-where" id="home-where" hidden>你的酒单、题库和存档放在：<button type="button" class="home-link" id="copy-where"></button></p>
   <footer class="home-foot" aria-hidden="true"><span>just us</span><img src="/assets/bar/ui/footer-star.svg" alt=""><span>after hours</span></footer>
 </main>
 <div id="toast" role="status"></div>
@@ -77,12 +82,12 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   const $=id=>document.getElementById(id);
   const api=async(url,body)=>{const r=await fetch(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);const d=await r.json().catch(()=>({}));if(!r.ok||d.ok===false)throw new Error(d.error||'吧台没有回应');return d;};
   let toastTimer=0;const toast=t=>{const n=$('toast');n.textContent=t;n.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>n.classList.remove('on'),2600);};
-  const copy=async text=>{try{await navigator.clipboard.writeText(text);toast('已复制，去聊天里粘给 Ta');}catch(e){window.prompt('复制这段话发给 Ta：',text);}};
+  const copy=async(text,done='已复制，去聊天里粘给 Ta')=>{try{await navigator.clipboard.writeText(text);toast(done);}catch(e){window.prompt('复制这段话发给 Ta：',text);}};
   const WHO={me:'you',ta:'Ta',bar:'the bar'};
   let barDef={},stripState=null;
   // 招牌跟酒单里「吧台名称」填的一致：第一行是谁的，第二行 AFTERHOURS。
   async function loadSign(){try{const d=await api('/barfile?which=bar'),m=MamoBarUI.readMeta(d.text||'');$('home-title').textContent=m.title||'OUR';$('home-sub').textContent=m.subtitle??'AFTERHOURS';}catch(e){}}
-  async function loadDef(){const d=await api('/activities');barDef=(d.activities||[]).find(a=>a.id==='bar')||{};MamoBarResult.setPlayer(barDef.player_name);return barDef;}
+  async function loadDef(){const d=await api('/activities');if(d.data_dir){$('home-where').hidden=false;$('copy-where').textContent=d.data_dir;$('copy-where').onclick=()=>copy(d.data_dir,'路径已复制');}barDef=(d.activities||[]).find(a=>a.id==='bar')||{};MamoBarResult.setPlayer(barDef.player_name);return barDef;}
   function paintStrip(){MamoBarStrip.render($('act-bar'),stripState,null,{open:openMenu,close(){},flight:MamoBarFlight.stripText(flight.flight()),openFlight:()=>flight.open()});const x=$('act-bar').querySelector('.bar-strip-close');if(x)x.hidden=true;}
   async function refresh(){
     try{stripState=await api('/state');}catch(e){}
