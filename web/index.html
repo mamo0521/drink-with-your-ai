@@ -88,7 +88,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 (function(){
   'use strict';
   const $=id=>document.getElementById(id);
-  const api=async(url,body)=>{const r=await fetch(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);const d=await r.json().catch(()=>({}));if(!r.ok||d.ok===false)throw new Error(d.error||'吧台没有回应');return d;};
+  const api=async(url,body)=>{let r,tries=0;for(;;){try{r=await fetch(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);break;}catch(e){if(++tries>2)throw new Error('吧台暂时没有回应。等几秒再试');await new Promise(done=>setTimeout(done,1500));}}const d=await r.json().catch(()=>({}));if(!r.ok||d.ok===false)throw new Error(d.error||'吧台没有回应');return d;};
   let toastTimer=0;const toast=t=>{const n=$('toast');n.textContent=t;n.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>n.classList.remove('on'),2600);};
   const WHO={me:'你',ta:'Ta',bar:'吧台'};
   let barDef={},stripState=null;

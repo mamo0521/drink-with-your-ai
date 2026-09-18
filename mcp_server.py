@@ -64,18 +64,27 @@ def handle(req):
 
 
 def serve_web():
+    """把吧台网页开起来，并且**一直守着**。
+    Claude 桌面 App 会同时拉起两份本进程，还会随时关掉其中一份：如果关掉的恰好是占着网页端口的那份，
+    而剩下这份当初看见"已经有人开着"就撒手不管，网页就没人端了——玩家点什么都是 Failed to fetch
+    （2026-09-18 mamo 实测撞上）。所以：别人开着就每几秒看一眼，它一走，这边立刻接手。"""
     global WEB_URL
-    try:
-        import server
-        httpd, port = server.serve()
-        WEB_URL = f"http://{server.HOST}:{port}"
-        if httpd is None:
-            print(f"[bar] 吧台网页已由另一份开着：{WEB_URL}", file=sys.stderr)
-            return
-        print(f"[bar] 吧台网页 {WEB_URL}", file=sys.stderr)
-        httpd.serve_forever()
-    except Exception as e:
-        print(f"[bar] 吧台网页没开起来：{e}", file=sys.stderr)
+    import time
+    import server
+    while True:
+        try:
+            httpd, port = server.serve()
+            WEB_URL = f"http://{server.HOST}:{port}"
+            if httpd is None:
+                print(f"[bar] 吧台网页已由另一份开着：{WEB_URL}（守着，它走了我接手）", file=sys.stderr)
+                while server.bar_already_at(port):
+                    time.sleep(3)
+                continue
+            print(f"[bar] 吧台网页 {WEB_URL}", file=sys.stderr)
+            httpd.serve_forever()
+        except Exception as e:
+            print(f"[bar] 吧台网页没开起来：{e}（5 秒后再试）", file=sys.stderr)
+            time.sleep(5)
 
 
 def main():

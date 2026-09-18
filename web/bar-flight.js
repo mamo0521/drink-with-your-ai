@@ -47,7 +47,10 @@
     const reduced=()=>root.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let flight=null,panel=null,busy=false,focusBefore=null,revealed=null;
     async function call(url,body){
-      const r=await (options.fetch||root.fetch)(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);
+      // 连不上（吧台进程正在重启 / 换班）≠ 出错：等一下再试，揭杯这类请求服务器端是幂等的，重发安全。
+      let r,tries=0;
+      for(;;){try{r=await (options.fetch||root.fetch)(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);break;}
+        catch(e){if(++tries>2)throw new Error('吧台暂时没有回应。等几秒再点一次');await new Promise(done=>setTimeout(done,1500));}}
       const data=await r.json().catch(()=>({}));
       if(data.flight!==undefined){flight=data.flight;options.onChange?.(flight);if(flight?.owed&&!revealed)options.onCarry?.({...flight.owed,who:'me',flight});}
       if(!r.ok||data.ok===false)throw new Error(data.error||'吧台没有回应，请重试');

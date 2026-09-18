@@ -3,6 +3,7 @@
 """和小机喝一杯 · 本地吧台。只用 Python 标准库：python3 server.py [端口]，然后浏览器开 http://127.0.0.1:8766
 只监听本机；存档、你写的酒单 / 题库 / 醉态口吻都在用户目录里（见 _lib.py）。"""
 import json
+import os
 import shutil
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -219,7 +220,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
 
-HOST, PORT, PORT_TRIES = "127.0.0.1", 8766, 10
+HOST, PORT, PORT_TRIES = "127.0.0.1", int(os.environ.get("BAR_PORT") or 8766), 10
 
 
 def bar_already_at(port):
