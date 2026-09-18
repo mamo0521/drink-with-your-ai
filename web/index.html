@@ -41,8 +41,11 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 .home-tools{text-align:left;font-size:12px;color:var(--muted)}
 .home-tools .home-link{flex:none;white-space:nowrap}
 .home-link{color:var(--red);text-decoration:underline;text-underline-offset:3px;font-size:13px}
-#log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-#log li{background:var(--card);border:1px solid #d9a05480;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+#log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:clamp(140px,25svh,240px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
+#log:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+#log::-webkit-scrollbar{width:5px}
+#log::-webkit-scrollbar-thumb{background:var(--gold);border-radius:5px}
+#log li{background:var(--card);border:1px solid #d9a05480;padding:10px 12px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
 #log .who{grid-column:1/-1;font:italic 11px/14px PlayfairLocal,MamoKai,serif;letter-spacing:1px;color:var(--gold)}
 #log .text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:22px}
 #log .copy{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
@@ -66,7 +69,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   <section class="home-records" aria-labelledby="records-title">
     <div class="home-line" id="records-title">今晚的记录</div>
     <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span></div>
-    <ul id="log" aria-live="polite"></ul>
+    <ul id="log" aria-live="polite" aria-label="今晚的记录，可上下滚动" tabindex="0"></ul>
     <p class="home-empty" id="log-empty" hidden>还没有记录。点一杯，或者上赌桌。</p>
   </section>
   <div class="home-controls">
@@ -89,7 +92,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   const api=async(url,body)=>{const r=await fetch(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);const d=await r.json().catch(()=>({}));if(!r.ok||d.ok===false)throw new Error(d.error||'吧台没有回应');return d;};
   let toastTimer=0;const toast=t=>{const n=$('toast');n.textContent=t;n.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>n.classList.remove('on'),2600);};
   const copy=async(text,done='已复制，去聊天里粘给 Ta')=>{try{await navigator.clipboard.writeText(text);toast(done);}catch(e){window.prompt('复制这段话发给 Ta：',text);}};
-  const WHO={me:'you',ta:'Ta',bar:'the bar'};
+  const WHO={me:'你',ta:'Ta',bar:'吧台'};
   let barDef={},stripState=null;
   // 招牌跟酒单里「吧台名称」填的一致：第一行是谁的，第二行 AFTERHOURS。
   async function loadSign(){try{const d=await api('/barfile?which=bar'),m=MamoBarUI.readMeta(d.text||'');$('home-title').textContent=m.title||'AMBER';$('home-sub').textContent=m.subtitle??'AFTERHOURS';}catch(e){}}

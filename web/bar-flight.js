@@ -7,7 +7,8 @@
   function stripText(flight){
     if(!flight||flight.done)return null;
     // 左上角胶带写项目名，轮到谁写在右边（Figma 1469:4415）。
-    return {kind:flight.turn==='me'?'flight-me':'flight-ta',tape:'盲品 flight',text:(flight.turn==='me'?'your turn':'his turn')+'·剩'+flight.left.length+'杯'};
+    const first=flight.turn==='me'&&flight.left.length===6;
+    return {kind:flight.turn==='me'?'flight-me':'flight-ta',tape:'盲品 flight',text:(flight.turn==='me'?'your turn':'his turn')+'·'+(first?'点这里':'剩'+flight.left.length+'杯'),first};
   }
   // Deeper colour = stronger cup. Values come from the revealed cup only.
   function tone(cup){const std=Number(cup.std)||0;return std<=0?'water':std>=2?'high':std>=1?'mid':'low';}

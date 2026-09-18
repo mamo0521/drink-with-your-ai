@@ -129,7 +129,7 @@
 .gg-result .gg-actions{margin-top:auto;padding-top:18px}
 .gg-result.gg-tie{min-height:246px}
 .gg-custom-result .gg-result-picture{height:auto;min-height:80px;margin:8px 0 12px}
-.gg-custom-result .gg-result-picture .gg-note-mini{background:var(--bar-paper);width:100%;min-height:70px;max-height:none;white-space:pre-wrap;padding:14px;font-size:14px;line-height:22px;overflow:visible}
+.gg-custom-result .gg-result-picture .gg-note-mini{background:#fdf3d0;width:100%;min-height:70px;max-height:none;white-space:pre-wrap;padding:14px;font-size:14px;line-height:22px;overflow:visible}
 .gg-result h2{margin-bottom:8px}.gg-result-picture{height:67px;display:grid;place-items:center;margin-bottom:6px}.gg-result-picture .gg-card-art{height:66px;width:48px}.gg-result-picture .gg-drink-art{height:70px;width:66px}.gg-result-picture .gg-note-mini{max-height:66px;min-height:60px;width:130px;transform:rotate(-2deg)}
 .gg-result-score{font:16px/26px MamoWenKai,serif;color:var(--bar-red);margin:8px 0 12px;display:flex;flex-direction:column;gap:2px;align-items:center}
 .gg-result-score>div{display:grid;grid-template-columns:24px 30px 24px;gap:4px;align-items:center;text-align:center}

@@ -121,6 +121,9 @@
 .bar-screen .bar-editor-tabs [aria-selected=true]{color:var(--bar-red)}
 .bar-editor-body{padding:14px 26px 0;display:flex;flex-direction:column;flex:1;min-height:0}
 .bar-editor-hint{text-align:center;color:var(--bar-muted);font:11px/16px 'MamoWenKai',serif;margin:0 0 10px;white-space:pre-line}
+.bar-editor-panel{display:flex;flex-direction:column;flex:1;min-height:0;overflow:auto;border:1px solid var(--bar-gold);background:var(--bar-card)}
+.bar-editor-instructions{flex:none;margin:0;padding:14px 18px 8px;color:#c9702f;font:13px/21px 'MamoWenKai',serif;white-space:pre-line;overflow-wrap:anywhere}
+.bar-editor-panel>.bar-code-editor,.bar-editor-panel>.bar-name-editor{border:0;box-shadow:none}
 .bar-hint-game{font-weight:400;color:var(--bar-red)}
 .bar-code-editor{position:relative;flex:1;min-height:120px;border:1px solid var(--bar-gold);background:var(--bar-card);box-shadow:inset 0 1px 2px 1px rgba(80,60,30,.06);overflow:hidden}
 .bar-code-editor pre,.bar-code-editor textarea{position:absolute;inset:0;width:100%;height:100%;padding:16px 18px;margin:0;border:0;border-radius:0;font:400 16px/25px 'MamoWenKai',monospace;letter-spacing:0;tab-size:2;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;background:none;resize:none;overflow:auto;scrollbar-width:thin}

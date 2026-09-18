@@ -214,12 +214,13 @@
         const b=button('',cn,()=>{if(editorBusy)return;editorTab=key;renderEditor();});b.append(el('em','',en));b.setAttribute('role','tab');b.setAttribute('aria-selected',String(editorTab===key));tabs.append(b);editorButtons.push(b);
       }
       layout.append(tabs);const body=el('div','bar-editor-body');const hint=el('p','bar-editor-hint');
-      if(editorTab==='questions'){   // 定稿文案，游戏名红字
-        for(const part of [['真心话',1],'（你问 Ta 的）、',['大冒险',1],'（你让 Ta 做的）、',['盲品',1],'（盲喝的游戏中 Ta 让你做的，难度分三档——轻 / 中 / 重）各一段。\n按现有格式写。\n每个题库里的「## 亲密」只在开关打开时用。'])hint.append(Array.isArray(part)?el('strong','bar-hint-game',part[0]):doc.createTextNode(part));
-      }else hint.textContent=editorTab==='names'?'招牌支持中文和英文，上下两行分别填写。':editorTab==='bar'?'橘色的字是说明，可以删；其余按原有格式写。':'按照原有格式写。';
+      hint.textContent='修改方法详见下，按照格式写';
       body.append(hint);layout.append(body);
       const field=FIELDS[editorTab]||'bar';
-      const content=el('div','bar-code-editor');body.append(content);
+      const panel=el('div','bar-editor-panel');
+      const instructions={names:'招牌支持中文和英文，上下两行分别填写。',bar:'橘色的字是说明，文档里的说明可以删；其余按原有格式写。',alcohol:'按照原有格式写。',questions:'真心话（你问 Ta 的）、大冒险（你让 Ta 做的）、盲品（盲喝的游戏中 Ta 让你做的，难度分三档——轻 / 中 / 重）各一段。\n按现有格式写。\n每个题库里的「## 亲密」只在开关打开时用。'};
+      panel.append(el('p','bar-editor-instructions',instructions[editorTab]));
+      const content=el('div','bar-code-editor');panel.append(content);body.append(panel);
       const stat=el('div','bar-editor-status');editorStatus=el('span','','');const count=el('span','','');stat.append(editorStatus,count);body.append(stat);
       const actions=el('div','bar-editor-actions');const cancel=button('bar-pill','cancel',exitEditor),save=button('bar-pill primary','保存',saveEditor);actions.append(cancel,save);layout.append(actions);editorButtons.push(cancel,save);save.disabled=true;
       if(!editorLoaded.has(field)){

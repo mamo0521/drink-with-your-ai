@@ -15,6 +15,7 @@
 .bar-strip-close-glyph{display:block;transform:translateY(-1px)}
 .bar-strip-row{right:61px}
 .bar-strip .bar-strip-info{white-space:nowrap;text-overflow:ellipsis}
+.bar-strip .bar-strip-info.is-flight-first{font-weight:600;text-shadow:0 0 3px #fff4c5,0 0 7px #ffd777,0 0 12px #e9b44db3;overflow:visible}
 .bar-strip .bar-strip-info.is-long{font-size:11px;letter-spacing:0}
 .bar-strip-tape{position:absolute;left:16px;top:9px;width:70.812px;height:15.159px;transform:rotate(-6deg);background:rgb(213.90635 121.53706 59.66705);color:white;box-shadow:0 1px 2px #0003;text-align:center;font:italic 10px/15px 'PlayfairLocal',serif;letter-spacing:.6px;pointer-events:none}
 .bar-strip button:focus-visible{outline:2px solid #8e3b2c;outline-offset:2px}
