@@ -1,0 +1,9 @@
+.bar-result-card{position:relative;max-width:100%;width:290px;border:1px solid #d9a054;background:#fbf8f1;color:#8e3b2c;box-shadow:0 2px 3px #4a3f3514;border-radius:3px;text-align:left;overflow-wrap:anywhere}
+.bar-result-body{display:flex;flex-direction:column;gap:7px;padding:13px 27px 13px 14px;width:100%;border:0;background:transparent;color:inherit;font:14px/1.5 MamoWenKai,serif;text-align:left;white-space:pre-wrap}
+button.bar-result-body{cursor:pointer}
+.bar-result-body small{font:10px/1.4 PlayfairLocal,serif;letter-spacing:1px;color:#8a7b6c}
+.bar-result-body strong{font-weight:500}
+.bar-result-body span{font-size:13px;color:#57493d}
+.bar-result-remove{position:absolute;right:3px;top:3px;width:25px;height:25px;border:0;background:transparent;color:#8a7b6c;cursor:pointer;font-size:19px}
+.bubble .bar-result-card{margin-bottom:8px}
+#img-tray .bar-result-body span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}

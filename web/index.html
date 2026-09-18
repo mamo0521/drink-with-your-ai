@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>和小机喝一杯</title>
+<link rel="icon" href="/assets/bar/ui/footer-star.svg">
+<link rel="stylesheet" href="/bar-ui.css"><link rel="stylesheet" href="/bar-strip.css"><link rel="stylesheet" href="/bar-flight.css">
+<link rel="stylesheet" href="/bar-games.css"><link rel="stylesheet" href="/bar-wheel.css"><link rel="stylesheet" href="/bar-result.css">
+<style>
+@font-face{font-family:PlayfairLocal;src:url('/assets/fonts/PlayfairDisplay-latin.woff2') format('woff2');font-weight:400 900;font-display:swap}
+@font-face{font-family:PlayfairLocal;src:url('/assets/fonts/PlayfairDisplay-Italic-latin.woff2') format('woff2');font-weight:400 900;font-style:italic;font-display:swap}
+@font-face{font-family:MamoKai;src:url('/assets/fonts/MamoKai-sub.woff2') format('woff2');font-display:swap}
+@font-face{font-family:MamoWenKai;src:url('/assets/fonts/MamoWenKai-sub.woff2') format('woff2');font-display:swap}
+@font-face{font-family:MamoSongti;src:url('/assets/fonts/MamoSongti-sub.woff2') format('woff2');font-weight:200 900;font-display:swap}
+:root{--paper:#eee8dc;--card:#fbf8f1;--red:#8e3b2c;--ink:#4a3f35;--muted:#8a7b6c;--gold:#d9a054}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:15px/1.7 MamoWenKai,'Noto Serif SC',serif;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+main{width:min(100%,392px);margin:auto;padding:26px 16px 40px;display:flex;flex-direction:column;gap:18px}
+.home-head{text-align:center}
+.home-head h1{margin:0;color:var(--red);font:italic 600 30px/36px PlayfairLocal,MamoKai,serif;letter-spacing:3px}
+.home-head p{margin:2px 0 0;font:14px/22px MamoKai,serif;letter-spacing:4px;color:var(--ink)}
+#act-bar.bar-strip{margin:4px -16px -6px;width:calc(100% + 32px);max-width:none}
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.home-hex{position:relative;isolation:isolate;min-height:44px;color:var(--card);font:15px/20px MamoWenKai,serif;letter-spacing:2px}
+.home-hex:before{content:'';position:absolute;inset:0;z-index:-1;background:var(--red);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
+.home-hex.ghost{color:var(--muted)}.home-hex.ghost:before{background:var(--gold)}
+.home-hex.ghost:after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--card);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
+.home-line{display:flex;align-items:center;gap:10px;color:var(--red);font:16px/18px MamoKai,serif;letter-spacing:2.8px}
+.home-line:before,.home-line:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}.home-line:after{transform:scaleX(-1)}
+.home-tools{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.home-link{color:var(--red);text-decoration:underline;text-underline-offset:3px;font-size:13px}
+#log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+#log li{background:var(--card);border:1px solid #d9a05480;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:start}
+#log .who{grid-column:1/-1;font:italic 11px/14px PlayfairLocal,MamoKai,serif;letter-spacing:1px;color:var(--gold)}
+#log .text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:22px}
+#log .copy{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+#log .unseen .who:after{content:' · Ta 还没看到';color:var(--red)}
+.home-empty{text-align:center;color:var(--muted);font-size:13px;margin:6px 0}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);max-width:min(88vw,340px);background:var(--ink);color:var(--card);padding:9px 16px;border-radius:4px;font-size:13px;line-height:20px;z-index:2000;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <header class="home-head"><h1>AFTERHOURS</h1><p>和小机喝一杯</p></header>
+  <div id="act-bar"></div>
+  <div class="home-actions">
+    <button class="home-hex" id="open-menu" type="button">✦ 酒单</button>
+    <button class="home-hex ghost" id="open-games" type="button">游戏</button>
+  </div>
+  <div class="home-line">今晚的记录</div>
+  <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span><button class="home-link" id="copy-now" type="button">复制现状给 Ta</button></div>
+  <ul id="log" aria-live="polite"></ul>
+  <p class="home-empty" id="log-empty" hidden>还没有记录。点一杯，或者上赌桌。</p>
+</main>
+<div id="toast" role="status"></div>
+<script src="/bar-bank.js"></script><script src="/bar-ui.js"></script><script src="/bar-strip.js"></script><script src="/bar-flight.js"></script>
+<script src="/bar-result.js"></script><script src="/bar-game-engine.js"></script><script src="/bar-dice.js"></script><script src="/bar-wheel.js"></script><script src="/bar-games.js"></script>
+<script>
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const api=async(url,body)=>{const r=await fetch(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);const d=await r.json().catch(()=>({}));if(!r.ok||d.ok===false)throw new Error(d.error||'吧台没有回应');return d;};
+  let toastTimer=0;const toast=t=>{const n=$('toast');n.textContent=t;n.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>n.classList.remove('on'),2600);};
+  const copy=async text=>{try{await navigator.clipboard.writeText(text);toast('已复制，去聊天里粘给 Ta');}catch(e){window.prompt('复制这段话发给 Ta：',text);}};
+  const WHO={me:'you',ta:'Ta',bar:'the bar'};
+  let barDef={},stripState=null;
+  async function loadDef(){const d=await api('/activities');barDef=(d.activities||[]).find(a=>a.id==='bar')||{};MamoBarResult.setPlayer(barDef.player_name);return barDef;}
+  function paintStrip(){MamoBarStrip.render($('act-bar'),stripState,null,{open:openMenu,close(){},flight:MamoBarFlight.stripText(flight.flight()),openFlight:()=>flight.open()});const x=$('act-bar').querySelector('.bar-strip-close');if(x)x.hidden=true;}
+  async function refresh(){
+    try{stripState=await api('/state');}catch(e){}
+    await flight.refresh();paintStrip();
+    try{
+      const d=await api('/bar/log'),rows=(d.log||[]).slice().reverse(),list=$('log');list.replaceChildren();$('log-empty').hidden=rows.length>0;
+      for(const r of rows){const li=document.createElement('li');if(!r.seen)li.className='unseen';
+        const who=document.createElement('span');who.className='who';who.textContent=WHO[r.who]||r.who;
+        const text=document.createElement('span');text.className='text';text.textContent=r.show||r.text;
+        const c=document.createElement('button');c.type='button';c.className='copy';c.textContent='复制给 Ta';c.title='复制的是写给 Ta 看的那一版';c.onclick=()=>copy(r.text);
+        li.append(who,text,c);list.append(li);}
+    }catch(e){}
+  }
+  // 今日特调：每点一次摇一次，随机名字、配方和杯数（0.8–1.8）。
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const SP={n1:['凌晨三点的','断片前的','庙口的','星图上的','下雨天的','没睡醒的','月亮背面的','最后一班车的'],n2:['萤火虫','告解室','闹钟','旧钥匙','龟背竹','汤圆','一千零一夜','晚安'],
+    base:['伏特加','金酒','白朗姆','龙舌兰','威士忌','清酒'],mix:['青梅汁','荔枝糖浆','冷萃咖啡','椰子水','乌龙茶','蜂蜜柠檬','蓝柑糖浆','杨梅汤'],
+    odd:['一撮花椒','杯口抹辣椒盐','三粒跳跳糖','一片紫苏叶','半块烤焦的方糖','两颗话梅','一枝点燃的迷迭香','纪念性的一滴酱油']};
+  function special(){const std=+(0.8+Math.random()).toFixed(1),name=pick(SP.n1)+pick(SP.n2);const desc='今日特调「'+name+'」：'+pick(SP.base)+'打底，加'+pick(SP.mix)+'，佐料是'+pick(SP.odd)+'。约 '+std+' 杯——敢喝吗？';return {name,std,special:true,desc,evt:desc};}
+  const flight=MamoBarFlight.create({onChange:()=>paintStrip(),onCarry:()=>refresh(),onEmpty:openMenu,onMenu:openMenu,anchor:()=>null});
+  const games=MamoBarGames.create({onClose:openMenu,onCarry:async p=>{try{await api('/bar/result',{result:p});toast('记下了。Ta 用「看吧台」就能看到');}catch(e){toast(e.message);}refresh();}});
+  const ui=MamoBarUI.create({
+    makeSpecial:special,
+    onClose:refresh,
+    onConfirm:async it=>{try{await api('/bar/serve',{name:it.name,std:it.special?it.std:undefined,desc:it.special?it.desc:undefined});toast('这杯放到 Ta 面前了。喝不喝，由 Ta');}catch(e){toast(e.message);}refresh();},
+    onHandMenu:async()=>{try{await api('/bar/note',{kind:'menu'});toast('酒单递过去了');}catch(e){toast(e.message);}refresh();},
+    onInviteGame:async()=>{try{await api('/bar/note',{kind:'invite'});toast('请 Ta 来挑游戏');}catch(e){toast(e.message);}refresh();},
+    onGames:()=>games.open(barDef),
+    onFlight:()=>flight.start(),onFlightReady:refresh,onOff:refresh,
+    onReload:loadDef
+  });
+  async function openMenu(){try{await loadDef();}catch(e){toast(e.message);}ui.open(barDef);}
+  $('open-menu').onclick=openMenu;
+  $('open-games').onclick=async()=>{try{await loadDef();}catch(e){}games.open(barDef);};
+  $('copy-now').onclick=async()=>{try{const d=await api('/bar/context');copy(d.text||'吧台现在没什么要说的。');}catch(e){toast(e.message);}};
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
+  setInterval(()=>{if(!document.hidden&&!document.querySelector('.bar-screen:not([hidden]),.bf-panel'))refresh();},8000);
+  loadDef().catch(()=>{}).finally(refresh);
+})();
+</script>
+</body>
+</html>

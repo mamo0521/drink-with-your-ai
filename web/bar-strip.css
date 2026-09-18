@@ -1,0 +1,32 @@
+@font-face{font-family:BarXiHei;src:url('/assets/fonts/LXGWNeoXiHei.ttf') format('truetype');font-display:swap}
+.bar-strip{position:relative;height:54px;min-height:54px;width:100%;max-width:392px;margin:0 auto -6px;isolation:isolate;font-family:BarXiHei,system-ui,sans-serif;color:#4a3f35}
+.bar-strip[hidden]{display:none!important}
+#act-bar.bar-strip{display:block;padding:0;border:0;background:transparent;box-shadow:none;overflow:visible;margin-bottom:-14px}
+.bar-strip-paper{position:absolute;left:19px;right:25px;top:14px;height:44px;background:url('/assets/bar/ui/strip-paper.svg') center/100% 100% no-repeat;z-index:-1}
+.bar-strip-row{position:absolute;left:26px;right:40px;top:23px;display:grid;grid-template-columns:49px 84px 20px minmax(0,1fr);gap:8px;align-items:center;height:24px}
+.bar-strip-tier{font-size:12px;line-height:16px;white-space:nowrap;text-align:center}
+.bar-strip-tube{position:relative;height:16px;border:1px solid rgba(201,160,90,.8);border-radius:999px;overflow:hidden;background:linear-gradient(#ffffffe6,#ffffff66);box-shadow:0 1px 2px #0003}
+.bar-strip-fill{position:absolute;inset:0;background:linear-gradient(90deg,rgb(246.00000 231.00000 201.00000) 0%,rgb(238.24360 204.79997 152.54427) 33.653846383%,rgb(234.48910 152.77276 76.27236) 63.461536169%,rgb(221.78890 122.29381 60.44547) 82.692307234%,rgb(204.75952 80.93490 43.24914) 100%);transition:clip-path .4s ease}
+.bar-strip-tube:after{content:'';position:absolute;top:2px;left:2px;right:5px;height:1px;background:linear-gradient(90deg,transparent,#ffffffc2 20%,#ffffffc2 80%,transparent)}
+.bar-strip-number{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:500 12px/1 'MamoSongti',serif;color:#604933;transform:translateY(-.5px);z-index:1}
+.bar-strip-divider{width:20px;height:18px}
+.bar-strip .bar-strip-info{border:0;background:transparent;padding:0;min-width:0;font:13px/16px BarXiHei,system-ui,sans-serif;color:#8e3b2c;letter-spacing:.5px;text-align:center;cursor:pointer;overflow-wrap:anywhere;max-height:32px;overflow:hidden}
+.bar-strip .bar-strip-close{position:absolute;right:37px;top:25px;width:16px;height:16px;border:0;border-radius:2px;padding:0;background:#faf3e8;color:#b7a996;font:13px/16px system-ui;cursor:pointer}
+.bar-strip-close-glyph{display:block;transform:translateY(-1px)}
+.bar-strip-row{right:61px}
+.bar-strip .bar-strip-info{white-space:nowrap;text-overflow:ellipsis}
+.bar-strip .bar-strip-info.is-long{font-size:11px;letter-spacing:0}
+.bar-strip-tape{position:absolute;left:16px;top:9px;width:70.812px;height:15.159px;transform:rotate(-6deg);background:rgb(213.90635 121.53706 59.66705);color:white;box-shadow:0 1px 2px #0003;text-align:center;font:italic 10px/15px 'PlayfairLocal',serif;letter-spacing:.6px;pointer-events:none}
+.bar-strip button:focus-visible{outline:2px solid #8e3b2c;outline-offset:2px}
+@media(max-width:359px){.bar-strip-row{left:20px;right:50px;grid-template-columns:43px 65px 8px minmax(0,1fr);gap:5px}.bar-strip-divider{width:8px}.bar-strip .bar-strip-close{right:28px}.bar-strip .bar-strip-info{font-size:12px;letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.bar-strip-fill{transition:none}}
+/* Figma 1491:4597 / 4598: 193×36 paper, 168×16 content. */
+.bar-strip.has-ready{margin-top:28px}
+#act-bar.has-ready~footer #in{max-height:120px;overflow-y:auto}
+.bar-ready-hint{position:absolute;right:30px;top:-14px;width:193px;height:36px;box-sizing:border-box;padding:8px 7px 12px 18px;display:flex;align-items:center;gap:6px;background:#e4dace;color:#8e3b2c;box-shadow:1px 3px 4px #0004,inset 0 .5px 0 #fff9;font:12px/16px BarXiHei,system-ui,sans-serif;white-space:nowrap}
+.bar-ready-hint>span{width:146px;flex-shrink:0}
+/* Slip the hint underneath the main paper (z-index:-1); its bottom 8px are tucked in. */
+.bar-ready-hint{z-index:-2}
+.bar-strip .bar-ready-change{position:relative;display:grid;place-items:center;flex:none;width:16px;height:16px;padding:0;border:0;border-radius:2px;background:#faf3e8;cursor:pointer}
+.bar-ready-change:before{content:'';position:absolute;inset:-8px}
+.bar-ready-change img{display:block;width:11px;height:11px}

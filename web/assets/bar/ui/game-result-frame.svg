@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" width="290" height="299" viewBox="6 2 290 299" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Figma outer contour retained. Three clipped strokes on one contour form parallel borders. -->
+<defs>
+<path id="result-contour" d="M6.5 101.426L6.5 285.485L19.0003 300.473H283L295.5 285.485V101.426L283 86.4369H244.73C244.73 40.0798 202.765 2.5 151 2.5C99.2345 2.5 57.2703 40.0798 57.2703 86.4369H19.0003L6.5 101.426Z"/>
+<clipPath id="result-clip"><use href="#result-contour"/></clipPath>
+</defs>
+<use href="#result-contour" fill="#FBF8F1"/>
+<g clip-path="url(#result-clip)" stroke-linejoin="miter">
+<use href="#result-contour" stroke="#D9A054" stroke-width="12" vector-effect="non-scaling-stroke"/>
+<use href="#result-contour" stroke="#FBF8F1" stroke-width="10" vector-effect="non-scaling-stroke"/>
+<use href="#result-contour" stroke="#D9A054" stroke-width="2" vector-effect="non-scaling-stroke"/>
+</g>
+<path d="M139.329 14.7854L151.204 2.91001L162.432 14.1375M150.507 25.2433L135.36 10.0965L141.606 7.94479L150.507 25.2433ZM150.578 25.9915L166.113 10.4567L159.92 8.46231L150.578 25.9915Z" stroke="#D9A054" vector-effect="non-scaling-stroke"/>
+</svg>

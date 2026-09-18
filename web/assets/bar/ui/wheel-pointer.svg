@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="37.4346" height="47.5712" viewBox="0 0 37.4346 47.5712" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="&#230;&#140;&#135;&#233;&#146;&#136;">
+<g id="Vector">
+<g clip-path="url(#paint0_diamond_1442_4254_clip_path)" data-figma-skip-parse="true"><g transform="matrix(0.0121494 0 0 0.0254558 19.081 22.1153)"><rect x="0" y="0" width="1082.31" height="1039.28" fill="url(#paint0_diamond_1442_4254)" opacity="1" shape-rendering="crispEdges"/><rect x="0" y="0" width="1082.31" height="1039.28" transform="scale(1 -1)" fill="url(#paint0_diamond_1442_4254)" opacity="1" shape-rendering="crispEdges"/><rect x="0" y="0" width="1082.31" height="1039.28" transform="scale(-1 1)" fill="url(#paint0_diamond_1442_4254)" opacity="1" shape-rendering="crispEdges"/><rect x="0" y="0" width="1082.31" height="1039.28" transform="scale(-1)" fill="url(#paint0_diamond_1442_4254)" opacity="1" shape-rendering="crispEdges"/></g></g><path d="M31.2303 47.5711H6.9316V22.1153H31.2303V47.5711Z" data-figma-gradient-fill="{&#34;type&#34;:&#34;GRADIENT_DIAMOND&#34;,&#34;stops&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.55686277151107788,&#34;g&#34;:0.23137255012989044,&#34;b&#34;:0.17254902422428131,&#34;a&#34;:1.0},&#34;position&#34;:0.99999988079071045},{&#34;color&#34;:{&#34;r&#34;:0.0,&#34;g&#34;:0.0,&#34;b&#34;:0.0,&#34;a&#34;:0.0},&#34;position&#34;:1.0}],&#34;transform&#34;:{&#34;m00&#34;:24.298742294311523,&#34;m01&#34;:0.0,&#34;m02&#34;:6.9316034317016602,&#34;m10&#34;:0.0,&#34;m11&#34;:50.911651611328125,&#34;m12&#34;:-3.3405504226684570},&#34;opacity&#34;:1.0,&#34;blendMode&#34;:&#34;NORMAL&#34;,&#34;stopsVar&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.55686277151107788,&#34;g&#34;:0.23137255012989044,&#34;b&#34;:0.17254902422428131,&#34;a&#34;:1.0},&#34;position&#34;:0.99999988079071045},{&#34;color&#34;:{&#34;r&#34;:0.0,&#34;g&#34;:0.0,&#34;b&#34;:0.0,&#34;a&#34;:0.0},&#34;position&#34;:1.0}],&#34;visible&#34;:true}"/>
+<path d="M18.5024 34.8432L10.4029 18.644L19.6595 9.38736L27.7591 18.0655L18.5024 34.8432Z" fill="#8E3B2C"/>
+</g>
+<path id="Vector 22" d="M19.081 34.8429V47.5708L30.0733 25.0077L19.081 34.8429Z" fill="#632E25"/>
+<path id="Vector_2" d="M5.51118 23.0087L19.252 9.26784L32.2432 22.259M18.4453 35.1093L0.919244 17.5832L8.14575 15.0935L18.4453 35.1093ZM18.5274 35.9751L36.5025 18L29.3366 15.6923L18.5274 35.9751Z" stroke="#D9A054"/>
+</g>
+<defs>
+<clipPath id="paint0_diamond_1442_4254_clip_path"><path d="M31.2303 47.5711H6.9316V22.1153H31.2303V47.5711Z"/></clipPath><linearGradient id="paint0_diamond_1442_4254" x1="0" y1="0" x2="500" y2="500" gradientUnits="userSpaceOnUse">
+<stop offset="1" stop-color="#8E3B2C"/>
+<stop offset="1" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

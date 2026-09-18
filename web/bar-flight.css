@@ -1,0 +1,74 @@
+/* Blind flight picker: Figma cup/note artwork, liquid reveal and cartoon puff clouds. */
+.bf-panel{--bar-paper:#eee8dc;--bar-card:#fbf8f1;--bar-red:#8e3b2c;--bar-ink:#4a3f35;--bar-muted:#8a7b6c;--bar-gold:#d9a054;position:fixed;inset:0;z-index:1100;display:flex;align-items:flex-end;justify-content:center;padding:0 12px var(--bf-bottom,calc(env(safe-area-inset-bottom) + 132px));color:var(--bar-ink);font:14px/1.5 MamoWenKai,'MamoSongti',serif}
+.bf-shade{position:absolute;inset:0;background:#2a211b59;animation:bf-fade .2s both}
+.bf-box{position:relative;isolation:isolate;width:min(100%,368px);padding:16px 14px 14px;background:transparent;border:0;border-radius:0;animation:bf-rise .3s cubic-bezier(.22,1,.36,1) both}
+/* Reuse the Bar editor's double cut-corner frame, without its page margins. */
+.bf-box:before{content:'';position:absolute;inset:-43.5px -9.5px -19.5px;z-index:-1;border:solid transparent;border-width:60px 14px 34px;border-image:url('/assets/bar/ui/editor-frame.svg') 60 14 34 / 60px 14px 34px / 0 stretch;filter:drop-shadow(0 6px 9px #4a3f3540);pointer-events:none}
+.bf-box:after{content:'';position:absolute;inset:0;z-index:-2;background:var(--bar-paper);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 13px,100% calc(100% - 13px),calc(100% - 13px) 100%,13px 100%,0 calc(100% - 13px),0 13px);pointer-events:none}
+/* 正式首页有通用 header{display:flex}，这里必须写明（同 v555 吧台标题那次）。 */
+.bf-panel .bf-head{display:block;position:relative;text-align:center;margin:0 0 10px;padding:0;border:0;background:transparent}
+.bf-kicker{margin:0;font:italic 12px/16px PlayfairLocal,serif;letter-spacing:1px;color:var(--bar-muted)}
+.bf-head h2{margin:2px 0 0;font:400 17px/24px MamoKai,serif;letter-spacing:2.4px;color:var(--bar-red)}
+.bf-panel .bf-close{position:absolute;right:-2px;top:-6px;width:32px;height:32px;border:0;background:transparent;color:var(--bar-muted);font:20px/32px system-ui;cursor:pointer}
+.bf-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;align-items:start}
+.bf-panel .bf-cup{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0 4px;border:0;border-radius:8px;background:transparent;color:var(--bar-muted);cursor:pointer;min-width:0}
+.bf-panel .bf-cup:not(:disabled):hover,.bf-panel .bf-cup:not(:disabled):focus-visible{background:#fdecd2}
+.bf-panel .bf-cup:disabled{cursor:default}
+.bf-panel button:focus-visible{outline:2px solid var(--bar-red);outline-offset:2px}
+.bf-glass{position:relative;display:block;width:44px;height:45px}
+.bf-glass img{display:block;width:44px;height:45px}
+.bf-number{font:600 13px/16px PlayfairLocal,serif;color:var(--bar-gold)}
+.bf-label{display:flex;flex-direction:column;align-items:center;max-width:100%}
+.bf-label strong{font:400 11px/14px MamoWenKai,serif;color:var(--bar-ink);overflow-wrap:anywhere;text-align:center}
+.bf-label em{font:italic 10px/13px PlayfairLocal,MamoWenKai,serif;color:var(--bar-red)}
+.bf-cup-art{position:relative}
+.bf-fill-window{position:absolute;inset:0;overflow:hidden;pointer-events:none;will-change:transform}
+.bf-fill-art{will-change:transform}
+.is-pouring .bf-fill-window{animation:bf-pour .9s linear both}
+.is-pouring .bf-fill-art{animation:bf-pour-counter .9s linear both}
+.bf-smoke{position:absolute;inset:0;pointer-events:none;z-index:2;transform:scale(.7,.88);transform-origin:50% 50%}
+.bf-smoke i{position:absolute;opacity:0}
+.bf-smoke i:nth-child(1){left:-2px;top:7px;width:48px;height:31px}
+.bf-smoke i:nth-child(2){left:-1px;top:8px;width:47px;height:30px}
+.bf-smoke i:nth-child(3){left:-4px;top:10px;width:52px;height:32px}
+.bf-smoke i:nth-child(4){left:-2px;top:9px;width:49px;height:33px}
+.bf-smoke i:nth-child(5){left:-3px;top:8px;width:50px;height:34px}
+.bf-smoke i img{position:absolute;left:-12px;top:-12px;width:calc(100% + 24px);height:calc(100% + 24px)}
+.bf-note{margin:10px 4px 0;text-align:center;font-size:12px;line-height:18px;color:var(--bar-muted)}
+.bf-panel .bf-menu{display:block;margin:6px auto 0;padding:4px 8px;border:0;background:transparent;font:12px/18px MamoWenKai,serif;color:var(--bar-muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.bf-result{margin-top:12px;padding:12px 0 0;text-align:center;background:transparent;border-top:1px solid var(--bar-gold);border-radius:0;animation:bf-rise .3s cubic-bezier(.22,1,.36,1) both}
+.bf-result h3{margin:0;font:600 15px/22px 'MamoSongti',serif;color:var(--bar-red)}
+.bf-result h3+.bf-prank{margin-top:10px}
+.bf-prank{margin:0 auto 6px;padding:10px 12px;max-width:260px;background:#fdf3d0;box-shadow:0 1px 2px #0003;transform:rotate(-1.2deg);font:14px/22px MamoWenKai,serif;color:var(--bar-ink);overflow-wrap:anywhere}
+.bf-safe{margin:4px 0 0;color:var(--bar-muted)}
+.bf-panel .bf-go{display:block;width:100%;min-height:38px;margin-top:10px;padding:8px 19px;border:0;border-radius:0;clip-path:polygon(11px 0,calc(100% - 11px) 0,100% 50%,calc(100% - 11px) 100%,11px 100%,0 50%);background:var(--bar-red);color:var(--bar-card);font:14px/20px MamoWenKai,serif;cursor:pointer}
+.bf-panel .bf-go:active{transform:scale(.96)}
+.bf-review .bf-prank{max-height:calc(100vh - 310px);overflow-y:auto}
+#img-tray .flight-chip{max-width:100%;min-width:0;cursor:pointer;text-align:left}
+#img-tray .flight-chip .file-chip-name{min-width:0;display:block}
+@keyframes bf-fade{from{opacity:0}}
+@keyframes bf-rise{from{opacity:0;transform:translateY(12px) scale(.98)}}
+/* Counter-translated artwork stays still; only its overflow window rises.
+   No per-frame polygon repaint or repeated easing stops. Final surface is at y=14. */
+@keyframes bf-pour{from{transform:translateY(44px)}to{transform:translateY(14px)}}
+@keyframes bf-pour-counter{from{transform:translateY(-44px)}to{transform:translateY(-14px)}}
+/* Figma 1476:4530 motion, compact smoke wrapper approved in preview. */
+.is-fresh .bf-cup-art{animation: kf_1476_4531_opacity_0 2s linear, kf_1476_4531_scale_0 2s linear; animation-iteration-count:1;animation-fill-mode:both; }
+@keyframes kf_1476_4531_opacity_0 { 0% { opacity: 0; } 16% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); opacity: 0; } 54% { opacity: 1; } 100% { opacity: 1; } } @keyframes kf_1476_4531_scale_0 { 0% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); scale: 0.94 0.94; } 54% { scale: 1 1; } 100% { scale: 1 1; } }
+.is-fresh .bf-smoke i:nth-child(1){animation: kf_1496_24_opacity_0 2s linear, kf_1496_24_translate_0 2s linear, kf_1496_24_scale_0 2s linear; animation-iteration-count:1;animation-fill-mode:both; }
+@keyframes kf_1496_24_opacity_0 { 0% { animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1); opacity: 1; } 17% { animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1); opacity: 0.9; } 36% { animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1); opacity: 0.62; } 54% { animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1); opacity: 0.28; } 67.5% { opacity: 0; } 100% { opacity: 0; } } @keyframes kf_1496_24_translate_0 { 0% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 0px 0px; } 29% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: -14.28px -3.78px; } 67.5% { translate: -34px -9px; } 100% { translate: -34px -9px; } } @keyframes kf_1496_24_scale_0 { 0% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); scale: 0.72 0.74; } 29% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); scale: 1.12 1.02; } 67.5% { scale: 1.46 1.2; } 100% { scale: 1.46 1.2; } }
+.is-fresh .bf-smoke i:nth-child(2){animation: kf_1496_24_opacity_0 2s linear, kf_1496_39_translate_0 2s linear, kf_1496_24_scale_0 2s linear; animation-iteration-count:1;animation-fill-mode:both; }
+ @keyframes kf_1496_39_translate_0 { 0% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 0px 0px; } 29% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 13.02px -4.62px; } 67.5% { translate: 31px -11px; } 100% { translate: 31px -11px; } }
+.is-fresh .bf-smoke i:nth-child(3){animation: kf_1496_24_opacity_0 2s linear, kf_1496_54_translate_0 2s linear, kf_1496_24_scale_0 2s linear; animation-iteration-count:1;animation-fill-mode:both; }
+ @keyframes kf_1496_54_translate_0 { 0% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 0px 0px; } 29% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: -15.96px 2.94px; } 67.5% { translate: -38px 7px; } 100% { translate: -38px 7px; } }
+.is-fresh .bf-smoke i:nth-child(4){animation: kf_1496_24_opacity_0 2s linear, kf_1496_69_translate_0 2s linear, kf_1496_24_scale_0 2s linear; animation-iteration-count:1;animation-fill-mode:both; }
+ @keyframes kf_1496_69_translate_0 { 0% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 0px 0px; } 29% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 14.7px 3.78px; } 67.5% { translate: 35px 9px; } 100% { translate: 35px 9px; } }
+.is-fresh .bf-smoke i:nth-child(5){animation: kf_1496_24_opacity_0 2s linear, kf_1496_84_translate_0 2s linear, kf_1496_24_scale_0 2s linear; animation-iteration-count:1;animation-fill-mode:both; }
+ @keyframes kf_1496_84_translate_0 { 0% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 0px 0px; } 29% { animation-timing-function: cubic-bezier(0.18, 0.78, 0.24, 1); translate: 0.84px -10.5px; } 67.5% { translate: 2px -25px; } 100% { translate: 2px -25px; } }
+@media(prefers-reduced-motion:reduce){.bf-shade,.bf-box,.bf-result,.bf-cup-art,.bf-fill-window,.bf-fill-art,.bf-smoke,.bf-smoke i{animation:none!important}.bf-smoke{display:none}}
+/* Strip state while a flight is on the counter */
+/* 真值取自 Figma「输入框上方小条 / 盲品」1469:4415 */
+.bar-strip[data-state^=flight] .bar-strip-paper{background-image:url('/assets/bar/ui/strip-paper-flight.svg')}
+.bar-strip[data-state^=flight] .bar-strip-tape{background:#8e3b2c}
+.bar-strip[data-state^=flight] .bar-strip-info{letter-spacing:1.3px}
+.bar-strip[data-state^=flight] .bar-strip-close{background:#dfaa82;color:#8e3b2c}

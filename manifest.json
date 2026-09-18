@@ -1,0 +1,32 @@
+{
+  "manifest_version": "0.3",
+  "name": "drink-with-xiaoji",
+  "display_name": "和小机喝一杯 · Afterhours",
+  "version": "1.0.0",
+  "description": "一间你和你的 AI 一起坐的吧台：点酒、掷骰、猜拳、轮盘、盲品。Ta 喝了会醉，输了要认，谁也赖不掉。",
+  "long_description": "你在吧台网页里点酒、上赌桌、转轮盘、玩六杯盲品；你的 AI 这边有三个工具：看吧台、喝一杯、玩游戏。Ta 喝下去的每一杯都记进醉意，按真人代谢慢慢醒，醉到哪一档就按那一档的口吻说话。酒单、题库、醉态口吻都可以在网页里改成你们自己的。装上后浏览器打开 http://127.0.0.1:8766 。",
+  "author": { "name": "mamo" },
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": ["game", "roleplay", "companion", "bar"],
+  "server": {
+    "type": "python",
+    "entry_point": "mcp_server.py",
+    "mcp_config": {
+      "command": "python3",
+      "args": ["${__dirname}/mcp_server.py"],
+      "platform_overrides": {
+        "win32": { "command": "python", "args": ["${__dirname}/mcp_server.py"] }
+      }
+    }
+  },
+  "tools": [
+    { "name": "bar_look", "description": "看吧台现在什么情况：对方点了什么、玩出了什么、盲品揭到哪、自己几杯什么档" },
+    { "name": "bar_drink", "description": "喝下一杯，记进醉意" },
+    { "name": "bar_game", "description": "掷骰 / 猜拳 / 轮盘 / 盲品揭杯" }
+  ],
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "python": ">=3.9" }
+  }
+}
