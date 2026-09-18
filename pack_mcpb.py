@@ -25,7 +25,7 @@ def main():
                     z.write(p, p.name); n += 1
         for top in ("content", "web", "assets"):
             for p in sorted((ROOT / top).rglob("*")):
-                if p.is_file() and not any(d in p.parts for d in SKIP_DIRS) and p.name != ".DS_Store":
+                if p.is_file() and not any(d in p.parts for d in SKIP_DIRS) and p.name not in (".DS_Store", "figma-capture.html"):
                     z.write(p, str(p.relative_to(ROOT))); n += 1
     print(f"✓ {OUT.name}（{n} 个文件，{OUT.stat().st_size / 1048576:.1f} MB）")
     print("  Claude 桌面 App 里双击它就能装；装完浏览器打开 http://127.0.0.1:8766")

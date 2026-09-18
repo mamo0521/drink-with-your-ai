@@ -45,7 +45,8 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 #log:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
 #log::-webkit-scrollbar{width:5px}
 #log::-webkit-scrollbar-thumb{background:var(--gold);border-radius:5px}
-#log li{background:var(--card);border:1px solid #d9a05480;padding:10px 12px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+#log li{background:transparent;border:0;padding:10px 12px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+#log li+li{border-top:1px solid var(--gold)}
 #log .who{grid-column:1/-1;font:italic 11px/14px PlayfairLocal,MamoKai,serif;letter-spacing:1px;color:var(--gold)}
 #log .text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:22px}
 #log .copy{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
@@ -118,7 +119,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
     base:['伏特加','金酒','白朗姆','龙舌兰','威士忌','清酒'],mix:['青梅汁','荔枝糖浆','冷萃咖啡','椰子水','乌龙茶','蜂蜜柠檬','蓝柑糖浆','杨梅汤'],
     odd:['一撮花椒','杯口抹辣椒盐','三粒跳跳糖','一片紫苏叶','半块烤焦的方糖','两颗话梅','一枝点燃的迷迭香','纪念性的一滴酱油']};
   function special(){const std=+(0.8+Math.random()).toFixed(1),name=pick(SP.n1)+pick(SP.n2);const desc='今日特调「'+name+'」：'+pick(SP.base)+'打底，加'+pick(SP.mix)+'，佐料是'+pick(SP.odd)+'。约 '+std+' 杯——敢喝吗？';return {name,std,special:true,desc,evt:desc};}
-  const flight=MamoBarFlight.create({onChange:()=>paintStrip(),onCarry:()=>refresh(),onEmpty:openMenu,onMenu:openMenu,anchor:()=>null});
+  const flight=MamoBarFlight.create({onChange:()=>paintStrip(),onCarry:()=>refresh(),onEmpty:openMenu,onMenu:openMenu,anchor:()=>{const strip=$('act-bar'),rect=strip.getBoundingClientRect();if(rect.bottom>innerHeight||rect.top<240)strip.scrollIntoView({block:'end',behavior:'instant'});return strip;}});
   const games=MamoBarGames.create({onClose:openMenu,onCarry:async p=>{try{await api('/bar/result',{result:p});toast('记下了。Ta 用「看吧台」就能看到');}catch(e){toast(e.message);}refresh();}});
   const ui=MamoBarUI.create({
     makeSpecial:special,
