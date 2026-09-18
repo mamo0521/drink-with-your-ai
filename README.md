@@ -110,7 +110,9 @@ A personal side project made in spare time. Issues are welcome — replies may b
 
 ## 许可证 · License
 
-- 代码：[PolyForm Noncommercial 1.0.0](LICENSE)。个人自用、学习、爱好免费；商用先来问。
+**非开源，只是公开代码。** 大白话三条：个人自用、学习、改着玩都免费；拿去商用请先来问；转发或改编时保留署名。
+
+- 代码：[PolyForm Noncommercial 1.0.0](LICENSE)。
 - 文案与图片（出厂酒单、吧台规矩、醉态口吻、题库、界面文案、酒图与界面图）：
   [CC BY-NC-SA 4.0](LICENSE-CONTENT.md) —— 署名 mamo，不得商用，改编须同样共享。
 - 字体与 three.js 各按原许可，清单见 [LICENSE-CONTENT.md](LICENSE-CONTENT.md)。
