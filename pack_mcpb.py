@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """把这个目录打成 Claude 桌面 App 能双击安装的 .mcpb（就是个 zip，标准库搞定）。
 
-    python3 pack_mcpb.py            # 产出 drink-with-xiaoji-<版本>.mcpb
+    python3 pack_mcpb.py            # 产出 drink-with-your-ai-<版本>.mcpb
 
 版本号取 manifest.json 里的 version。只收游戏本体，不收存档与 .git。
 """

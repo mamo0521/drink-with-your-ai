@@ -11,6 +11,13 @@
 .bar-screen button{appearance:none;-webkit-tap-highlight-color:transparent;background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0}
 .bar-screen button:focus-visible,.bar-screen input:focus-visible,.bar-screen textarea:focus-visible{outline:2px solid var(--bar-red);outline-offset:3px}
 .bar-screen button:disabled{cursor:wait;opacity:.5}
+/* Shared Bar press feedback; independent translate preserves existing rotations/transforms. */
+:is(.bar-screen,.bar-strip,.bf-panel,.gg-overlay) button:not(:disabled):not([aria-disabled=true]):not(.gg-hex):not(.bf-go):active,
+:is(.home-hex,.home-link):not(:disabled):not([aria-disabled=true]):active{translate:0 1px;opacity:.78}
+@media(prefers-reduced-motion:reduce){
+ :is(.bar-screen,.bar-strip,.bf-panel,.gg-overlay) button:not(:disabled):not([aria-disabled=true]):not(.gg-hex):not(.bf-go):active,
+ :is(.home-hex,.home-link):not(:disabled):not([aria-disabled=true]):active{translate:none}
+}
 .bar-screen{--bar-safe-top:max(0px,calc(env(safe-area-inset-top) - 6px));--bar-safe-bottom:0px}
 .bar-layout{position:relative;width:min(100%,392px);height:100%;margin:auto;padding-top:var(--bar-safe-top);padding-bottom:var(--bar-safe-bottom);display:flex;flex-direction:column;min-height:0}
 .bar-frame{position:absolute;inset:var(--bar-safe-top) 0 var(--bar-safe-bottom);pointer-events:none;z-index:0;border-style:solid;border-width:150px 14px 34px;border-image:url('/assets/bar/ui/menu-frame.svg') 150 14 34 fill / 150px 14px 34px / 0 stretch}

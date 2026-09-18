@@ -25,7 +25,7 @@
 
 ### ① 一键安装包（Claude 桌面 App）
 
-1. 到 [Releases](https://github.com/mamo0521/drink-with-xiaoji/releases) 下载 `drink-with-xiaoji-*.mcpb`。
+1. 到 [Releases](https://github.com/mamo0521/drink-with-your-ai/releases) 下载 `drink-with-your-ai-*.mcpb`。
 2. **在 Claude 桌面 App 里打开这个文件**（双击一般就会用它打开），弹出的安装确认里点安装。
 3. 浏览器打开 **http://127.0.0.1:8766** —— 这就是你们的吧台。
 
@@ -88,7 +88,7 @@ POST /bar/ai          {"tool": "bar_look" | "bar_drink" | "bar_game", "input": {
 
 写给小机看的字里怎么称呼你：在存档文件夹里放一个 `config.json`，内容 `{"activities": {"bar": {"player_name": "你的名字"}}}`。不放就叫「对方」。
 
-**存档文件夹在哪**：首页最下面写着，点一下就复制（macOS `~/Library/Application Support/drink-with-xiaoji/`，Windows `%APPDATA%\drink-with-xiaoji\`）。
+**存档文件夹在哪**：macOS 在 `~/Library/Application Support/drink-with-your-ai/`（访达 → 前往 → 前往文件夹，粘贴该路径）；Windows 在 `%APPDATA%\drink-with-your-ai\`（粘贴到资源管理器地址栏）。
 你写的酒单、题库、醉态口吻和存档都在这儿，升级安装包不会丢。
 
 ## 四、遇到问题 · Troubleshooting

@@ -29,3 +29,12 @@ Program code is under the PolyForm Noncommercial License 1.0.0 (see LICENSE).
 | `MamoKai-sub.woff2` | 文鼎PL简中楷 AR PL KaitiM GB | Arphic Public License |
 
 3D 骰子用的 three.js 是 MIT 许可。
+
+### 随包许可全文
+
+- [Source Han Serif / 思源宋体 SIL OFL 1.1（含 Adobe 版权声明）](web/assets/fonts/LICENSE-Source-Han-Serif-OFL.txt)：来源：https://github.com/adobe-fonts/source-han-serif/blob/release/LICENSE.txt
+
+- [Arphic Public License（1999 原文）](web/assets/fonts/LICENSE-Arphic.txt)：对应 AR PL KaitiM GB。来源：https://ftp.gnu.org/gnu/non-gnu/chinese-fonts-truetype/LICENSE
+- [IPA Font License 1.0（日文 / 英文原文）](web/assets/fonts/LICENSE-LXGW-NeoXiHei-IPA.txt)：对应 LXGW Neo XiHei。来源：https://github.com/lxgw/LxgwNeoXiHei/blob/main/LICENSE.md
+
+上述原文未经改写，字体按各自许可分发，不受本项目文案与图片许可替代。

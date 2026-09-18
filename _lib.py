@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """本地小底座。存档和你写的酒单 / 题库 / 醉态口吻都放在**用户目录**里——
-macOS `~/Library/Application Support/drink-with-xiaoji/`，Windows `%APPDATA%\\drink-with-xiaoji\\`，Linux `~/.local/share/drink-with-xiaoji/`；
+macOS `~/Library/Application Support/drink-with-your-ai/`，Windows `%APPDATA%\\drink-with-your-ai\\`，Linux `~/.local/share/drink-with-your-ai/`；
 环境变量 BAR_DATA 可以改。放用户目录是为了：安装包升级不丢存档，同一台电脑上不管谁拉起这份代码都是同一间吧台。时间用本机时区。"""
 import json
 import os
@@ -9,7 +9,8 @@ from datetime import datetime
 from pathlib import Path
 
 APP_ROOT = Path(__file__).resolve().parent
-NAME = "drink-with-xiaoji"
+NAME = "drink-with-your-ai"
+OLD_NAMES = ("drink-with-xiaoji",)   # 1.0.4 及之前的存档文件夹名；第一次启动时整个搬到新名字下，什么都不丢
 
 
 def _data_dir():
@@ -23,7 +24,16 @@ def _data_dir():
         base = Path(os.environ.get("APPDATA") or Path.home())
     else:
         base = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share")
-    return base / NAME
+    new = base / NAME
+    if not new.exists():
+        for old in OLD_NAMES:
+            if (base / old).is_dir():
+                try:
+                    (base / old).rename(new)
+                except OSError:
+                    return base / old      # 搬不动（被占用等）就先继续用旧的，不让人丢存档
+                break
+    return new
 
 
 DATA = _data_dir()

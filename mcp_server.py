@@ -19,7 +19,8 @@ import bar_ai  # noqa: E402
 
 PROTOCOL = "2025-06-18"
 SUPPORTED = {"2025-06-18", "2025-03-26", "2024-11-05"}
-NAME, VERSION = "drink-with-xiaoji", "1.0.0"
+NAME = "drink-with-your-ai"
+VERSION = json.loads((__import__("pathlib").Path(__file__).resolve().parent / "manifest.json").read_text(encoding="utf-8"))["version"]
 WEB_URL = None
 
 TOOLS = [{"name": t["name"], "description": t["description"], "inputSchema": t["input_schema"]} for t in bar_ai.TOOLS]
