@@ -23,7 +23,7 @@ def main():
             if p.is_file() and p.suffix in (".py", ".json", ".md", ".png") or p.name in ("LICENSE",):
                 if p.name != "pack_mcpb.py":
                     z.write(p, p.name); n += 1
-        for top in ("content", "web"):
+        for top in ("content", "web", "assets"):
             for p in sorted((ROOT / top).rglob("*")):
                 if p.is_file() and not any(d in p.parts for d in SKIP_DIRS) and p.name != ".DS_Store":
                     z.write(p, str(p.relative_to(ROOT))); n += 1
