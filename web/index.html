@@ -102,7 +102,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
       const d=await api('/bar/log'),rows=(d.log||[]).slice().reverse(),list=$('log');list.replaceChildren();$('log-empty').hidden=rows.length>0;
       // 下一步只说一件事：有 Ta 还没看到的记录，就去聊天里叫 Ta 看吧台；都看过了就安静。
       const waiting=rows.some(r=>!r.seen),hint=$('log-hint');hint.classList.toggle('next',waiting);
-      hint.textContent=waiting?'下一步：回你们聊天的地方，跟 Ta 说一声「看看吧台」。Ta 看过以后，「Ta 还没看到」会消失。':rows.length?'Ta 都看到了。接着聊，或者再来一轮。':'你在这儿做的事，Ta 用「看吧台」就能看到。';
+      hint.textContent=waiting?'下一步：回你们聊天的地方，跟 Ta 说一声「看看吧台」。':rows.length?'Ta 都看到了。接着聊，或者再来一轮。':'你在这儿做的事，Ta 用「看吧台」就能看到。';
       for(const r of rows){const li=document.createElement('li');if(!r.seen)li.className='unseen';
         const who=document.createElement('span');who.className='who';who.textContent=WHO[r.who]||r.who;
         const text=document.createElement('span');text.className='text';text.textContent=r.show||r.text;
