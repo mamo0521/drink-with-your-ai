@@ -45,7 +45,7 @@
     const el=(tag,cls,text)=>{const n=doc.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;};
     const button=(cls,text,fn)=>{const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;};
     const reduced=()=>root.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let flight=null,panel=null,busy=false,focusBefore=null,revealed=null,announcedOwed='';
+    let flight=null,panel=null,busy=false,focusBefore=null,revealed=null,announcedOwed='',opening=false,openVersion=0,refreshing=null;
     async function call(url,body){
       // 连不上（吧台进程正在重启 / 换班）≠ 出错：等一下再试，揭杯这类请求服务器端是幂等的，重发安全。
       let r,tries=0;
@@ -56,10 +56,10 @@
       if(!r.ok||data.ok===false)throw new Error(data.error||'吧台没有回应，请重试');
       return data;
     }
-    async function refresh(){try{await call('/barflight');}catch(e){}return flight;}
+    function refresh(){return refreshing||(refreshing=call('/barflight').catch(()=>{}).then(()=>flight).finally(()=>{refreshing=null;}));}
     async function start(){const data=await call('/barflight/start',{intimate:!!root.MamoBarBank?.intimate()});return data.flight;}
     // Any way out after a reveal takes the cup along: the ×, the shade, Escape or the button.
-    function close(){if(!panel)return;panel.remove();panel=null;busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick)options.onCarry?.(pick);}
+    function close(){openVersion++;opening=false;if(!panel)return;panel.remove();panel=null;busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick)options.onCarry?.(pick);}
     function glass(cup){
       const b=button('bf-cup','',()=>reveal(cup.n,b));b.dataset.n=cup.n;
       const glass=el('span','bf-glass'),img=el('img','bf-cup-art');img.alt='';img.width=44;img.height=45;glass.append(img);
@@ -117,17 +117,19 @@
       const go=button('bf-go','带着这一杯去找 Ta',close);card.append(go);box.append(card);go.focus({preventScroll:true});
     }
     async function open(){
-      if(panel)return;focusBefore=doc.activeElement;await refresh();
-      if(!flight){options.onEmpty?.();return;}
-      panel=el('div','bf-panel');panel.setAttribute('role','dialog');panel.setAttribute('aria-label','盲品');
-      const shade=el('div','bf-shade');shade.onclick=()=>{if(!busy)close();};panel.append(shade,el('div','bf-box'));
-      panel.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy){e.preventDefault();close();}});
-      // Sit just above the bar strip wherever the composer has pushed it.
-      const anchor=options.anchor?.();if(anchor){const top=anchor.getBoundingClientRect().top;if(top>200)panel.style.setProperty('--bf-bottom',Math.round(root.innerHeight-top+14)+'px');}
-      (options.host||doc.body).append(panel);body();panel.querySelector('.bf-cup:not(:disabled),.bf-close').focus({preventScroll:true});
+      if(panel||opening)return;opening=true;const version=++openVersion;focusBefore=doc.activeElement;
+      try{await refresh();if(version!==openVersion||panel)return;
+        if(!flight){options.onEmpty?.();return;}
+        panel=el('div','bf-panel');panel.setAttribute('role','dialog');panel.setAttribute('aria-label','盲品');
+        const shade=el('div','bf-shade');shade.onclick=()=>{if(!busy)close();};panel.append(shade,el('div','bf-box'));
+        panel.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy){e.preventDefault();close();}});
+        // Sit just above the bar strip wherever the composer has pushed it.
+        const anchor=options.anchor?.();if(anchor){const top=anchor.getBoundingClientRect().top;if(top>200)panel.style.setProperty('--bf-bottom',Math.round(root.innerHeight-top+14)+'px');}
+        (options.host||doc.body).append(panel);body();panel.querySelector('.bf-cup:not(:disabled),.bf-close').focus({preventScroll:true});
+      }finally{if(version===openVersion)opening=false;}
     }
     function review(pick){
-      if(panel)return;focusBefore=doc.activeElement;revealed=null;
+      if(panel||opening)return;focusBefore=doc.activeElement;revealed=null;
       panel=el('div','bf-panel bf-review');panel.setAttribute('role','dialog');panel.setAttribute('aria-label',pick.cup+'号杯 · '+(pick.prank?'任务':'白水'));
       const shade=el('div','bf-shade');shade.onclick=close;
       const box=el('div','bf-box'),head=el('header','bf-head');

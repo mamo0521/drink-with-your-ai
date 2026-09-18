@@ -42,7 +42,6 @@
 .bf-prank{margin:0 auto 6px;padding:10px 12px;max-width:260px;background:#fdf3d0;box-shadow:0 1px 2px #0003;transform:rotate(-1.2deg);font:14px/22px MamoWenKai,serif;color:var(--bar-ink);overflow-wrap:anywhere}
 .bf-safe{margin:4px 0 0;color:var(--bar-muted)}
 .bf-panel .bf-go{display:block;width:100%;min-height:38px;margin-top:10px;padding:8px 19px;border:0;border-radius:0;clip-path:polygon(11px 0,calc(100% - 11px) 0,100% 50%,calc(100% - 11px) 100%,11px 100%,0 50%);background:var(--bar-red);color:var(--bar-card);font:14px/20px MamoWenKai,serif;cursor:pointer}
-.bf-panel .bf-go:active{transform:scale(.96)}
 .bf-review .bf-prank{max-height:calc(100vh - 310px);overflow-y:auto}
 #img-tray .flight-chip{max-width:100%;min-width:0;cursor:pointer;text-align:left}
 #img-tray .flight-chip .file-chip-name{min-width:0;display:block}

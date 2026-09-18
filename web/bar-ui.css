@@ -11,12 +11,14 @@
 .bar-screen button{appearance:none;-webkit-tap-highlight-color:transparent;background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0}
 .bar-screen button:focus-visible,.bar-screen input:focus-visible,.bar-screen textarea:focus-visible{outline:2px solid var(--bar-red);outline-offset:3px}
 .bar-screen button:disabled{cursor:wait;opacity:.5}
-/* Shared Bar press feedback; independent translate preserves existing rotations/transforms. */
-:is(.bar-screen,.bar-strip,.bf-panel,.gg-overlay) button:not(:disabled):not([aria-disabled=true]):not(.gg-hex):not(.bf-go):active,
-:is(.home-hex,.home-link):not(:disabled):not([aria-disabled=true]):active{translate:0 1px;opacity:.78}
+/* Artwork/text controls retain their press feedback; cut-corner actions share center scaling. */
+:is(.bar-screen,.bar-strip,.bf-panel,.gg-overlay) button:not(:disabled):not([aria-disabled=true]):not(.gg-hex):not(.bf-go):not(.bar-pill):not(.home-hex):active,
+.home-link:not(:disabled):not([aria-disabled=true]):active{translate:0 1px;opacity:.78}
+:is(.bar-screen .bar-pill,.home-hex,.gg-hex,.bf-panel .bf-go):not(:disabled):not([aria-disabled=true]):active{transform:scale(.96);transform-origin:center}
 @media(prefers-reduced-motion:reduce){
- :is(.bar-screen,.bar-strip,.bf-panel,.gg-overlay) button:not(:disabled):not([aria-disabled=true]):not(.gg-hex):not(.bf-go):active,
- :is(.home-hex,.home-link):not(:disabled):not([aria-disabled=true]):active{translate:none}
+ :is(.bar-screen .bar-pill,.home-hex,.gg-hex,.bf-panel .bf-go):not(:disabled):not([aria-disabled=true]):active{transform:none}
+ :is(.bar-screen,.bar-strip,.bf-panel,.gg-overlay) button:not(:disabled):not([aria-disabled=true]):not(.gg-hex):not(.bf-go):not(.bar-pill):not(.home-hex):active,
+ .home-link:not(:disabled):not([aria-disabled=true]):active{translate:none}
 }
 .bar-screen{--bar-safe-top:max(0px,calc(env(safe-area-inset-top) - 6px));--bar-safe-bottom:0px}
 .bar-layout{position:relative;width:min(100%,392px);height:100%;margin:auto;padding-top:var(--bar-safe-top);padding-bottom:var(--bar-safe-bottom);display:flex;flex-direction:column;min-height:0}

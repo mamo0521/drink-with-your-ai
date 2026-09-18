@@ -159,11 +159,12 @@ class Handler(BaseHTTPRequestHandler):
                 try:
                     if action == "start":
                         flight = bar_flight.start(intimate=bool(b.get("intimate")))
-                        barlog.add("me", f"{bar_games.player_name()} 点了一份盲品：六个暗杯，两人轮流各揭一杯，{bar_games.player_name()} 先揭。", "flight")
+                        barlog.add("me", f"{bar_games.player_name()} 点了一份盲品：六个暗杯，两人轮流各揭一杯，{bar_games.player_name()} 先揭。", "flight", key="flight-start:" + flight["id"])
                         return self.send_json({"ok": True, "flight": flight})
                     if action == "pick":
                         pick = bar_flight.pick("me", b.get("cup"), b.get("id"))
-                        barlog.add("me", bar_flight.describe(pick).replace("盲品 · ", "", 1).split("\n")[0], "flight")
+                        barlog.add("me", bar_flight.describe(pick).replace("盲品 · ", "", 1).split("\n")[0], "flight",
+                                   key=f"flight-pick:{pick['flight']['id']}:{pick['cup']}")
                         return self.send_json({"ok": True, "pick": pick})
                     if action == "end":
                         bar_flight.abandon()
