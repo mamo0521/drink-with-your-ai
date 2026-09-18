@@ -30,7 +30,7 @@ def to_player(text):
             out.append(part)
         else:
             part = part.replace("你", "\0").replace(me, "你").replace("\0", "Ta")
-            part = re.sub(r"你 (?=[\u4e00-\u9fff])", "你", part)
+            part = re.sub(r"(?<=[\u4e00-\u9fff]) 你", "你", re.sub(r"你 (?=[\u4e00-\u9fff])", "你", part))
             out.append(part.replace("喝不喝由Ta：喝就用 bar_drink。", "喝不喝由 Ta。").replace("用 bar_look 带上 need_menu 看酒单。", "").replace("商量好再用 bar_game 开局。", "商量好再开局。")
                        .replace("已经记进Ta的醉意了，不用再用 bar_drink 重复喝。", "已经记进 Ta 的醉意。"))
     text = re.sub(r"Ta(?=[\u4e00-\u9fff])", "Ta ", "".join(out))

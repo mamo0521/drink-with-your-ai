@@ -18,27 +18,25 @@
 body{font:15px/1.7 MamoWenKai,'Noto Serif SC',serif;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 main{position:relative;isolation:isolate;width:min(100%,392px);min-height:calc(100svh - 36px - env(safe-area-inset-top) - env(safe-area-inset-bottom));margin:18px auto;padding:72px 28px 44px;display:flex;flex-direction:column;gap:18px}
-main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-style:solid;border-width:166px 14px 34px;border-image:url('/assets/home/amber-frame.svg') 166 14 34 fill / 166px 14px 34px / 0 stretch}
+main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-style:solid;border-width:150px 14px 34px;border-image:url('/assets/bar/ui/menu-frame.svg') 150 14 34 fill / 150px 14px 34px / 0 stretch}
 .home-head{text-align:center;position:relative}
-.home-head>.bar-star{top:-61px}
+.home-head>.bar-star{top:-70px}
 .home-scene{position:relative;margin:16px -5px 0;aspect-ratio:4/3;isolation:isolate}
-.home-scene img{display:block;width:100%;height:100%;object-fit:contain;border-radius:10px}
-.home-scene:after{content:'';position:absolute;inset:0;border:1px solid var(--gold);border-radius:10px;box-shadow:inset 0 0 0 7px var(--paper);pointer-events:none}
+.home-scene img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.home-scene:after{content:'';position:absolute;inset:8% -8px;z-index:-1;background:radial-gradient(circle,#d9a05475 .65px,transparent .9px) 0 0/5px 5px;mask-image:radial-gradient(ellipse,#000 20%,transparent 70%);pointer-events:none}
 .home-head h1{margin:0;color:var(--red);font:italic 600 30px/36px PlayfairLocal,MamoKai,serif;letter-spacing:3px}
 .home-head p{margin:2px 0 0;font:400 14px/22px PlayfairLocal,MamoKai,serif;letter-spacing:5.6px;color:var(--ink)}
-.home-controls{margin-top:auto;padding-top:4px;display:flex;flex-direction:column;gap:6px;flex:none}
+.home-controls{margin-top:auto;padding-top:4px;display:flex;flex-direction:column;gap:18px;flex:none}
 #act-bar.bar-strip{margin:0 -18px -6px;width:calc(100% + 36px);max-width:none}
-.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .home-hex{position:relative;isolation:isolate;min-height:44px;color:var(--card);font:15px/20px MamoWenKai,serif;letter-spacing:2px}
 .home-hex:before{content:'';position:absolute;inset:0;z-index:-1;background:var(--red);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
 .home-hex.ghost{color:var(--muted)}.home-hex.ghost:before{background:var(--gold)}
-.home-hex.ghost:after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--paper);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
+.home-hex.ghost:after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--card);clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 50%,calc(100% - 13px) 100%,13px 100%,0 50%)}
 .home-line{display:flex;align-items:center;gap:10px;color:var(--red);font:16px/18px MamoKai,serif;letter-spacing:2.8px}
 .home-line:before,.home-line:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}.home-line:after{transform:scaleX(-1)}
-.home-records{position:relative;border:1px solid var(--gold);border-top:0;border-radius:10px;padding:16px 12px;display:flex;flex-direction:column;gap:16px;min-width:0;min-height:173px;flex:none}
-.home-records>.home-line{position:absolute;top:-8.5px;left:12px;right:12px}
-.home-tools .next{display:block;padding:7px 10px;background:#fdecd2;border:1px solid #d9a05480;color:var(--red);font-size:13px;line-height:20px}
-.home-tools{text-align:left;font-size:12px;color:var(--muted)}
+.home-records{border:1px solid var(--gold);padding:16px 12px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.home-tools{text-align:center;font-size:12px;color:var(--muted)}
 .home-tools .home-link{flex:none;white-space:nowrap}
 .home-link{color:var(--red);text-decoration:underline;text-underline-offset:3px;font-size:13px}
 #log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
@@ -47,8 +45,8 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 #log .text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:22px}
 #log .copy{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 #log .unseen .who:after{content:' · Ta 还没看到';color:var(--red)}
-.home-where{margin:0;text-align:center;font-size:11px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}.home-where .home-link{display:block;margin-inline:auto;font-size:11px;color:var(--muted)}
-.home-empty{text-align:left;color:var(--muted);font-size:13px;margin:6px 0}
+.home-where{margin:0;text-align:center;font-size:11px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}.home-where .home-link{font-size:11px;color:var(--muted)}
+.home-empty{text-align:center;color:var(--muted);font-size:13px;margin:6px 0}
 .home-foot{padding-top:4px;display:grid;grid-template-columns:1fr 25px 1fr;align-items:center;gap:12px;color:var(--muted);font:italic 12px/18px PlayfairLocal,serif;letter-spacing:2px}
 .home-foot span:first-child{text-align:right}.home-foot span:last-child{text-align:left}
 .home-foot img{width:25px;height:25px}
@@ -58,11 +56,11 @@ main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
 button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){#toast{transition:none}}
 </style>
-</head>
+<style>html,body{width:392px}main{margin:0;min-height:846px;padding-bottom:34px}</style><script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script></head>
 <body>
 <main>
   <header class="home-head"><span class="bar-star" aria-hidden="true"><img class="bar-star-base" src="/assets/bar/ui/star-base.svg" alt=""><img class="bar-star-lines" src="/assets/bar/ui/star-lines.svg" alt=""><img class="bar-star-ray bar-star-ne" src="/assets/bar/ui/star-ne.svg" alt=""><img class="bar-star-ray bar-star-se" src="/assets/bar/ui/star-se.svg" alt=""><img class="bar-star-ray bar-star-nw" src="/assets/bar/ui/star-nw.svg" alt=""><img class="bar-star-ray bar-star-sw" src="/assets/bar/ui/star-sw.svg" alt=""></span><h1 id="home-title">AMBER</h1><p id="home-sub">AFTERHOURS</p></header>
-  <figure class="home-scene"><img src="/assets/home/bar-shelves-v2.png" width="1448" height="1086" alt="暖灯下的三层酒架，吧台上放着两杯酒" fetchpriority="high"></figure>
+  <figure class="home-scene"><img src="/assets/home/bar-shelves.png" width="1200" height="900" alt="暖灯下的三层酒架，吧台上放着两杯酒" fetchpriority="high"></figure>
   <section class="home-records" aria-labelledby="records-title">
     <div class="home-line" id="records-title">今晚的记录</div>
     <div class="home-tools"><span id="log-hint">你在这儿做的事，Ta 用「看吧台」就能看到。</span></div>
@@ -100,9 +98,6 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
     await flight.refresh();paintStrip();
     try{
       const d=await api('/bar/log'),rows=(d.log||[]).slice().reverse(),list=$('log');list.replaceChildren();$('log-empty').hidden=rows.length>0;
-      // 下一步只说一件事：有 Ta 还没看到的记录，就去聊天里叫 Ta 看吧台；都看过了就安静。
-      const waiting=rows.some(r=>!r.seen),hint=$('log-hint');hint.classList.toggle('next',waiting);
-      hint.textContent=waiting?'下一步：回你们聊天的地方，跟 Ta 说一声「看看吧台」。Ta 看过以后，「Ta 还没看到」会消失。':rows.length?'Ta 都看到了。接着聊，或者再来一轮。':'你在这儿做的事，Ta 用「看吧台」就能看到。';
       for(const r of rows){const li=document.createElement('li');if(!r.seen)li.className='unseen';
         const who=document.createElement('span');who.className='who';who.textContent=WHO[r.who]||r.who;
         const text=document.createElement('span');text.className='text';text.textContent=r.show||r.text;
@@ -138,3 +133,4 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 </script>
 </body>
 </html>
+
