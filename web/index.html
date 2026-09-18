@@ -96,7 +96,10 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
   async function loadSign(){try{const d=await api('/barfile?which=bar'),m=MamoBarUI.readMeta(d.text||'');$('home-title').textContent=m.title||'AMBER';$('home-sub').textContent=m.subtitle??'AFTERHOURS';}catch(e){}}
   async function loadDef(){const d=await api('/activities');barDef=(d.activities||[]).find(a=>a.id==='bar')||{};MamoBarResult.setPlayer(barDef.player_name);return barDef;}
   function paintStrip(){MamoBarStrip.render($('act-bar'),stripState,null,{open:openMenu,close(){},flight:MamoBarFlight.stripText(flight.flight()),openFlight:()=>flight.open()});const x=$('act-bar').querySelector('.bar-strip-close');if(x)x.hidden=true;}
-  async function refresh(){
+  // 同一时刻只跑一轮刷新：上一轮没完，新的请求直接等它，不再叠一轮（2026-09-18 死循环把浏览器拖垮过）。
+  let refreshing=null;
+  function refresh(){return refreshing||(refreshing=doRefresh().finally(()=>{refreshing=null;}));}
+  async function doRefresh(){
     try{stripState=await api('/state');}catch(e){}
     await flight.refresh();paintStrip();
     try{
