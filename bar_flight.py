@@ -282,13 +282,44 @@ START, END = '【盲品】', '【盲品结束】'
 def message_block(result):
     """玩家带回的这一杯写进她那条消息的样子。web/bar-flight.js 的 decode 按这个格式还原成小卡。"""
     head = f"{result['cup']} 号杯 · {result['name']}" + (f" · {result['std']:g} 标准杯" if result['std'] else '')
+    me = _who('me')
     if result['std']:
-        me = _who('me')
-        body = (f"{me} 揭的，这杯不用喝，换成{result['tier']}档整蛊题。这道题由 {me} 来做、来回答，你负责验收"
-                f"（题面里出现 Ta 或“我”时指的是你）。当场在聊天里兑现：\n「{result['prank']}」")
+        # 写成一栏一栏的字段、全用名字：一段话里「你 / 我 / Ta」混着出现，模型很容易把题揽到自己身上（2026-09-19 实录）。
+        body = (f"揭杯人：{me}（这杯不用喝，换成{result['tier']}档整蛊题）\n"
+                f"答题人：{me}——这道题由 {me} 当场在聊天里回答，听的人和验收的人是你\n"
+                f"题目：「{result['prank']}」")
     else:
-        body = f"{_who('me')} 揭的，白水，这一杯没事。"
+        body = f"揭杯人：{me}（白水，这一杯没事）"
     return '\n'.join([START, head, body, _status(result['flight']), END])
+
+
+def find_player_pick(cup, name):
+    """只读：在进行中 / 刚结束的那场里找「玩家揭过的这一杯」，回和 pick() 同形的结果；找不到回 None。
+    给重 roll / 编辑用——旧消息里的【盲品】块按现在的写法重写，绝不会因此多揭一杯。"""
+    path = _path()
+    with _gamestore.file_lock(path):
+        book = _load(path)
+    for flight in (book.get('active'), book.get('last')):
+        if not flight or type(cup) is not int or not 1 <= cup <= len(flight['cups']):
+            continue
+        content = flight['cups'][cup - 1]
+        if content['name'] == name and any(p['cup'] == cup and p['who'] == 'me' for p in flight['picks']):
+            return {'flight': _public(flight), 'cup': cup, 'who': 'me', 'name': content['name'], 'std': content['std'],
+                    'kind': content['kind'], 'tier': content['tier'], 'prank': content['prank'], 'receipt': None}
+    return None
+
+
+def refresh_block(message):
+    """消息以【盲品】块开头时，用账本里的事实按现在的写法把这一块重写一遍（附言原样保留）。对不上账就原样返回。"""
+    text = str(message or '')
+    if not text.startswith(START + '\n'):
+        return message
+    end = text.find('\n' + END)
+    m = re.match(r'(\d+) 号杯 · ([^\n·]+?)(?: · [0-9.]+ 标准杯)?\n', text[len(START) + 1:])
+    if end < 0 or not m:
+        return message
+    found = find_player_pick(int(m[1]), m[2].strip())
+    return message_block(found) + text[end + len(END) + 1:] if found else message
 
 
 def lens_line():

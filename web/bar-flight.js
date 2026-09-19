@@ -26,7 +26,7 @@
   function encode(pick,note=''){
     const f=pick.flight||{},head=pick.cup+' 号杯 · '+pick.name+(pick.std?' · '+Number(pick.std)+' 标准杯':'');
     const me=pick.player||'对方';   // 和网关 bar_games.player_name() 同一个称呼；正文不用他/她
-    const body=pick.std?me+' 揭的，这杯不用喝，换成'+pick.tier+'档整蛊题。这道题由 '+me+' 来做、来回答，你负责验收（题面里出现 Ta 或“我”时指的是你）。当场在聊天里兑现：\n「'+pick.prank+'」':me+' 揭的，白水，这一杯没事。';
+    const body=pick.std?'揭杯人：'+me+'（这杯不用喝，换成'+pick.tier+'档整蛊题）\n答题人：'+me+'——这道题由 '+me+' 当场在聊天里回答，听的人和验收的人是你\n题目：「'+pick.prank+'」':'揭杯人：'+me+'（白水，这一杯没事）';
     const status=f.done?'六杯都揭完了，这场盲品结束。':'还没揭的杯：'+(f.left||[]).join('、')+' 号。现在轮到你选。';
     return [START,head,body,status,END].join('\n')+(note.trim()?'\n\n'+note.trim():'');
   }
