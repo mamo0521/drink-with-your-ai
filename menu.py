@@ -11,7 +11,7 @@ _BAR_MENU_DEFAULT = [{'name': '威士忌', 'std': 1.0, 'emoji': '🥃'}, {'name'
 
 
 def _bar_factory_text():
-    """出厂酒单（分发随包）：新装的玩家还没写自己的酒单时用它；人称统一「我=Ta、你=客人」，不含任何私人内容。"""
+    """出厂酒单（分发随包）：新装的玩家还没写自己的酒单时用它；人称统一「我=小机、你=玩家自己」，不含任何私人内容。"""
     try:
         return _BAR_FACTORY.read_text(encoding="utf-8")
     except Exception:

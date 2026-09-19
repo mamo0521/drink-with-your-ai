@@ -13,7 +13,7 @@
     return sections.filter(sec=>{const name=sec.match(/^# (.+)/)[1].replace(/·题库$/,'');return !new RegExp('^# .*'+name,'m').test(have);}).map(s=>s.trim()+'\n').join('\n');
   }
   // 和酒单正文同一个口吻：「我」是吧台里的 Ta，「他」是来喝酒的人。
-  const FLIGHT_DESC='六个一模一样的杯子：三杯白水，两杯酒单上的酒，一杯最烈的。\n一人一杯轮流揭。我揭到酒，整杯喝掉；客人揭到酒，换一张同样分量的整蛊纸条，当场兑现。\n纸条上的题在 edit 的「题库」里改，「亲密」题开关在下方。';
+  const FLIGHT_DESC='六个一模一样的杯子：三杯白水，两杯酒单上的酒，一杯最烈的。\n一人一杯轮流揭。我揭到酒，整杯喝掉；你揭到酒，换一张同样分量的整蛊纸条，当场兑现。\n纸条上的题在 edit 的「题库」里改，「亲密」题开关在下方。';
   const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function readMeta(raw){
     const m=String(raw||'').match(META);
