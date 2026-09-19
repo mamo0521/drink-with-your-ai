@@ -270,7 +270,8 @@ def describe(result):
         line = (f"你揭开 {result['cup']} 号杯：{name}，{std:g} 标准杯，已喝下。本杯醉意增加 {r['increase']:g}，"
                 f"现在 {r['after']:g}。已经记进你的醉意了，不用再用 bar_drink 重复喝。")
     else:
-        line = (f"{who}揭开 {result['cup']} 号杯：{name}（{std:g} 标准杯）。这杯不用喝，换成{result['tier']}档整蛊题（题面里的 Ta 或“我”都是指你），"
+        line = (f"{who}揭开 {result['cup']} 号杯：{name}（{std:g} 标准杯）。这杯不用喝，换成{result['tier']}档整蛊题。"
+                f"**这道题是 {who} 抽到的，由 {who} 来做、来回答，你负责验收**（题面里出现 Ta 或“我”时指的是你）。"
                 f"要当场在聊天里做：「{result['prank']}」")
     return '盲品 · ' + line + '\n' + _status(result['flight'])
 
@@ -282,7 +283,9 @@ def message_block(result):
     """玩家带回的这一杯写进她那条消息的样子。web/bar-flight.js 的 decode 按这个格式还原成小卡。"""
     head = f"{result['cup']} 号杯 · {result['name']}" + (f" · {result['std']:g} 标准杯" if result['std'] else '')
     if result['std']:
-        body = f"{_who('me')} 揭的，这杯不用喝，换成{result['tier']}档整蛊题（题面里的 Ta 或“我”都是指你），当场在聊天里兑现：\n「{result['prank']}」"
+        me = _who('me')
+        body = (f"{me} 揭的，这杯不用喝，换成{result['tier']}档整蛊题。这道题由 {me} 来做、来回答，你负责验收"
+                f"（题面里出现 Ta 或“我”时指的是你）。当场在聊天里兑现：\n「{result['prank']}」")
     else:
         body = f"{_who('me')} 揭的，白水，这一杯没事。"
     return '\n'.join([START, head, body, _status(result['flight']), END])
@@ -297,10 +300,10 @@ def lens_line():
     me = _who('me')
     if flight['done']:
         owed = flight.get('owed') or {}
-        return (f"🥃 盲品刚揭完。{me} 最后揭到的 {owed['cup']} 号杯是{owed['name']}，抽到的整蛊题还没兑现：「{owed['prank']}」"
+        return (f"🥃 盲品刚揭完。{me} 最后揭到的 {owed['cup']} 号杯是{owed['name']}，抽到的整蛊题还没兑现（由 {me} 来做、来回答，你负责验收）：「{owed['prank']}」"
                 if owed.get('prank') else '')
-    seen = '；'.join(f"{c['n']} 号 {c['name']}（{_who(c['who'])}" + (f"，抽到的整蛊题（题面里的 Ta 或“我”指你）：「{c['prank']}」" if c.get('prank') else '') + '）'
+    seen = '；'.join(f"{c['n']} 号 {c['name']}（{_who(c['who'])}" + (f"，抽到的整蛊题（由 {me} 来做、来回答；题面里的 Ta 或“我”指你）：「{c['prank']}」" if c.get('prank') else '') + '）'
                     for c in flight['cups'] if c['revealed'])
-    return (f'🥃 盲品进行中：六个暗杯里有白水也有酒，两人轮流各揭一杯；你揭到酒就整杯喝下，{me} 揭到酒换整蛊题。'
+    return (f'🥃 盲品进行中：六个暗杯里有白水也有酒，两人轮流各揭一杯；你揭到酒就整杯喝下；{me} 揭到酒不喝，换一道整蛊题，由 {me} 来做、来回答，你负责验收。'
             + (f'已揭：{seen}。' if seen else '') + _status(flight)
             + '轮到你时用 bar_game 工具 game="flight" 加 cup 杯号来揭。')
