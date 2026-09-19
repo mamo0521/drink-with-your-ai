@@ -110,7 +110,7 @@ A personal side project made in spare time. Issues are welcome — replies may b
 
 ## 许可证 · License
 
-**非开源，只是公开代码。** 大白话三条：个人自用、学习、改着玩都免费；拿去商用请先来问；转发或改编时保留署名。
+欢迎大家免费使用，也可以按自己的喜好修改。用于商业用途前，请先联系我；转载或修改后分享时，请保留原作者署名。
 
 - 代码：[PolyForm Noncommercial 1.0.0](LICENSE)。
 - 文案与图片（出厂酒单、吧台规矩、醉态口吻、题库、界面文案、酒图与界面图）：
