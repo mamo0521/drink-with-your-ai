@@ -105,7 +105,6 @@
         header.append(star,leftStar,rightStar);if(root.MamoBarMusic)header.append(root.MamoBarMusic.button());
         titleNodes(meta.title||"AMBER",meta.subtitle??'AFTERHOURS',header);
         const guide=button('bar-edit-link bar-guide-link','',()=>openGuide());guide.append(icon('guide'),el('span','','guide'));guide.setAttribute('aria-label','吧台玩法说明');header.append(guide);
-        const edit=button('bar-edit-link','',()=>openEditor());edit.append(icon('edit'),el('span','','edit'));edit.setAttribute('aria-label','编辑酒单');header.append(edit);
       }
       layout.append(header);screen.append(layout);return layout;
     }
@@ -180,7 +179,8 @@
       choices.append(button('','让 Ta 看酒单',()=>{dismiss();hide();options.onHandMenu?.();}),button('','让 Ta 自选游戏',()=>{dismiss();hide();options.onInviteGame?.();}));
       layout.addEventListener('pointerdown',e=>{if(!choices.contains(e.target)&&!choose.contains(e.target))dismiss();});
       choices.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();dismiss();choose.focus();}});
-      nav.append(choose,button('is-active','✦ 点酒',()=>scroll.scrollTo({top:0,behavior:'smooth'})),button('','游戏',()=>{hide();options.onGames?.();}),button('','收起',()=>{hide();options.onOff?.();}),choices);layout.append(nav);scroll.scrollTop=menuScroll;
+      const edit=button('bar-edit-link bar-nav-edit','',()=>openEditor());edit.append(icon('edit'),el('span','','edit'));edit.setAttribute('aria-label','编辑酒单');
+      nav.append(choose,button('is-active','✦ 点酒',()=>scroll.scrollTo({top:0,behavior:'smooth'})),button('','游戏',()=>{hide();options.onGames?.();}),edit,choices);layout.append(nav);scroll.scrollTop=menuScroll;
     }
     function openGuide(){
       menuScroll=scroll?.scrollTop||0;shell(true);

@@ -175,3 +175,5 @@
 :is(.bar-screen,.bf-panel,.bar-strip,.bar-standalone){touch-action:manipulation}
 .bar-standalone{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .bar-standalone :is(input,textarea,[contenteditable]){-webkit-user-select:text;user-select:text}
+
+.bar-screen .bar-nav .bar-nav-edit{position:static;width:auto;justify-content:center;color:var(--bar-red);font:20px/16px BarCaveat,cursive;padding:10px 0}
