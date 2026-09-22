@@ -27,7 +27,7 @@
     const f=pick.flight||{},head=pick.cup+' 号杯 · '+pick.name+(pick.std?' · '+Number(pick.std)+' 标准杯':'');
     const me=pick.player||'对方';   // 和网关 bar_games.player_name() 同一个称呼；正文不用他/她
     const body=pick.std?'揭杯人：'+me+'（这杯不用喝，换成'+pick.tier+'档整蛊题）\n答题人：'+me+'——这道题由 '+me+' 当场在聊天里回答，听的人和验收的人是你\n题目：「'+pick.prank+'」':'揭杯人：'+me+'（白水，这一杯没事）';
-    const status=f.done?'六杯都揭完了，这场盲品结束。':'还没揭的杯：'+(f.left||[]).join('、')+' 号。现在轮到你选。';
+    const status=f.expired?'这场盲品已满 70 分钟，未揭的杯子已收走。':f.done?'六杯都揭完了，这场盲品结束。':'还没揭的杯：'+(f.left||[]).join('、')+' 号。现在轮到你选。';
     return [START,head,body,status,END].join('\n')+(note.trim()?'\n\n'+note.trim():'');
   }
   // Card model for MamoBarResult.card: the prank reads like the note that came with the cup.
@@ -37,7 +37,7 @@
     const lines=text.slice(START.length+1,end).split('\n'),title=lines.shift()||'盲品';
     const block=lines.join('\n'),prank=block.match(/「([\s\S]+)」/),tier=block.match(/换成(.+?)档整蛊题/),left=block.match(/还没揭的杯：(.+?) 号/);
     const out=prank?['任务','「'+prank[1]+'」']:['白水，这一杯没事'];
-    out.push(/结束/.test(lines.at(-1)||'')?'六杯都揭完了':left?'还剩 '+left[1]+' 号 · 轮到 Ta':'');
+    out.push(/已满 70 分钟/.test(lines.at(-1)||'')?'已满 70 分钟，未揭的杯子已收走':/结束/.test(lines.at(-1)||'')?'六杯都揭完了':left?'还剩 '+left[1]+' 号 · 轮到 Ta':'');
     return {label:'盲品',title,lines:out.filter(Boolean),note:text.slice(end+END.length+1).trim()};
   }
   function create(options={}){

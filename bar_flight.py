@@ -7,6 +7,7 @@ import json
 import re
 import secrets
 import uuid
+from datetime import datetime, timedelta
 import _gamestore
 import _lib
 import bar_games
@@ -24,6 +25,7 @@ def _who(key):
 
 
 SIDES = ('me', 'ta')
+FLIGHT_TTL_MIN = 70
 
 
 def _path():
@@ -126,7 +128,17 @@ def _pour(menu, bank):
 
 def _load(path):
     # 账本损坏就是错误，不当成空账本重开。
-    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+    book = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+    flight = book.get('active')
+    if flight:
+        now = datetime.fromisoformat(_lib.now_iso())
+        started = datetime.fromisoformat(flight['started'])
+        if now - started >= timedelta(minutes=FLIGHT_TTL_MIN):
+            # 所有入口都在账本锁内读取；已揭记录和未交付任务保留，剩余暗杯作废。
+            flight.update(done=True, expired=True)
+            book['last'], book['active'] = flight, None
+            _gamestore.atomic_write_json(path, book)
+    return book
 
 
 def _public(flight):
@@ -144,6 +156,8 @@ def _public(flight):
         cups.append(row)
     out = {'id': flight['id'], 'turn': None if flight['done'] else flight['turn'], 'done': flight['done'],
            'left': [c['n'] for c in cups if not c['revealed']], 'cups': cups, 'started': flight['started']}
+    if flight.get('expired'):
+        out['expired'] = True
     # 她揭了但还没随消息交给 Ta 的那一杯：前端据此把小卡放回待发送区（关弹窗、刷新都甩不掉）。
     # 只看她最近揭的那一杯；更早的杯子已经过去了，不回头翻旧账。
     owed = next((p for p in reversed(flight['picks']) if p['who'] == 'me'), None)
@@ -196,6 +210,8 @@ def pick(who, cup, flight_id=None):
         if old and old['who'] != who:
             raise ValueError(f'{cup} 号杯已经被{_who(old["who"])}揭开了')
         if not old:
+            if flight.get('expired'):
+                raise ValueError('这场盲品已满 70 分钟，未揭的杯子已收走')
             if flight['done']:
                 raise ValueError('这场盲品已经喝完了')
             if flight['turn'] != who:
@@ -254,6 +270,8 @@ def abandon():
 
 
 def _status(flight):
+    if flight.get('expired'):
+        return '这场盲品已满 70 分钟，未揭的杯子已收走。'
     if flight['done']:
         return '六杯都揭完了，这场盲品结束。'
     return f"还没揭的杯：{'、'.join(str(n) for n in flight['left'])} 号。现在轮到{_who(flight['turn'])}选。"
@@ -331,7 +349,8 @@ def lens_line():
     me = _who('me')
     if flight['done']:
         owed = flight.get('owed') or {}
-        return (f"🥃 盲品刚揭完。{me} 最后揭到的 {owed['cup']} 号杯是{owed['name']}，抽到的整蛊题还没兑现（由 {me} 来做、来回答，你负责验收）：「{owed['prank']}」"
+        ended = _status(flight) if flight.get('expired') else '盲品刚揭完。'
+        return (f"🥃 {ended}{me} 最后揭到的 {owed['cup']} 号杯是{owed['name']}，抽到的整蛊题还没兑现（由 {me} 来做、来回答，你负责验收）：「{owed['prank']}」"
                 if owed.get('prank') else '')
     seen = '；'.join(f"{c['n']} 号 {c['name']}（{_who(c['who'])}" + (f"，抽到的整蛊题（由 {me} 来做、来回答；题面里的 Ta 或“我”指你）：「{c['prank']}」" if c.get('prank') else '') + '）'
                     for c in flight['cups'] if c['revealed'])
