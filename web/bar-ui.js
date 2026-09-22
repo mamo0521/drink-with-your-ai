@@ -122,7 +122,7 @@
         copy.append(root.MamoBarBank.createSwitch());
       }
       const confirm=button('bar-pill primary','确定',async()=>{
-        if(!item.flight){if(root.MamoBarAudio?.isStraight(item))root.MamoBarAudio.play('openPour');hide();options.onConfirm(item);return;}
+        if(!item.flight){const cue=root.MamoBarAudio?.confirmCue(item);if(cue)root.MamoBarAudio.play(cue);hide();options.onConfirm(item);return;}
         root.MamoBarAudio?.prepare();
         // The server pours the six cups now; the picker opens from the chat strip.
         confirm.disabled=true;const note=copy.querySelector('.bar-description');

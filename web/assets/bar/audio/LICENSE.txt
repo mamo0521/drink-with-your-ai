@@ -43,3 +43,14 @@ Pouring Drink Sound Effect by Rea.mp3 — reasanka
 https://freesound.org/people/reasanka/sounds/382911/
 CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
 Edits: mono conversion, level adjustments, short fades; Cancel_07 and pouring combined with a short pause.
+
+
+Cocktail cue (bar-sfx-v2.json):
+Ice Cube In The Glass 08.wav by Debsound
+https://freesound.org/people/Debsound/sounds/278202/
+Licensed under Creative Commons Attribution-NonCommercial 4.0 International
+https://creativecommons.org/licenses/by-nc/4.0/
+Combined with pouring water by nikerk (CC0 1.0)
+https://freesound.org/people/nikerk/sounds/764760/
+Edits: outer silence trimmed, mono conversion, levels adjusted, short fades, ice followed by water with an 80ms gap.
+This cocktail cue retains the attribution and noncommercial requirements of Debsound. Commercial use requires separate permission from Debsound or replacement of that source.
