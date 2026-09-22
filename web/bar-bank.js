@@ -40,7 +40,7 @@
   function createSwitch(onChange){
     const doc=root.document,b=doc.createElement('button');b.type='button';b.className='bar-intimate-switch';b.setAttribute('role','switch');b.setAttribute('aria-label','亲密题');b.setAttribute('aria-checked',String(intimate()));
     const label=doc.createElement('span');label.textContent='亲密题';const track=doc.createElement('span');track.className='bar-switch-track';track.setAttribute('aria-hidden','true');const knob=doc.createElement('span');knob.className='bar-switch-knob';track.append(knob);b.append(label,track);
-    b.onclick=()=>{const on=setIntimate(!intimate());b.setAttribute('aria-checked',String(on));onChange?.(on);};return b;
+    b.onclick=()=>{const on=setIntimate(!intimate());root.MamoBarAudio?.play(on?'intimateOn':'intimateOff');b.setAttribute('aria-checked',String(on));onChange?.(on);};return b;
   }
   const api={parse,bank,pool,tierOf,draw,intimate,setIntimate,createSwitch};if(typeof module!=='undefined'&&module.exports)module.exports=api;root.MamoBarBank=api;
 })(typeof window!=='undefined'?window:globalThis);

@@ -93,3 +93,5 @@ Current background music: Last_Glass_at_Midnight.mp3, supplied by mamo as Gemini
 Sprite v17 adds Vrymaa champagne clink excerpt 13, https://freesound.org/people/Vrymaa/sounds/734622/ (CC0), and KVV Audio excerpt03 for dice selection (CC BY 4.0, source and edits above). Converted to mono/44.1kHz.
 
 Sprite v18 adds tony_bear, prize wheel, https://freesound.org/people/tony_bear/sounds/274007/ (CC0 1.0). Excerpt 32.675–36.675 seconds, converted to mono, original speed.
+
+Sprite v19 adds Warning_03, Clock_Tick_06, Menu_Open_01, Menu_Close_02 (purchased Cute & Cozy pack), and Vrymaa cork opening excerpt02 (CC0): https://freesound.org/people/Vrymaa/sounds/734620/ . Converted to mono/44.1kHz.

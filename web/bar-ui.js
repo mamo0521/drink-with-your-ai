@@ -175,7 +175,7 @@
       const nav=el('nav','bar-nav');nav.setAttribute('aria-label','吧台');
       const ornament=el('span','bar-footer-ornament');ornament.setAttribute('aria-hidden','true');ornament.append(icon('footer-star'));nav.append(ornament);
       const choices=el('div','bar-ta-choices');choices.hidden=true;choices.setAttribute('role','group');choices.setAttribute('aria-label','让 Ta 选择');
-      const choose=button('','Ta来选',()=>{choices.hidden=!choices.hidden;choose.setAttribute('aria-expanded',String(!choices.hidden));});choose.setAttribute('aria-expanded','false');
+      const choose=button('','Ta来选',()=>{choices.hidden=!choices.hidden;root.MamoBarAudio?.play(choices.hidden?'back':'taMenu');choose.setAttribute('aria-expanded',String(!choices.hidden));});choose.setAttribute('aria-expanded','false');
       const dismiss=()=>{choices.hidden=true;choose.setAttribute('aria-expanded','false');};
       choices.append(button('','让 Ta 看酒单',()=>{dismiss();hide();options.onHandMenu?.();}),button('','让 Ta 自选游戏',()=>{dismiss();hide();options.onInviteGame?.();}));
       layout.addEventListener('pointerdown',e=>{if(!choices.contains(e.target)&&!choose.contains(e.target))dismiss();});

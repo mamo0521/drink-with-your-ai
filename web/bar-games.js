@@ -46,6 +46,7 @@
   function hex(text,fn,primary=true){return btn(text,fn,'gg-hex'+(primary?' primary':''));}
   let carriedWheel=null;
   function wheelReveal(text,payload){
+   root.MamoBarAudio?.play('wheelReveal');
    const box=dialog('gg-result gg-tie ww-reveal');box.setAttribute('aria-label','轮盘揭晓');
    box.append(el('p','gg-result-kicker','— 揭晓 —'),el('h2','','轮盘结果'),el('p','ww-reveal-text',text));
    const actions=el('div','gg-actions');actions.append(hex('取消',closeModal,false),hex('带着结果去找Ta',()=>{carriedWheel=payload;hide();options.onCarry?.({...payload});}));box.append(actions);
