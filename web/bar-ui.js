@@ -122,10 +122,11 @@
         copy.append(root.MamoBarBank.createSwitch());
       }
       const confirm=button('bar-pill primary','确定',async()=>{
-        if(!item.flight){hide();options.onConfirm(item);return;}
+        if(!item.flight){if(root.MamoBarAudio?.isStraight(item))root.MamoBarAudio.play('openPour');hide();options.onConfirm(item);return;}
+        root.MamoBarAudio?.prepare();
         // The server pours the six cups now; the picker opens from the chat strip.
         confirm.disabled=true;const note=copy.querySelector('.bar-description');
-        try{await options.onFlight?.();note.textContent='酒正在准备，请回座——小纸条上会提示你选杯。';await new Promise(r=>root.setTimeout(r,1100));hide();options.onFlightReady?.();}
+        try{await options.onFlight?.();root.MamoBarAudio?.play('openPour');note.textContent='酒正在准备，请回座——小纸条上会提示你选杯。';await new Promise(r=>root.setTimeout(r,1100));hide();options.onFlightReady?.();}
         catch(e){note.textContent=e.message;confirm.disabled=false;}
       });
       actions.append(button('bar-pill','close',onClose),confirm);
@@ -154,6 +155,7 @@
           for(const item of group.items.slice(i,i+2)){
             const b=button('bar-drink','',()=>{
               if(activeButton===b){closeDetail();return;}
+              root.MamoBarAudio?.play('detail');
               if(activeSlot){activeSlot.classList.remove('is-open');activeSlot.inert=true;activeButton?.setAttribute('aria-expanded','false');}
               selectionScroll=scroll.scrollTop;
               selection=item.special?options.makeSpecial():item;activeSlot=slot;activeButton=b;

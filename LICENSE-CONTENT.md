@@ -38,3 +38,7 @@ Program code is under the PolyForm Noncommercial License 1.0.0 (see LICENSE).
 - [IPA Font License 1.0（日文 / 英文原文）](web/assets/fonts/LICENSE-LXGW-NeoXiHei-IPA.txt)：对应 LXGW Neo XiHei。来源：https://github.com/lxgw/LxgwNeoXiHei/blob/main/LICENSE.md
 
 上述原文未经改写，字体按各自许可分发，不受本项目文案与图片许可替代。
+
+## 吧台音效
+
+`web/assets/bar/audio/bar-sfx-v1.json` 是本应用使用的音效合辑，包含 Cute & Cozy UI Audio Pack 的已购音效及 reasanka 的 CC0 倒酒声，按各自许可使用，不属于上述文案与图片授权。购买音效允许随应用分发，不允许单独提取后作为音效素材发布。来源和许可见 [音效许可](web/assets/bar/audio/LICENSE.txt)。
