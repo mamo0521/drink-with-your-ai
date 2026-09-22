@@ -131,7 +131,7 @@
   function settlement(announce=false){
    const state=game.state;if(!state.done)return;
    if(announce&&!soundedResults.has(state)){soundedResults.add(state);if(state.winner==='me')root.MamoBarAudio?.play('success');else if(state.winner==='ta')root.MamoBarAudio?.play('failure');}
-   const tie=state.winner==='tie';const box=dialog('gg-result'+(tie?' gg-tie':'')+(wager.type==='custom'?' gg-custom-result':''));box.setAttribute('aria-label','游戏结算');box.append(el('p','gg-result-kicker','— 结算 —'),el('h2','',tie?'平局':NAMES[wager.type]+' · '+(state.winner==='me'?'你赢了':'Ta 赢了')));
+   const tie=state.winner==='tie';const box=dialog('gg-result'+(tie?' gg-tie':'')+(wager.type==='custom'?' gg-custom-result':''));box.setAttribute('aria-label','游戏结算');box.append(el('p','gg-result-kicker','— 结算 —'),el('h2','',tie?'平局':NAMES[wager.type]+' · '+(state.winner==='me'?'你赢了':'你输了')));
    if(!tie){const image=el('div','gg-result-picture');image.append(wagerArt());box.append(image);}
    const score=el('div','gg-result-score');for(const who of ['ta','me']){const row=el('div');row.append(el('span','',who==='ta'?'Ta':'你'),number(state[who]),el('span','',kind==='dice'?'点':'胜'));score.append(row);}box.append(score);
    const needsQuestion=!tie&&state.winner==='me'&&['truth','dare'].includes(wager.type);
