@@ -26,7 +26,7 @@
     const fill=el('i','bar-strip-fill');fill.style.clipPath='inset(0 '+((1-model.fraction)*100)+'% 0 0)';
     tube.append(fill,el('span','bar-strip-number',model.value));
     const divider=el('img','bar-strip-divider');divider.src='/assets/bar/ui/strip-divider.svg';divider.alt='';
-    const info=el('button','bar-strip-info'+(model.text.length>=10?' is-long':''),model.text);info.type='button';info.title=model.kind==='drinking'?'剩余口数／总口数；点击打开酒单':model.text;info.onclick=actions.flight&&state?actions.openFlight:actions.open;
+    const info=el('button','bar-strip-info'+(model.text.length>=10?' is-long':''),model.text);info.type='button';info.title=model.kind==='drinking'?'剩余口数／总口数；点击打开酒单':model.text;info.onclick=()=>{const open=actions.flight&&state?actions.openFlight:actions.open;if(open){root.MamoBarAudio?.play('paper');open();}};
     if(actions.flight?.first&&state){info.classList.add('is-flight-first');info.setAttribute('aria-label','点这里，打开盲品选杯');}
     row.append(tier,tube,divider,info);
     const close=el('button','bar-strip-close');close.append(el('span','bar-strip-close-glyph','×'));close.type='button';close.setAttribute('aria-label','收起吧台');close.onclick=()=>{root.MamoBarAudio?.play('back');actions.close?.();};

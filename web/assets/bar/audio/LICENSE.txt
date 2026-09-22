@@ -65,3 +65,5 @@ Game/UI cues (v4), purchased Cute & Cozy UI Audio Pack by Case Portman: Failure_
 
 Game selection update: Clock_Tick_07 replaces Clicked_Out_04 in sprite v5. Success_03 and Failure_06 play at 70% gain. Same purchased Cute & Cozy license applies.
 Sprite v6 adds Clicked_Out_04 for ordinary confirmation and result actions under the same purchased pack license; drink-specific confirmation audio remains unchanged.
+
+Sprite v7 adds Vrymaa — Glass Cheers Champagne (734622), clip 01, for opening the bar strip. CC0 1.0. Source: https://freesound.org/people/Vrymaa/sounds/734622/
