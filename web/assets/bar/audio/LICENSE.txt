@@ -83,3 +83,5 @@ Sprite v12 additionally includes Error_01 for tied games, from the same purchase
 Sprite v13 adds KVV Audio, GAMEMisc_Dice Rolling Single 01_KVV AUDIO_FREE (Freesound 790971). Source: https://freesound.org/people/KVV_Audio/sounds/790971/ . License: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ . Edits: excerpts 1.73–3.06s and 3.48–4.72s, 6ms edge fades, mono/resampling, second roll offset 120ms. Included as application audio, not a standalone stock collection.
 
 Sprite v14 uses the same KVV Audio excerpts, with the second roll offset changed to 300ms.
+
+Sprite v15 uses the same KVV Audio excerpts, with the second roll offset changed to 200ms.
