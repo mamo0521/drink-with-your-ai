@@ -170,3 +170,8 @@
 .bar-portrait-notice i{font:italic 11px/1.6 'PlayfairLocal',serif;letter-spacing:1.5px;opacity:.6}
 @keyframes barRotateHint{0%,42%{transform:rotate(0)}58%,100%{transform:rotate(-90deg)}}
 @media(prefers-reduced-motion:reduce){.bar-portrait-notice .ph{animation:none;transform:rotate(-90deg)}}
+
+/* Disable double-tap zoom while keeping scrolling and pinch zoom available. */
+:is(.bar-screen,.bf-panel,.bar-strip,.bar-standalone){touch-action:manipulation}
+.bar-standalone{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.bar-standalone :is(input,textarea,[contenteditable]){-webkit-user-select:text;user-select:text}

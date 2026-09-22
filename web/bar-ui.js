@@ -2,6 +2,7 @@
  * drink in the composer. No alcohol/state/chat writes are made by this view. */
 (function(root){
   'use strict';
+  root.document?.addEventListener('dblclick',e=>{const target=e.target;if(!target?.closest?.('.bar-screen,.bf-panel,.bar-strip,.bar-standalone'))return;if(target.closest('input,textarea,[contenteditable]:not([contenteditable="false"])'))return;e.preventDefault();});
   const META=/^<!-- bar-ui: (.*?) -->\r?\n?/m;
   const cleanTitle=s=>String(s||'').replace(/[（(][^（）()]*[）)]/g,'').trim();
   const cjk=s=>/[\u3400-\u9fff]/.test(s);

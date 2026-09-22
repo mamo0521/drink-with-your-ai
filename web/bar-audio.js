@@ -22,7 +22,7 @@
     if(only&&kind!==only)return;
     epoch++;if(voice){voice.onended=null;try{voice.stop();}catch(_){}voice.disconnect();voice=null;}voiceGain?.disconnect();voiceGain=null;kind=null;
   }
-  const handGain=name=>name==='handRock'?.6:name==='handScissors'?.5:1;
+  const handGain=name=>['handRock','handScissors'].includes(name)?.45:1;
   async function play(name,hands,delay=0){
     if((!CUES[name]&&name!=='handsReveal')||root.document?.hidden)return;
     stop();kind=name;const ticket=epoch,started=Date.now(),data=await prepare();
@@ -64,7 +64,7 @@
     if(['让ta自选游戏','游戏'].includes(label)){play('currency');return;}
     if(button.matches('.bar-edit-link,.ww-dot,.ww-swatch')){play('select');return;}
     if(['再来一轮','确认','确定','保存','选这杯','用这个作为赌注','查看结果','带着结果找ta','带着结果去找ta'].includes(label))play('confirm');
-    else if(button.classList.contains('ww-remove')||['取消','cancel'].includes(label))play('cancel');
+    else if(button.classList.contains('ww-remove')||['取消','cancel','重置当前盘面颜色'].includes(label))play('cancel');
     else if(button.classList.contains('bar-back')||button.classList.contains('bf-close')||['收起','关闭','close','知道了','回到赌桌'].includes(label))play('back');
   }
   function isStraight(item){return !!item?.flight||(!item?.special&&STRAIGHT.has(item?.name));}
