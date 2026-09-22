@@ -59,7 +59,7 @@
     function refresh(){return refreshing||(refreshing=call('/barflight').catch(()=>{}).then(()=>flight).finally(()=>{refreshing=null;}));}
     async function start(){const data=await call('/barflight/start',{intimate:!!root.MamoBarBank?.intimate()});return data.flight;}
     // Any way out after a reveal takes the cup along: the ×, the shade, Escape or the button.
-    function close(){root.MamoBarAudio?.stop('flightPour');openVersion++;opening=false;if(!panel)return;panel.remove();panel=null;busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick)options.onCarry?.(pick);}
+    function close(){root.MamoBarAudio?.stop('flightPour');openVersion++;opening=false;if(!panel)return;panel.remove();panel=null;root.MamoBarMusic?.sync();busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick)options.onCarry?.(pick);}
     function glass(cup){
       const b=button('bf-cup','',()=>reveal(cup.n,b));b.dataset.n=cup.n;
       const glass=el('span','bf-glass'),img=el('img','bf-cup-art');img.alt='';img.width=44;img.height=45;glass.append(img);
@@ -126,7 +126,7 @@
         panel.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy){e.preventDefault();root.MamoBarAudio?.play('back');close();}});
         // Sit just above the bar strip wherever the composer has pushed it.
         const anchor=options.anchor?.();if(anchor){const top=anchor.getBoundingClientRect().top;if(top>200)panel.style.setProperty('--bf-bottom',Math.round(root.innerHeight-top+14)+'px');}
-        (options.host||doc.body).append(panel);body();panel.querySelector('.bf-cup:not(:disabled),.bf-close').focus({preventScroll:true});
+        (options.host||doc.body).append(panel);root.MamoBarMusic?.sync();body();panel.querySelector('.bf-cup:not(:disabled),.bf-close').focus({preventScroll:true});
       }finally{if(version===openVersion)opening=false;}
     }
     function review(pick){
@@ -138,7 +138,7 @@
       const x=button('bf-close','×',close);x.setAttribute('aria-label','关闭任务');head.append(x);
       box.append(head,el('p',pick.prank?'bf-prank':'bf-safe',pick.prank||'白水。这一杯没事。'),button('bf-go','知道了',close));
       panel.append(shade,box);panel.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();root.MamoBarAudio?.play('back');close();}});
-      (options.host||doc.body).append(panel);x.focus({preventScroll:true});
+      (options.host||doc.body).append(panel);root.MamoBarMusic?.sync();x.focus({preventScroll:true});
     }
     return {open,close,refresh,start,review,flight:()=>flight};
   }

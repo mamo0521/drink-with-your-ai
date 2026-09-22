@@ -70,9 +70,19 @@
   let musicEntered=false,musicEnabled=true,musicGesture=false,musicPlayer,musicContext,musicGain,musicLoading,musicURL;
   try{musicEnabled=root.localStorage.getItem('bar-music-enabled')!=='off';}catch(_){}
   const musicActive=()=>{if(root.document.querySelector('[data-bar-music-home],.bar-screen:not([hidden])'))musicEntered=true;return musicEntered;};
-  function musicLabels(){root.document.querySelectorAll('.bar-music-toggle').forEach(b=>{b.querySelector('span').textContent=musicEnabled?'on':'off';b.setAttribute('aria-pressed',String(musicEnabled));b.setAttribute('aria-label',musicEnabled?'关闭背景音乐':'开启背景音乐');});}
+  function musicLabels(){root.document.querySelectorAll('.bar-music-toggle').forEach(b=>{b.querySelector('img').src='/assets/bar/ui/music-'+(musicEnabled?'on':'off')+'.svg';b.setAttribute('aria-pressed',String(musicEnabled));b.setAttribute('aria-label',musicEnabled?'关闭背景音乐':'开启背景音乐');});}
+  let portraitNotice;
+  function portraitSync(){
+    const landscape=root.matchMedia('(any-pointer: coarse)').matches&&(Math.abs(Number(root.orientation))===90||root.screen.width>root.screen.height||root.screen.orientation?.type?.startsWith('landscape'));
+    const visible=landscape&&!!root.document.querySelector('[data-bar-music-home],.bar-screen:not([hidden]),.bf-panel');
+    if(visible&&!portraitNotice){portraitNotice=root.document.createElement('div');portraitNotice.className='bar-portrait-notice';portraitNotice.setAttribute('role','alert');portraitNotice.innerHTML='<div><span aria-hidden="true">↻</span><p>请竖屏使用</p><small>转回手机，继续今晚的吧台</small></div>';root.document.body.append(portraitNotice);}
+    if(portraitNotice)portraitNotice.hidden=!visible;
+    return visible;
+  }
+  queueMicrotask(portraitSync);root.addEventListener('resize',portraitSync);root.addEventListener('orientationchange',portraitSync);
+  root.document.addEventListener('keydown',e=>{if(portraitNotice&&!portraitNotice.hidden){e.preventDefault();e.stopImmediatePropagation();}},true);
   async function musicSync(){
-    musicLabels();
+    portraitSync();musicLabels();
     if(!musicEnabled||!musicGesture||root.document.hidden||!musicActive()){musicPlayer?.pause();return;}
     try{
       const AC=root.AudioContext||root.webkitAudioContext;if(!AC)return;
@@ -82,7 +92,7 @@
       if(musicEnabled&&!root.document.hidden&&musicActive())await musicPlayer.play();
     }catch(_){/* A later gesture can retry a blocked or failed load. */}
   }
-  function musicButton(){const b=root.document.createElement('button');b.type='button';b.className='bar-music-toggle';b.innerHTML='<svg viewBox="0 0 30 30" aria-hidden="true"><path d="M10 23V7l16-4v17M10 11l16-4"/><ellipse cx="6" cy="23" rx="4" ry="3.5"/><ellipse cx="22" cy="20" rx="4" ry="3.5"/></svg><span></span>';b.onclick=()=>{musicGesture=true;musicEnabled=!musicEnabled;try{root.localStorage.setItem('bar-music-enabled',musicEnabled?'on':'off');}catch(_){}musicSync();};b.querySelector('span').textContent=musicEnabled?'on':'off';b.setAttribute('aria-label',musicEnabled?'关闭背景音乐':'开启背景音乐');b.setAttribute('aria-pressed',String(musicEnabled));return b;}
+  function musicButton(){const b=root.document.createElement('button');b.type='button';b.className='bar-music-toggle';b.innerHTML='<img src="/assets/bar/ui/music-'+(musicEnabled?'on':'off')+'.svg" alt="" width="61" height="26">';b.onclick=()=>{musicGesture=true;musicEnabled=!musicEnabled;try{root.localStorage.setItem('bar-music-enabled',musicEnabled?'on':'off');}catch(_){}musicSync();};b.setAttribute('aria-label',musicEnabled?'关闭背景音乐':'开启背景音乐');b.setAttribute('aria-pressed',String(musicEnabled));return b;}
   function musicWake(e){if(e.target.closest?.('.bar-music-toggle'))return;musicGesture=true;musicSync();}
   root.document.addEventListener('pointerdown',musicWake,{passive:true});
   root.document.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')musicWake(e);});

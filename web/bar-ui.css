@@ -156,8 +156,11 @@
 @media(max-width:359px){.bar-scroll{padding-left:22px;padding-right:22px}.bar-drink-image{width:42px}.bar-drink-image img{width:42px}.bar-row{column-gap:14px}.bar-detail{padding-left:8px;padding-right:12px}.bar-detail-actions{gap:4px}}
 @media(prefers-reduced-motion:reduce){.bar-detail-slot{transition:none}}
 
-.bar-screen .bar-music-toggle,.bar-music-toggle{position:absolute;right:2px;top:7px;z-index:3;display:flex;align-items:center;gap:4px;width:61px;height:26px;padding:2px 4px;border:0;background:none;color:#963e2e;font:20px/22px BarCaveat,cursive;cursor:pointer}
-.bar-music-toggle svg{width:20px;height:20px;fill:none;stroke:#ad8062;stroke-width:1.3;flex:none}
-.bar-music-toggle span{text-decoration:underline;text-decoration-color:#ad8062;text-decoration-thickness:1px;text-underline-offset:3px}
-.bar-music-toggle:focus-visible{outline:1px solid #ad8062;outline-offset:3px}
+/* Figma 1622:4704: original vector control, aligned with guide/edit at x=318. */
+.bar-screen .bar-music-toggle,.bar-music-toggle{position:absolute;right:13px;top:10px;z-index:3;display:block;width:61px;height:26px;padding:0;border:0;background:none;cursor:pointer}
+.bar-music-toggle img{display:block;width:61px;height:26px;max-width:none}
+.bar-music-toggle:focus-visible{outline:1px solid #a27a62;outline-offset:3px}
 .home-head .bar-music-toggle{top:0;right:-13px}
+.bar-portrait-notice{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#eee8dc;color:#8e3b2c;text-align:center;font:20px/1.6 'MamoWenKai',serif;touch-action:none}
+.bar-portrait-notice[hidden]{display:none}
+.bar-portrait-notice span{font:40px/1 serif}.bar-portrait-notice p{margin:8px 0}.bar-portrait-notice small{font-size:14px;color:#8a7b6c}
