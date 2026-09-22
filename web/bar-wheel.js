@@ -7,7 +7,7 @@
   {name:'晴日',colors:['#F6F1E7','#849EBE','#F7C424','#BDBA16','#3C6078','#DFC9AC']}
  ];
  const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!=null)n.textContent=text;return n;};
- const button=(text,fn,cls='')=>{const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;};
+ const button=(text,fn,cls='')=>{const b=el('button',cls,text);b.type='button';b.onclick=e=>{if(fn){root.MamoBarAudio?.buttonCue(b,text);return fn.call(b,e);}};return b;};
  const image=(name,cls)=>{const i=el('img',cls);i.src=A+'wheel-'+name;i.alt='';i.draggable=false;return i;};
  const clone=x=>JSON.parse(JSON.stringify(x));
  const colorAt=(theme,index)=>index%2?theme.colors[0]:theme.colors[1+Math.floor(index/2)%(theme.colors.length-1)];
@@ -24,7 +24,7 @@
   function show(){
    preset=savedPreset;dispose();const {header,content,footer,layout}=host.shell('THE GAMES','',show);layout.classList.add('ww-layout');host.tabs(header,show);
    const controls=el('div','ww-controls'),mode=el('div','gg-mode ww-mode');mode.style.setProperty('--mode-index',selected);
-   const switchTo=i=>{if(i===selected)return;host.lock(true);mode.style.setProperty('--mode-index',i);layout.inert=true;const timer=setTimeout(()=>{selected=i;show();},matchMedia('(prefers-reduced-motion: reduce)').matches?0:220);const previous=stop;stop=()=>{clearTimeout(timer);previous();};};
+   const switchTo=i=>{if(i===selected||layout.inert)return;root.MamoBarAudio?.play('select');host.lock(true);mode.style.setProperty('--mode-index',i);layout.inert=true;const timer=setTimeout(()=>{selected=i;show();},matchMedia('(prefers-reduced-motion: reduce)').matches?0:220);const previous=stop;stop=()=>{clearTimeout(timer);previous();};};
    ['吧台轮盘','定制轮盘'].forEach((name,i)=>{const b=button(name,()=>switchTo(i),i===selected?'selected':'');b.setAttribute('aria-pressed',String(i===selected));mode.append(b);});
    let down;mode.onpointerdown=e=>down=e.clientX;mode.onpointerup=e=>{if(down!=null&&Math.abs(e.clientX-down)>18)switchTo(e.clientX>down?1:0);down=null;};mode.onpointercancel=()=>down=null;
    mode.onkeydown=e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();switchTo(e.key==='ArrowRight'?1:0);}};
@@ -45,7 +45,7 @@
 
   function presetSwitch(change,allow=()=>true){
    const control=el('div','gg-mode ww-presets');control.setAttribute('aria-label','定制轮盘预设');control.style.setProperty('--mode-index',preset);
-   const select=i=>{if(i===preset||i<0||i>2||!allow())return;preset=i;change();};
+   const select=i=>{if(i===preset||i<0||i>2||!allow())return;root.MamoBarAudio?.play('select');preset=i;change();};
    ['预设一','预设二','预设三'].forEach((name,i)=>{const b=button(name,()=>select(i),i===preset?'selected':'');b.setAttribute('aria-pressed',String(i===preset));control.append(b);});
    let x;control.onpointerdown=e=>x=e.clientX;control.onpointerup=e=>{if(x!=null&&Math.abs(e.clientX-x)>18){select(preset+(e.clientX>x?1:-1));}x=null;};control.onpointercancel=()=>x=null;
    control.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();select(preset+(e.key==='ArrowRight'?1:-1));}};

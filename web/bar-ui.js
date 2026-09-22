@@ -129,6 +129,7 @@
         try{await options.onFlight?.();root.MamoBarAudio?.play('openPour');note.textContent='酒正在准备，请回座——小纸条上会提示你选杯。';await new Promise(r=>root.setTimeout(r,1100));hide();options.onFlightReady?.();}
         catch(e){note.textContent=e.message;confirm.disabled=false;}
       });
+      confirm.dataset.sound='drink';
       actions.append(button('bar-pill','close',onClose),confirm);
       card.append(picture,copy,actions);return card;
     }

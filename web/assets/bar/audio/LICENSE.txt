@@ -64,3 +64,4 @@ Edits: first 5 seconds retained, original opening unchanged, last 0.5 seconds co
 Game/UI cues (v4), purchased Cute & Cozy UI Audio Pack by Case Portman: Failure_06, Success_03, Cancel_08, Clock_Tick_04, Clicked_Out_04, Confirm_02. Edited: mono conversion, application sample rate, level adjustment. Same purchased-pack license above applies.
 
 Game selection update: Clock_Tick_07 replaces Clicked_Out_04 in sprite v5. Success_03 and Failure_06 play at 70% gain. Same purchased Cute & Cozy license applies.
+Sprite v6 adds Clicked_Out_04 for ordinary confirmation and result actions under the same purchased pack license; drink-specific confirmation audio remains unchanged.
