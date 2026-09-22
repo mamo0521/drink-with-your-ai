@@ -59,7 +59,7 @@
     function refresh(){return refreshing||(refreshing=call('/barflight').catch(()=>{}).then(()=>flight).finally(()=>{refreshing=null;}));}
     async function start(){const data=await call('/barflight/start',{intimate:!!root.MamoBarBank?.intimate()});return data.flight;}
     // Any way out after a reveal takes the cup along: the ×, the shade, Escape or the button.
-    function close(){root.MamoBarAudio?.stop('pour');openVersion++;opening=false;if(!panel)return;panel.remove();panel=null;busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick)options.onCarry?.(pick);}
+    function close(){root.MamoBarAudio?.stop('flightPour');openVersion++;opening=false;if(!panel)return;panel.remove();panel=null;busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick)options.onCarry?.(pick);}
     function glass(cup){
       const b=button('bf-cup','',()=>reveal(cup.n,b));b.dataset.n=cup.n;
       const glass=el('span','bf-glass'),img=el('img','bf-cup-art');img.alt='';img.width=44;img.height=45;glass.append(img);
@@ -104,7 +104,7 @@
         // Smoke clears around the empty cup first. Keep geometry fixed through the pour.
         await pause(1350);if(panel!==activePanel)return;
         paint(b,pick.flight.cups[n-1],true);
-        root.MamoBarAudio?.play('pour');
+        root.MamoBarAudio?.play('flightPour');
         await pause(900);if(panel===activePanel){paint(b,pick.flight.cups[n-1]);box.style.height='';result(pick);}
       }catch(e){if(!panel)return;box.style.height='';b.classList.remove('is-smoking');busy=false;if(flight)body();else close();const again=panel?.querySelector('.bf-note');if(again)again.textContent=e.message;}
     }
