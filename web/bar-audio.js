@@ -75,7 +75,7 @@
   function portraitSync(){
     const landscape=root.matchMedia('(any-pointer: coarse)').matches&&(Math.abs(Number(root.orientation))===90||root.screen.width>root.screen.height||root.screen.orientation?.type?.startsWith('landscape'));
     const visible=landscape&&!!root.document.querySelector('[data-bar-music-home],.bar-screen:not([hidden]),.bf-panel');
-    if(visible&&!portraitNotice){portraitNotice=root.document.createElement('div');portraitNotice.className='bar-portrait-notice';portraitNotice.setAttribute('role','alert');portraitNotice.innerHTML='<div><span aria-hidden="true">↻</span><p>请竖屏使用</p><small>转回手机，继续今晚的吧台</small></div>';root.document.body.append(portraitNotice);}
+    if(visible&&!portraitNotice){portraitNotice=root.document.createElement('div');portraitNotice.className='bar-portrait-notice';portraitNotice.setAttribute('role','alert');portraitNotice.innerHTML='<div class="ph" aria-hidden="true"></div><b>请把手机竖过来</b><i>Tournez votre téléphone, s’il vous plaît</i>';root.document.body.append(portraitNotice);}
     if(portraitNotice)portraitNotice.hidden=!visible;
     return visible;
   }
