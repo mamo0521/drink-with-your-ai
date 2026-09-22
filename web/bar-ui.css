@@ -53,7 +53,7 @@
 .bar-subtitle{margin:0;color:var(--bar-ink);font:400 14px/22px 'PlayfairLocal',serif;letter-spacing:5.6px;overflow-wrap:anywhere}
 .bar-subtitle.has-cjk{font-family:'MamoWenKai',serif;letter-spacing:3px}
 .bar-screen .bar-edit-link{position:absolute;right:2px;top:66px;width:72px;display:flex;align-items:center;gap:4px;font:20px/16px BarCaveat,cursive;color:var(--bar-red);padding:4px 6px}
-.bar-screen .bar-guide-link{top:38px}
+.bar-screen .bar-guide-link{top:58px}
 .bar-edit-link img{width:16px;height:16px}
 .bar-edit-link span{text-decoration:underline;text-decoration-color:#a27a62;text-underline-offset:3px}
 .bar-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:none;padding:0 26px 16px;overflow-anchor:none}
@@ -177,3 +177,5 @@
 .bar-standalone :is(input,textarea,[contenteditable]){-webkit-user-select:text;user-select:text}
 
 .bar-screen .bar-nav .bar-nav-edit{position:static;width:auto;justify-content:center;color:var(--bar-red);font:20px/16px BarCaveat,cursive;padding:10px 0}
+
+.bar-screen .bar-music-toggle{top:30px}
