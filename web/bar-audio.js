@@ -1,7 +1,7 @@
 /* Shared, gesture-unlocked sound sprite. One fetch, one active voice, no polling. */
 (function(root){
   'use strict';
-  const CUES={flightPour:[0.3709750566893424,0.88],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
+  const CUES={fizzy:[9.932607709750567,5],flightPour:[0.3709750566893424,0.88],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
   const STRAIGHT=new Set(['清酒','梅子酒','威士忌','白兰地','黑朗姆','朗姆','朗姆酒','白朗姆','伏特加','龙舌兰','金酒']);
   let context,loading,buffer,voice,voiceGain,kind,epoch=0;
   function prepare(){
@@ -12,7 +12,7 @@
       // Called synchronously by the actual click, before network/animation awaits.
       if(context.state==='suspended')context.resume().catch(()=>{});
       if(buffer)return Promise.resolve(buffer);
-      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v2.json')
+      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v3.json')
         .then(r=>{if(!r.ok)throw new Error('audio unavailable');return r.json();})
         .then(data=>context.decodeAudioData(Uint8Array.from(root.atob(data.wav),c=>c.charCodeAt(0)).buffer)).then(data=>buffer=data)
         .catch(()=>null).finally(()=>{loading=null;});
@@ -46,6 +46,7 @@
   function confirmCue(item){
     if(isStraight(item))return 'openPour';
     if(item?.special)return 'cocktail';
+    if(['啤酒','可乐','气泡水'].includes(item?.name))return 'fizzy';
     if(['红茶','热水','普洱','绿茶','白水'].includes(item?.name))return 'pour';
     const name=String(item?.name||'').replace(/[「」『』]/g,'');
     if(Number(item?.std)>0&&(/特调|鸡尾酒/.test(item?.group||'')||['金汤力','长岛冰茶','莫斯科骡子'].includes(name)))return 'cocktail';

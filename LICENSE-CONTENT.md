@@ -44,3 +44,5 @@ Program code is under the PolyForm Noncommercial License 1.0.0 (see LICENSE).
 `web/assets/bar/audio/bar-sfx-v1.json` 和 `bar-sfx-v2.json` 是本应用使用的音效合辑，包含 Cute & Cozy UI Audio Pack 的已购音效及 reasanka 的 CC0 倒酒声，按各自许可使用，不属于上述文案与图片授权。购买音效允许随应用分发，不允许单独提取后作为音效素材发布。来源和许可见 [音效许可](web/assets/bar/audio/LICENSE.txt)。
 
 鸡尾酒音效含 Debsound 的 [Ice Cube In The Glass 08.wav](https://freesound.org/people/Debsound/sounds/278202/)（[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)）及 nikerk 的 [pouring water](https://freesound.org/people/nikerk/sounds/764760/)（CC0）。混音调整了首尾留白、声道、音量和淡入淡出，并按冰块→倒水顺序拼接。使用时保留 Debsound 署名及许可说明；商用须另获该作者授权或替换音效，项目作者的授权不能代替第三方授权。
+
+气泡饮料音效（资源 v3）使用 megashroom 的 [Beer Pouring Into Glass 170427_1449.wav](https://freesound.org/people/megashroom/sounds/390164/)（CC0 1.0）；取前五秒，末半秒淡出并转换为应用音频格式。

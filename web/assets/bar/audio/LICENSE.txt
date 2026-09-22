@@ -54,3 +54,9 @@ Combined with pouring water by nikerk (CC0 1.0)
 https://freesound.org/people/nikerk/sounds/764760/
 Edits: outer silence trimmed, mono conversion, levels adjusted, short fades, ice followed by water with an 80ms gap.
 This cocktail cue retains the attribution and noncommercial requirements of Debsound. Commercial use requires separate permission from Debsound or replacement of that source.
+
+
+Fizzy cue (bar-sfx-v3.json): Beer Pouring Into Glass 170427_1449.wav by megashroom
+https://freesound.org/people/megashroom/sounds/390164/
+CC0 1.0 https://creativecommons.org/publicdomain/zero/1.0/
+Edits: first 5 seconds retained, original opening unchanged, last 0.5 seconds cosine fade-out, resampled to application format.
