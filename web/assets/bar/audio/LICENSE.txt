@@ -69,3 +69,5 @@ Sprite v6 adds Clicked_Out_04 for ordinary confirmation and result actions under
 Sprite v7 adds Vrymaa — Glass Cheers Champagne (734622), clip 01, for opening the bar strip. CC0 1.0. Source: https://freesound.org/people/Vrymaa/sounds/734622/
 
 Background music: Last_Round_at_AM.mp3, supplied by mamo as a Gemini-generated track for this application. Not covered by the CC licenses of the sound effects.
+
+Sprite v8 adds Currency_08 (Cute & Cozy, purchased license above) for game navigation.
