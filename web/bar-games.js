@@ -119,10 +119,10 @@
    function ready(){if(kind==='dice'&&dice.length===2&&!busy)action.disabled=false;}
    async function play(){
     if(busy||game.state.done||kind==='hands'&&choice===null)return;
-    root.MamoBarAudio?.prepare();busy=true;action.disabled=true;switches.querySelectorAll('button').forEach(b=>b.disabled=true);choices?.querySelectorAll('button').forEach(b=>b.disabled=true);layout.querySelector('.bar-back').disabled=true;
+    if(kind==='hands')root.MamoBarAudio?.play('handStart');root.MamoBarAudio?.prepare();busy=true;action.disabled=true;switches.querySelectorAll('button').forEach(b=>b.disabled=true);choices?.querySelectorAll('button').forEach(b=>b.disabled=true);layout.querySelector('.bar-back').disabled=true;
     const roll=game.play(choice);action.textContent=kind==='dice'?'投掷中':'出手中';
     if(kind==='dice')await Promise.all(dice.map(d=>d.roll(roll[d.who])));
-    else{content.classList.add('revealing');await new Promise(r=>setTimeout(r,reduced()?0:550));if(version!==epoch)return;content.classList.remove('revealing');for(const who of ['ta','me']){const p=content.querySelector('.gg-player.'+who);p.querySelector('.gg-revealed-hand').textContent=HANDS[roll[who]];p.querySelector('.gg-hand-name').textContent=HAND_NAMES[roll[who]];}}
+    else{content.classList.add('revealing');await new Promise(r=>setTimeout(r,reduced()?0:550));if(version!==epoch)return;content.classList.remove('revealing');root.MamoBarAudio?.playHands(roll.me,roll.ta);for(const who of ['ta','me']){const p=content.querySelector('.gg-player.'+who);p.querySelector('.gg-revealed-hand').textContent=HANDS[roll[who]];p.querySelector('.gg-hand-name').textContent=HAND_NAMES[roll[who]];}}
     if(version!==epoch)return;updateNumber(scoreNodes.me,game.state.me);updateNumber(scoreNodes.ta,game.state.ta);progress.textContent=kind==='dice'&&game.state.mode===3?game.state.rounds.length+' / 3':kind==='hands'&&roll.winner==='tie'&&!game.state.done?'平手 · 继续出拳':'';
     await new Promise(r=>setTimeout(r,game.state.done?1500:650));if(version!==epoch)return;busy=false;choice=null;layout.querySelector('.bar-back').disabled=false;switches.querySelectorAll('button').forEach(b=>b.disabled=false);action.textContent=game.state.done?'查看结果':kind==='dice'?'投掷':'选定出手';action.disabled=kind==='hands'&&!game.state.done;choices?.querySelectorAll('button').forEach(b=>{b.disabled=game.state.done;b.setAttribute('aria-pressed','false');});
     if(game.state.done)settlement(true);
@@ -130,7 +130,7 @@
   }
   function settlement(announce=false){
    const state=game.state;if(!state.done)return;
-   if(announce&&!soundedResults.has(state)){soundedResults.add(state);if(state.winner==='me')root.MamoBarAudio?.play('success');else if(state.winner==='ta')root.MamoBarAudio?.play('failure');}
+   if(announce&&!soundedResults.has(state)){soundedResults.add(state);if(state.winner==='me')root.MamoBarAudio?.play('success');else if(state.winner==='ta')root.MamoBarAudio?.play('failure');else if(state.winner==='tie')root.MamoBarAudio?.play('tie');}
    const tie=state.winner==='tie';const box=dialog('gg-result'+(tie?' gg-tie':'')+(wager.type==='custom'?' gg-custom-result':''));box.setAttribute('aria-label','游戏结算');box.append(el('p','gg-result-kicker','— 结算 —'),el('h2','',tie?'平局':NAMES[wager.type]+' · '+(state.winner==='me'?'你赢了':'你输了')));
    if(!tie){const image=el('div','gg-result-picture');image.append(wagerArt());box.append(image);}
    const score=el('div','gg-result-score');for(const who of ['ta','me']){const row=el('div');row.append(el('span','',who==='ta'?'Ta':'你'),number(state[who]),el('span','',kind==='dice'?'点':'胜'));score.append(row);}box.append(score);

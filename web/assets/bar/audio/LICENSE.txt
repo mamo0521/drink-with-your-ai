@@ -75,3 +75,7 @@ Sprite v8 adds Currency_08 (Cute & Cozy, purchased license above) for game navig
 Sprite v9 adds Dialogue_Blip_12 (paper), Dialogue_Expression_Angry_01 (scissors), and Dialogue_Expression_Negative_04 (rock), from the purchased Cute & Cozy pack under the license above.
 
 Sprite v10 replaces rock with Dialogue_Expression_Neutral_04 (same purchased Cute & Cozy license). Rock and scissors playback gain is 70%; paper unchanged.
+
+Sprite v11 adds Dialogue_Blip_01 for committing a hand (same purchased pack license). Rock gain 60%, scissors 50%; reveal mixes both selected hand cues simultaneously.
+
+Sprite v12 additionally includes Error_01 for tied games, from the same purchased pack.

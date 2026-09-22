@@ -1,7 +1,7 @@
 /* Shared, gesture-unlocked sound sprite. One fetch, one active voice, no polling. */
 (function(root){
   'use strict';
-  const CUES={handPaper:[23.099773242630384, 0.07965986394557824],handScissors:[23.279433106575965, 0.36741496598639456],handRock:[24.262993197278913, 0.28609977324263036],currency:[22.36562358276644,0.6341496598639456],paper:[21.5821768707483,0.6834467120181406],confirm:[21.2937641723356,0.18841269841269842],failure:[15.032607709750566, 2.2051473922902494],success:[17.337755102040816, 1.9435827664399092],cancel:[19.381337868480724, 0.6138095238095238],back:[20.09514739229025, 0.0981859410430839],select:[20.293333333333333, 0.18793650793650793],start:[20.58126984126984, 0.6124943310657597],fizzy:[9.932607709750567,5],flightPour:[0.3709750566893424,0.88],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
+  const CUES={tie:[24.82548752834467,0.6049433106575963],handStart:[24.649092970521544,0.07639455782312925],handPaper:[23.099773242630384, 0.07965986394557824],handScissors:[23.279433106575965, 0.36741496598639456],handRock:[24.262993197278913, 0.28609977324263036],currency:[22.36562358276644,0.6341496598639456],paper:[21.5821768707483,0.6834467120181406],confirm:[21.2937641723356,0.18841269841269842],failure:[15.032607709750566, 2.2051473922902494],success:[17.337755102040816, 1.9435827664399092],cancel:[19.381337868480724, 0.6138095238095238],back:[20.09514739229025, 0.0981859410430839],select:[20.293333333333333, 0.18793650793650793],start:[20.58126984126984, 0.6124943310657597],fizzy:[9.932607709750567,5],flightPour:[0.3709750566893424,0.88],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
   const STRAIGHT=new Set(['清酒','梅子酒','威士忌','白兰地','黑朗姆','朗姆','朗姆酒','白朗姆','伏特加','龙舌兰','金酒']);
   let context,loading,buffer,voice,voiceGain,kind,epoch=0;
   function prepare(){
@@ -12,7 +12,7 @@
       // Called synchronously by the actual click, before network/animation awaits.
       if(context.state==='suspended')context.resume().catch(()=>{});
       if(buffer)return Promise.resolve(buffer);
-      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v10.json')
+      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v12.json')
         .then(r=>{if(!r.ok)throw new Error('audio unavailable');return r.json();})
         .then(data=>context.decodeAudioData(Uint8Array.from(root.atob(data.wav),c=>c.charCodeAt(0)).buffer)).then(data=>buffer=data)
         .catch(()=>null).finally(()=>{loading=null;});
@@ -22,13 +22,23 @@
     if(only&&kind!==only)return;
     epoch++;if(voice){voice.onended=null;try{voice.stop();}catch(_){}voice.disconnect();voice=null;}voiceGain?.disconnect();voiceGain=null;kind=null;
   }
-  async function play(name){
-    if(!CUES[name]||root.document?.hidden)return;
+  const handGain=name=>name==='handRock'?.6:name==='handScissors'?.5:1;
+  async function play(name,hands){
+    if((!CUES[name]&&name!=='handsReveal')||root.document?.hidden)return;
     stop();kind=name;const ticket=epoch,started=Date.now(),data=await prepare();
     // Never replay a late download after the relevant visual has passed.
     if(!data||ticket!==epoch||Date.now()-started>700||root.document?.hidden||context.state!=='running')return;
     try{
-      const source=context.createBufferSource();source.buffer=data;
+      const source=context.createBufferSource();let playback=data;
+      if(name==='handsReveal'){
+        const names=hands.map(h=>['handRock','handPaper','handScissors'][h]);
+        const rate=data.sampleRate,mix=context.createBuffer(1,Math.ceil(Math.max(...names.map(n=>CUES[n][1]))*rate),rate),out=mix.getChannelData(0),input=data.getChannelData(0);
+        for(const n of names){const offset=Math.round(CUES[n][0]*rate),length=Math.round(CUES[n][1]*rate),gain=handGain(n);for(let i=0;i<length;i++)out[i]+=input[offset+i]*gain;}
+        let peak=0;for(const sample of out)peak=Math.max(peak,Math.abs(sample));
+        if(peak>.98)for(let i=0;i<out.length;i++)out[i]*=.98/peak;
+        playback=mix;
+      }
+      source.buffer=playback;
       // Blind reveal: a short excerpt of the same pour, natural pitch, soft ending.
       let envelope=null;
       if(name==='flightPour'){
@@ -37,12 +47,12 @@
         envelope.gain.setValueAtTime(1,now+.78);envelope.gain.linearRampToValueAtTime(0,now+.88);
         source.connect(envelope);envelope.connect(context.destination);
       }else if(['success','failure','handRock','handScissors'].includes(name)){
-        envelope=context.createGain();envelope.gain.value=.7;
+        envelope=context.createGain();envelope.gain.value=name.startsWith('hand')?handGain(name):.7;
         source.connect(envelope);envelope.connect(context.destination);
       }else source.connect(context.destination);
       voice=source;voiceGain=envelope;
       source.onended=()=>{source.disconnect();envelope?.disconnect();if(voice===source){voice=null;voiceGain=null;kind=null;}};
-      source.start(0,...CUES[name]);
+      if(name==='handsReveal')source.start(0);else source.start(0,...CUES[name]);
     }catch(_){stop();}
   }
   function buttonCue(button,text=''){
@@ -52,7 +62,7 @@
     if(['让ta看酒单','看酒单›','✦点酒'].includes(label)){play('paper');return;}
     if(['让ta自选游戏','游戏'].includes(label)){play('currency');return;}
     if(button.matches('.bar-edit-link,.ww-dot,.ww-swatch')){play('select');return;}
-    if(['确认','确定','保存','选这杯','用这个作为赌注','查看结果','带着结果找ta','带着结果去找ta'].includes(label))play('confirm');
+    if(['再来一轮','确认','确定','保存','选这杯','用这个作为赌注','查看结果','带着结果找ta','带着结果去找ta'].includes(label))play('confirm');
     else if(['取消','cancel'].includes(label))play('cancel');
     else if(button.classList.contains('bar-back')||button.classList.contains('bf-close')||['收起','关闭','close','知道了','回到赌桌'].includes(label))play('back');
   }
@@ -101,5 +111,5 @@
   root.document.addEventListener('visibilitychange',musicSync);
   root.addEventListener('pagehide',()=>musicPlayer?.pause());
   root.MamoBarMusic={button:musicButton,sync:()=>queueMicrotask(musicSync)};
-  root.MamoBarAudio={prepare,play,stop,isStraight,confirmCue,buttonCue};
+  root.MamoBarAudio={prepare,play,playHands:(me,ta)=>{if([me,ta].every(h=>[0,1,2].includes(h)))return play('handsReveal',[me,ta]);},stop,isStraight,confirmCue,buttonCue};
 })(typeof window!=='undefined'?window:globalThis);
