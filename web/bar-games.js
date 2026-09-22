@@ -34,7 +34,7 @@
   async function loadTruths(){try{const r=await (options.fetch||root.fetch)('/barfile?which=questions');const d=await r.json();bankText=d.text||'';factoryText=d.factory||'';loadPools();}catch(e){bankText='';loadPools();}if(!screen.hidden&&view==='setup')setup();}
   function destroyDice(){dice.forEach(d=>d.dispose());dice=[];}
   function closeModal(){if(!modal)return;modal.querySelector('.gg-modal')?._disposeArt?.();modal._shade?.remove();modal.remove();modal=null;layout.inert=false;modalFocus?.focus?.({preventScroll:true});}
-  function hide(){epoch++;busy=false;wheelUI?.dispose();destroyDice();closeModal();screen.hidden=true;root.MamoBarMusic?.sync();inerts.forEach(([n,v])=>n.inert=v);inerts=[];focusBefore?.focus?.({preventScroll:true});}
+  function hide(){root.MamoBarAudio?.stop('diceRoll');epoch++;busy=false;wheelUI?.dispose();destroyDice();closeModal();screen.hidden=true;root.MamoBarMusic?.sync();inerts.forEach(([n,v])=>n.inert=v);inerts=[];focusBefore?.focus?.({preventScroll:true});}
   function shell(title,subtitle,arch=false,back=setup){
    epoch++;wheelUI?.dispose();destroyDice();closeModal();screen.replaceChildren();layout=el('div','bar-layout gg-layout'+(arch?' gg-arch':' gg-flat'));
    layout.append(el('div','bar-frame'));const header=el('header','gg-header');
@@ -121,10 +121,10 @@
     if(busy||game.state.done||kind==='hands'&&choice===null)return;
     if(kind==='hands')root.MamoBarAudio?.play('handStart');root.MamoBarAudio?.prepare();busy=true;action.disabled=true;switches.querySelectorAll('button').forEach(b=>b.disabled=true);choices?.querySelectorAll('button').forEach(b=>b.disabled=true);layout.querySelector('.bar-back').disabled=true;
     const roll=game.play(choice);action.textContent=kind==='dice'?'投掷中':'出手中';
-    if(kind==='dice')await Promise.all(dice.map(d=>d.roll(roll[d.who])));
+    if(kind==='dice'){root.MamoBarAudio?.playDice();await Promise.all(dice.map(d=>d.roll(roll[d.who])));}
     else{content.classList.add('revealing');await new Promise(r=>setTimeout(r,reduced()?0:550));if(version!==epoch)return;content.classList.remove('revealing');root.MamoBarAudio?.playHands(roll.me,roll.ta);for(const who of ['ta','me']){const p=content.querySelector('.gg-player.'+who);p.querySelector('.gg-revealed-hand').textContent=HANDS[roll[who]];p.querySelector('.gg-hand-name').textContent=HAND_NAMES[roll[who]];}}
     if(version!==epoch)return;updateNumber(scoreNodes.me,game.state.me);updateNumber(scoreNodes.ta,game.state.ta);progress.textContent=kind==='dice'&&game.state.mode===3?game.state.rounds.length+' / 3':kind==='hands'&&roll.winner==='tie'&&!game.state.done?'平手 · 继续出拳':'';
-    await new Promise(r=>setTimeout(r,game.state.done?1500:650));if(version!==epoch)return;busy=false;choice=null;layout.querySelector('.bar-back').disabled=false;switches.querySelectorAll('button').forEach(b=>b.disabled=false);action.textContent=game.state.done?'查看结果':kind==='dice'?'投掷':'选定出手';action.disabled=kind==='hands'&&!game.state.done;choices?.querySelectorAll('button').forEach(b=>{b.disabled=game.state.done;b.setAttribute('aria-pressed','false');});
+    await new Promise(r=>setTimeout(r,kind==='dice'&&!reduced()?1600:game.state.done?1500:650));if(version!==epoch)return;busy=false;choice=null;layout.querySelector('.bar-back').disabled=false;switches.querySelectorAll('button').forEach(b=>b.disabled=false);action.textContent=game.state.done?'查看结果':kind==='dice'?'投掷':'选定出手';action.disabled=kind==='hands'&&!game.state.done;choices?.querySelectorAll('button').forEach(b=>{b.disabled=game.state.done;b.setAttribute('aria-pressed','false');});
     if(game.state.done)settlement(true);
    }
   }
