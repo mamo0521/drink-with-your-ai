@@ -117,4 +117,12 @@ A personal side project made in spare time. Issues are welcome — replies may b
   [CC BY-NC-SA 4.0](LICENSE-CONTENT.md) —— 署名 mamo，不得商用，改编须同样共享。
 - 字体与 three.js 各按原许可，清单见 [LICENSE-CONTENT.md](LICENSE-CONTENT.md)。
 
+### 第三方付费音效
+
+本项目使用了 Case Portman 的 **Cute & Cozy UI Audio Pack**。这些付费音效仅作为本应用的组成部分提供，**不属于本项目代码或文案、美术许可的授权范围**。下载本项目不代表获得了音效素材的独立使用授权。
+
+- 可以正常使用本应用，也可以录制、分享包含这些音效的游戏画面。
+- **请勿提取音效用于其他项目，或将其单独分享、出售、上传供下载、重新打包成音效包或素材库。** 如需用于自己的项目，请向[原作者购买授权](https://caseportman.itch.io/cute-cozy-ui-sfx)。
+- 其他第三方音源按各自许可执行；具体来源、署名和使用条件见[音频许可清单](web/assets/bar/audio/LICENSE.txt)。本项目的授权不能替代第三方授权。
+
 由 mamo 设计与写作，Claude Code 与 Codex 实现。Designed & written by mamo, built with Claude Code and Codex.
