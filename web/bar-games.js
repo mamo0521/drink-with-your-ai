@@ -17,13 +17,14 @@
  const NAMES={drink:'喝一杯',truth:'真心话',dare:'大冒险',custom:'自定义'};
  const HANDS=['✊','✋','✌️'],HAND_NAMES=['石头','布','剪刀'];
  const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!=null)n.textContent=text;return n;};
- const btn=(text,fn,cls='')=>{const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;};
+ const btn=(text,fn,cls='')=>{const b=el('button',cls,text);b.type='button';b.onclick=e=>{if(fn){root.MamoBarAudio?.buttonCue(b,text);return fn.call(b,e);}};return b;};
  const pic=(src,cls='',alt='')=>{const i=el('img',cls);i.src=src;i.alt=alt;return i;};
  const art=(name,cls='')=>pic(A+name+'.svg',cls);
  function drinkPic(drink){if(!drink)return pic(A+'game-empty-cup.svg','gg-empty-cup','待选酒');const i=pic('/assets/bar/'+encodeURIComponent(drink.name.replace(/[:/\\?*"<>|]/g,'-'))+'.png','gg-drink-art',drink.name);i.onerror=()=>{i.onerror=null;i.src='/assets/bar/default.svg';};return i;}
  function create(options={}){
   const screen=el('section','bar-screen gg-screen');screen.hidden=true;screen.tabIndex=-1;screen.setAttribute('aria-label','吧台游戏');screen.setAttribute('role','dialog');screen.setAttribute('aria-modal','true');document.body.append(screen);
   let menu=[],wager={type:'drink',drink:null,custom:''},kind='dice',modes={dice:1,hands:1},game=null,layout,content,footer,modal=null,focusBefore=null,inerts=[],dice=[],busy=false,choice=null,epoch=0,view='setup',modalFocus=null,pools={truth:[],dare:[]},shownTruths=[],bankText='',factoryText='';
+  const soundedResults=new WeakSet();
   const reduced=()=>root.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const randomInt=options.bankRandom||root.MamoBarGameEngine.randomInt;
   // The bank is a convenience; without it the blank question box still works.
@@ -64,20 +65,20 @@
    const board=el('div','gg-wager-board');const grid=el('div','gg-wagers');board.append(grid);
    for(const type of ['drink','truth','dare','custom']){
     const tile=el('div','gg-wager'+(wager.type===type?' selected':''));
-    const select=btn('',()=>{if(type==='custom'){customNote();return;}wager.type=type;setup();},'gg-wager-select');select.setAttribute('aria-label',NAMES[type]);select.setAttribute('aria-pressed',String(wager.type===type));
+    const select=btn('',()=>{if(type==='custom'){root.MamoBarAudio?.play('select');customNote();return;}if(wager.type!==type)root.MamoBarAudio?.play('select');wager.type=type;setup();},'gg-wager-select');select.setAttribute('aria-label',NAMES[type]);select.setAttribute('aria-pressed',String(wager.type===type));
     if(type==='drink'){const change=btn('',()=>pickDrink(),'gg-change');change.append(pic(ASSETS.swap));change.setAttribute('aria-label','换酒');tile.append(change);const im=btn('',()=>pickDrink(),'gg-wager-picture');im.setAttribute('aria-label',wager.drink?'换酒：'+wager.drink.name:'选择一杯酒');im.append(pic(A+'flight-cup-empty.svg','gg-wager-cup','喝一杯'));tile.append(im);}
     else {const im=el('span','gg-wager-picture');im.append(type==='custom'?el('span','gg-note-mini',wager.custom||'输的人今晚洗碗……'):pic(ASSETS[type],'gg-card-art',NAMES[type]));select.append(im);}
     select.append(el('strong','',NAMES[type]),el('small','',type==='drink'?(wager.drink?'醉意 + '+Number(wager.drink.std).toFixed(1):'选一杯作为赌注'):type==='truth'?(pools.truth.length?pools.truth.length+' 道题，输的人答':'输的人答一个'):type==='dare'?(pools.dare.length?pools.dare.length+' 道题，输的人做':'输的人做一件'):'写一句'));tile.append(select);grid.append(tile);
    }
    const ornament=el('span','gg-cross');ornament.append(art('footer-star'));grid.append(ornament);content.append(board,heading('怎么分胜负'));
-   const games=el('div','gg-kind');for(const [value,label,en,symbol] of [['dice','骰子 · 比大小','dice','⚄'],['hands','猜拳','hands','✊']]){const b=btn('',()=>{if(kind===value)return;kind=value;underlineGroup='kind';setup();},value===kind?'selected':'');b.setAttribute('aria-pressed',String(value===kind));b.append(el('span','gg-kind-icon',symbol),el('span','',label),el('em','',en));games.append(b);}animateUnderline(games,'kind');content.append(games);
-   footer.append(hex('开局 · '+(kind==='dice'?'掷骰':'猜拳'),()=>{if(wager.type==='drink'&&!wager.drink){pickDrink();return;}start();}));
+   const games=el('div','gg-kind');for(const [value,label,en,symbol] of [['dice','骰子 · 比大小','dice','⚄'],['hands','猜拳','hands','✊']]){const b=btn('',()=>{if(kind===value)return;root.MamoBarAudio?.play('select');kind=value;underlineGroup='kind';setup();},value===kind?'selected':'');b.setAttribute('aria-pressed',String(value===kind));b.append(el('span','gg-kind-icon',symbol),el('span','',label),el('em','',en));games.append(b);}animateUnderline(games,'kind');content.append(games);
+   footer.append(hex('开局 · '+(kind==='dice'?'掷骰':'猜拳'),()=>{if(wager.type==='drink'&&!wager.drink){pickDrink();return;}root.MamoBarAudio?.play('start');start();}));
   }
   function pickDrink(){
    view='picker';shell('PICK A DRINK','选一杯作为赌注',true,setup);layout.classList.add('gg-picker-layout');content.classList.add('gg-picker');for(const side of ['left','right']){const corner=el('span','bar-header-corner '+side);corner.append(art('header-corners'));layout.querySelector('.gg-header').append(corner);}let selected=wager.drink;
    const groups=[...new Set(menu.map(i=>i.group))];
    for(const group of groups){content.append(heading(group));const en=el('em','gg-group-en',root.MamoBarUI.groupEnglish(group));content.append(en);const grid=el('div','gg-drink-grid');for(const item of menu.filter(i=>i.group===group)){
-    const b=btn('',()=>{selected=item;content.querySelectorAll('.gg-drink-choice').forEach(n=>{n.classList.remove('selected');n.setAttribute('aria-pressed','false');});b.classList.add('selected');b.setAttribute('aria-pressed','true');confirm.disabled=false;},'gg-drink-choice'+(selected?.name===item.name?' selected':''));b.setAttribute('aria-pressed',String(selected?.name===item.name));b.append(drinkPic(item));const copy=el('span','bar-drink-copy');copy.append(el('span','bar-drink-name',item.name));if(item.name_en)copy.append(el('span','bar-drink-en',item.name_en));copy.append(el('span','bar-drink-std',item.std?'✦ + '+Number(item.std).toFixed(1):'无酒精'));b.append(copy);grid.append(b);
+    const b=btn('',()=>{if(selected!==item)root.MamoBarAudio?.play('select');selected=item;content.querySelectorAll('.gg-drink-choice').forEach(n=>{n.classList.remove('selected');n.setAttribute('aria-pressed','false');});b.classList.add('selected');b.setAttribute('aria-pressed','true');confirm.disabled=false;},'gg-drink-choice'+(selected?.name===item.name?' selected':''));b.setAttribute('aria-pressed',String(selected?.name===item.name));b.append(drinkPic(item));const copy=el('span','bar-drink-copy');copy.append(el('span','bar-drink-name',item.name));if(item.name_en)copy.append(el('span','bar-drink-en',item.name_en));copy.append(el('span','bar-drink-std',item.std?'✦ + '+Number(item.std).toFixed(1):'无酒精'));b.append(copy);grid.append(b);
    }content.append(grid);}
    if(!menu.length)content.append(el('p','gg-empty','酒单暂时为空，先来一轮真心话？'));
    const confirm=hex('选这杯',()=>{if(!selected)return;wager.drink={...selected};wager.type='drink';setup();});confirm.disabled=!selected;footer.append(confirm);
@@ -94,7 +95,7 @@
   function table(){
    view='table';shell('THE TABLE',kind==='dice'?'骰子 · 比大小':'猜拳',true,()=>{if(busy)return;setup();});const version=epoch;
    const switches=el('div','gg-mode');switches.setAttribute('role','group');switches.setAttribute('aria-label','选择游戏模式');switches.style.setProperty('--mode-index',game.state.mode===1?0:1);
-   const switchMode=mode=>{if(busy||modes[kind]===mode)return;busy=true;switches.style.setProperty('--mode-index',mode===1?0:1);[...switches.children].forEach((b,i)=>{b.classList.toggle('selected',i===(mode===1?0:1));b.setAttribute('aria-pressed',String(i===(mode===1?0:1)));});const play=footer.querySelector('.gg-play');if(play)play.disabled=true;setTimeout(()=>{if(version!==epoch)return;modes[kind]=mode;start();},reduced()?0:220);};
+   const switchMode=mode=>{if(busy||modes[kind]===mode)return;root.MamoBarAudio?.play('select');busy=true;switches.style.setProperty('--mode-index',mode===1?0:1);[...switches.children].forEach((b,i)=>{b.classList.toggle('selected',i===(mode===1?0:1));b.setAttribute('aria-pressed',String(i===(mode===1?0:1)));});const play=footer.querySelector('.gg-play');if(play)play.disabled=true;setTimeout(()=>{if(version!==epoch)return;modes[kind]=mode;start();},reduced()?0:220);};
    for(const mode of [1,3]){const b=btn(kind==='dice'?(mode===1?'单掷':'三掷'):(mode===1?'一局定输赢':'三局两胜'),()=>switchMode(mode),game.state.mode===mode?'selected':'');b.setAttribute('aria-pressed',String(game.state.mode===mode));switches.append(b);}
    let dragX=null;switches.addEventListener('pointerdown',e=>{if(!busy)dragX=e.clientX;});switches.addEventListener('pointerup',e=>{if(dragX===null)return;const dx=e.clientX-dragX;dragX=null;if(Math.abs(dx)>18){e.preventDefault();switchMode(dx>0?3:1);}});switches.addEventListener('pointercancel',()=>dragX=null);
    switches.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();switchMode(e.key==='ArrowRight'?3:1);}});layout.querySelector('.gg-header').append(switches);
@@ -110,7 +111,7 @@
    }
    let choices;
    if(kind==='hands'){
-    choices=el('div','gg-hands-choices');for(const hand of [0,2,1]){const b=btn(HANDS[hand],()=>{if(busy||game.state.done)return;choice=hand;choices.querySelectorAll('button').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));action.disabled=false;},'gg-hand-choice');b.setAttribute('aria-label',HAND_NAMES[hand]);b.setAttribute('aria-pressed','false');b.disabled=game.state.done;choices.append(b);}content.append(choices);
+    choices=el('div','gg-hands-choices');for(const hand of [0,2,1]){const b=btn(HANDS[hand],()=>{if(busy||game.state.done)return;if(choice!==hand)root.MamoBarAudio?.play('select');choice=hand;choices.querySelectorAll('button').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));action.disabled=false;},'gg-hand-choice');b.setAttribute('aria-label',HAND_NAMES[hand]);b.setAttribute('aria-pressed','false');b.disabled=game.state.done;choices.append(b);}content.append(choices);
     const score=el('div','gg-match-score');for(const who of ['ta','me']){const p=el('div');p.append(el('span','',who==='ta'?'Ta':'我'));scoreNodes[who]=number(game.state[who]);p.append(scoreNodes[who]);score.append(p);}content.append(score);
    }
    const progress=el('p','gg-progress',kind==='dice'&&game.state.mode===3?game.state.rounds.length+' / 3':'');progress.setAttribute('aria-live','polite');footer.append(progress);
@@ -118,17 +119,19 @@
    function ready(){if(kind==='dice'&&dice.length===2&&!busy)action.disabled=false;}
    async function play(){
     if(busy||game.state.done||kind==='hands'&&choice===null)return;
-    busy=true;action.disabled=true;switches.querySelectorAll('button').forEach(b=>b.disabled=true);choices?.querySelectorAll('button').forEach(b=>b.disabled=true);layout.querySelector('.bar-back').disabled=true;
+    root.MamoBarAudio?.prepare();busy=true;action.disabled=true;switches.querySelectorAll('button').forEach(b=>b.disabled=true);choices?.querySelectorAll('button').forEach(b=>b.disabled=true);layout.querySelector('.bar-back').disabled=true;
     const roll=game.play(choice);action.textContent=kind==='dice'?'投掷中':'出手中';
     if(kind==='dice')await Promise.all(dice.map(d=>d.roll(roll[d.who])));
     else{content.classList.add('revealing');await new Promise(r=>setTimeout(r,reduced()?0:550));if(version!==epoch)return;content.classList.remove('revealing');for(const who of ['ta','me']){const p=content.querySelector('.gg-player.'+who);p.querySelector('.gg-revealed-hand').textContent=HANDS[roll[who]];p.querySelector('.gg-hand-name').textContent=HAND_NAMES[roll[who]];}}
     if(version!==epoch)return;updateNumber(scoreNodes.me,game.state.me);updateNumber(scoreNodes.ta,game.state.ta);progress.textContent=kind==='dice'&&game.state.mode===3?game.state.rounds.length+' / 3':kind==='hands'&&roll.winner==='tie'&&!game.state.done?'平手 · 继续出拳':'';
     await new Promise(r=>setTimeout(r,game.state.done?1500:650));if(version!==epoch)return;busy=false;choice=null;layout.querySelector('.bar-back').disabled=false;switches.querySelectorAll('button').forEach(b=>b.disabled=false);action.textContent=game.state.done?'查看结果':kind==='dice'?'投掷':'选定出手';action.disabled=kind==='hands'&&!game.state.done;choices?.querySelectorAll('button').forEach(b=>{b.disabled=game.state.done;b.setAttribute('aria-pressed','false');});
-    if(game.state.done)settlement();
+    if(game.state.done)settlement(true);
    }
   }
-  function settlement(){
-   const state=game.state;if(!state.done)return;const tie=state.winner==='tie';const box=dialog('gg-result'+(tie?' gg-tie':'')+(wager.type==='custom'?' gg-custom-result':''));box.setAttribute('aria-label','游戏结算');box.append(el('p','gg-result-kicker','— 结算 —'),el('h2','',tie?'平局':NAMES[wager.type]+' · '+(state.winner==='me'?'你赢了':'Ta 赢了')));
+  function settlement(announce=false){
+   const state=game.state;if(!state.done)return;
+   if(announce&&!soundedResults.has(state)){soundedResults.add(state);if(state.winner==='me')root.MamoBarAudio?.play('success');else if(state.winner==='ta')root.MamoBarAudio?.play('failure');}
+   const tie=state.winner==='tie';const box=dialog('gg-result'+(tie?' gg-tie':'')+(wager.type==='custom'?' gg-custom-result':''));box.setAttribute('aria-label','游戏结算');box.append(el('p','gg-result-kicker','— 结算 —'),el('h2','',tie?'平局':NAMES[wager.type]+' · '+(state.winner==='me'?'你赢了':'Ta 赢了')));
    if(!tie){const image=el('div','gg-result-picture');image.append(wagerArt());box.append(image);}
    const score=el('div','gg-result-score');for(const who of ['ta','me']){const row=el('div');row.append(el('span','',who==='ta'?'Ta':'你'),number(state[who]),el('span','',kind==='dice'?'点':'胜'));score.append(row);}box.append(score);
    const needsQuestion=!tie&&state.winner==='me'&&['truth','dare'].includes(wager.type);
@@ -151,7 +154,7 @@
    if(input){go.disabled=!input.value.trim();input.oninput=()=>{state.question=input.value;go.disabled=!input.value.trim();};}
    actions.append(hex('收起',closeModal,false),go);box.append(actions);resultArt(box).catch(()=>box.classList.add('gg-frame-error'));
   }
-  screen.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();if(modal)closeModal();else if(!busy){if(view==='setup'){hide();options.onClose?.();}else setup();}}if(e.key==='Tab'){const scope=modal||screen;const list=[...scope.querySelectorAll('button:not(:disabled),textarea,input,[tabindex="0"]')].filter(n=>n.getClientRects().length&&!n.closest('[inert]'));if(!list.length)return;const first=list[0],last=list.at(-1);if(e.shiftKey&&(document.activeElement===first||document.activeElement===scope)){e.preventDefault();last.focus();}else if(!e.shiftKey&&(document.activeElement===last||document.activeElement===scope)){e.preventDefault();first.focus();}}});
+  screen.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();if(modal){root.MamoBarAudio?.play('back');closeModal();}else if(!busy){root.MamoBarAudio?.play('back');if(view==='setup'){hide();options.onClose?.();}else setup();}}if(e.key==='Tab'){const scope=modal||screen;const list=[...scope.querySelectorAll('button:not(:disabled),textarea,input,[tabindex="0"]')].filter(n=>n.getClientRects().length&&!n.closest('[inert]'));if(!list.length)return;const first=list[0],last=list.at(-1);if(e.shiftKey&&(document.activeElement===first||document.activeElement===scope)){e.preventDefault();last.focus();}else if(!e.shiftKey&&(document.activeElement===last||document.activeElement===scope)){e.preventDefault();first.focus();}}});
 return {open(def={}){menu=def.menu||[];shownTruths=[];loadTruths();wager={type:'drink',drink:null,custom:''};game=null;carriedWheel=null;choice=null;if(screen.hidden){focusBefore=document.activeElement;inerts=[...document.body.children].filter(n=>n!==screen&&n.tagName!=='SCRIPT'&&n.tagName!=='STYLE').map(n=>[n,n.inert]);inerts.forEach(([n])=>n.inert=true);}screen.hidden=false;screen.focus();setup();},hide,resume(payload){if(payload){const p=JSON.parse(JSON.stringify(payload));carriedWheel=p.kind==='wheel'?p:null;if(!carriedWheel){kind=p.kind;wager=p.wager;modes[kind]=p.mode;game=root.MamoBarGameEngine.create({kind,mode:p.mode,wager});Object.assign(game.state,p);}}focusBefore=document.activeElement;screen.hidden=false;inerts=[...document.body.children].filter(n=>n!==screen&&n.tagName!=='SCRIPT'&&n.tagName!=='STYLE').map(n=>[n,n.inert]);inerts.forEach(([n])=>n.inert=true);if(carriedWheel){wheelUI.show();wheelReveal(carriedWheel.result,carriedWheel);}else{table();settlement();}},getState:()=>game?.state};
  }
  root.MamoBarGames={create};

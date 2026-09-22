@@ -1,7 +1,7 @@
 /* Shared, gesture-unlocked sound sprite. One fetch, one active voice, no polling. */
 (function(root){
   'use strict';
-  const CUES={fizzy:[9.932607709750567,5],flightPour:[0.3709750566893424,0.88],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
+  const CUES={failure:[15.032607709750566, 2.2051473922902494],success:[17.337755102040816, 1.9435827664399092],cancel:[19.381337868480724, 0.6138095238095238],back:[20.09514739229025, 0.0981859410430839],select:[20.293333333333333, 0.18841269841269842],start:[20.581746031746032, 0.6124943310657597],fizzy:[9.932607709750567,5],flightPour:[0.3709750566893424,0.88],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
   const STRAIGHT=new Set(['清酒','梅子酒','威士忌','白兰地','黑朗姆','朗姆','朗姆酒','白朗姆','伏特加','龙舌兰','金酒']);
   let context,loading,buffer,voice,voiceGain,kind,epoch=0;
   function prepare(){
@@ -12,7 +12,7 @@
       // Called synchronously by the actual click, before network/animation awaits.
       if(context.state==='suspended')context.resume().catch(()=>{});
       if(buffer)return Promise.resolve(buffer);
-      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v3.json')
+      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v4.json')
         .then(r=>{if(!r.ok)throw new Error('audio unavailable');return r.json();})
         .then(data=>context.decodeAudioData(Uint8Array.from(root.atob(data.wav),c=>c.charCodeAt(0)).buffer)).then(data=>buffer=data)
         .catch(()=>null).finally(()=>{loading=null;});
@@ -42,6 +42,12 @@
       source.start(0,...CUES[name]);
     }catch(_){stop();}
   }
+  function buttonCue(button,text=''){
+    if(button.disabled)return;
+    const label=text.trim().toLowerCase();
+    if(['取消','cancel'].includes(label))play('cancel');
+    else if(button.classList.contains('bar-back')||button.classList.contains('bf-close')||['收起','关闭','close','知道了','回到赌桌'].includes(label))play('back');
+  }
   function isStraight(item){return !!item?.flight||(!item?.special&&STRAIGHT.has(item?.name));}
   function confirmCue(item){
     if(isStraight(item))return 'openPour';
@@ -54,5 +60,5 @@
   }
   root.document?.addEventListener('visibilitychange',()=>{if(root.document.hidden)stop();});
   root.addEventListener?.('pagehide',()=>stop());
-  root.MamoBarAudio={prepare,play,stop,isStraight,confirmCue};
+  root.MamoBarAudio={prepare,play,stop,isStraight,confirmCue,buttonCue};
 })(typeof window!=='undefined'?window:globalThis);

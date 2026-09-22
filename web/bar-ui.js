@@ -73,7 +73,7 @@
   function create(options){
     const doc=root.document;
     const el=(tag,cls,text)=>{const n=doc.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;};
-    const button=(cls,text,fn)=>{const n=el('button',cls,text);n.type='button';n.onclick=fn;return n;};
+    const button=(cls,text,fn)=>{const n=el('button',cls,text);n.type='button';n.onclick=e=>{if(fn){root.MamoBarAudio?.buttonCue(n,text);return fn.call(n,e);}};return n;};
     const icon=name=>{const i=el('img');i.src='/assets/bar/ui/'+name+'.svg';i.alt='';return i;};
     const screen=el('section','bar-screen');screen.hidden=true;screen.setAttribute('role','dialog');screen.setAttribute('aria-modal','true');screen.setAttribute('aria-label','吧台酒单');screen.tabIndex=-1;doc.body.append(screen);
     let def={},meta={},rawBar='',items=[],selection=null,lastFocus=null,layout=null,scroll=null,menuScroll=0;
@@ -154,7 +154,7 @@
           function closeDetail(){slot.classList.remove('is-open');slot.inert=true;activeButton?.setAttribute('aria-expanded','false');activeButton?.focus({preventScroll:true});scroll.scrollTop=selectionScroll;activeSlot=null;activeButton=null;selection=null;}
           for(const item of group.items.slice(i,i+2)){
             const b=button('bar-drink','',()=>{
-              if(activeButton===b){closeDetail();return;}
+              if(activeButton===b){root.MamoBarAudio?.play('back');closeDetail();return;}
               root.MamoBarAudio?.play('detail');
               if(activeSlot){activeSlot.classList.remove('is-open');activeSlot.inert=true;activeButton?.setAttribute('aria-expanded','false');}
               selectionScroll=scroll.scrollTop;
@@ -263,7 +263,7 @@
       finally{editorBusy=false;editorButtons.forEach(b=>b.disabled=false);}
     }
     screen.addEventListener('keydown',e=>{
-      if(e.key==='Escape'){e.preventDefault();if(!editorBusy){if(screen.classList.contains('bar-editor'))exitEditor();else leave();}}
+      if(e.key==='Escape'){e.preventDefault();if(!editorBusy){root.MamoBarAudio?.play('back');if(screen.classList.contains('bar-editor'))exitEditor();else leave();}}
       if(e.key==='Tab'){
         const focusable=[...screen.querySelectorAll('button:not(:disabled),input,textarea')].filter(n=>!n.closest('[inert]'));
         const first=focusable[0],last=focusable.at(-1);if(!first)return;

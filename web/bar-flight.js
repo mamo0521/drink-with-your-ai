@@ -43,7 +43,7 @@
   function create(options={}){
     const doc=root.document;
     const el=(tag,cls,text)=>{const n=doc.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;};
-    const button=(cls,text,fn)=>{const b=el('button',cls,text);b.type='button';b.onclick=fn;return b;};
+    const button=(cls,text,fn)=>{const b=el('button',cls,text);b.type='button';b.onclick=e=>{if(fn){root.MamoBarAudio?.buttonCue(b,text);return fn.call(b,e);}};return b;};
     const reduced=()=>root.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let flight=null,panel=null,busy=false,focusBefore=null,revealed=null,announcedOwed='',opening=false,openVersion=0,refreshing=null;
     async function call(url,body){
@@ -122,8 +122,8 @@
       try{await refresh();if(version!==openVersion||panel)return;
         if(!flight){options.onEmpty?.();return;}
         panel=el('div','bf-panel');panel.setAttribute('role','dialog');panel.setAttribute('aria-label','盲品');
-        const shade=el('div','bf-shade');shade.onclick=()=>{if(!busy)close();};panel.append(shade,el('div','bf-box'));
-        panel.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy){e.preventDefault();close();}});
+        const shade=el('div','bf-shade');shade.onclick=()=>{if(!busy){root.MamoBarAudio?.play('back');close();}};panel.append(shade,el('div','bf-box'));
+        panel.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy){e.preventDefault();root.MamoBarAudio?.play('back');close();}});
         // Sit just above the bar strip wherever the composer has pushed it.
         const anchor=options.anchor?.();if(anchor){const top=anchor.getBoundingClientRect().top;if(top>200)panel.style.setProperty('--bf-bottom',Math.round(root.innerHeight-top+14)+'px');}
         (options.host||doc.body).append(panel);body();panel.querySelector('.bf-cup:not(:disabled),.bf-close').focus({preventScroll:true});
@@ -132,12 +132,12 @@
     function review(pick){
       if(panel||opening)return;focusBefore=doc.activeElement;revealed=null;
       panel=el('div','bf-panel bf-review');panel.setAttribute('role','dialog');panel.setAttribute('aria-label',pick.cup+'号杯 · '+(pick.prank?'任务':'白水'));
-      const shade=el('div','bf-shade');shade.onclick=close;
+      const shade=el('div','bf-shade');shade.onclick=()=>{root.MamoBarAudio?.play('back');close();};
       const box=el('div','bf-box'),head=el('header','bf-head');
       head.append(el('p','bf-kicker','— blind flight —'),el('h2','',pick.cup+'号杯 · '+(pick.prank?'任务':'白水')));
       const x=button('bf-close','×',close);x.setAttribute('aria-label','关闭任务');head.append(x);
       box.append(head,el('p',pick.prank?'bf-prank':'bf-safe',pick.prank||'白水。这一杯没事。'),button('bf-go','知道了',close));
-      panel.append(shade,box);panel.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close();}});
+      panel.append(shade,box);panel.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();root.MamoBarAudio?.play('back');close();}});
       (options.host||doc.body).append(panel);x.focus({preventScroll:true});
     }
     return {open,close,refresh,start,review,flight:()=>flight};
