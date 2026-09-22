@@ -214,7 +214,7 @@
       const version=++editorVersion;shell(true);editorButtons=[];
       const tabs=el('div','bar-editor-tabs');tabs.setAttribute('role','tablist');
       for(const [key,cn,en] of [['names','吧台名称','bar name'],['bar','酒单与规矩','menu & rules'],['alcohol','醉态口吻','tipsy voice'],['questions','题库','questions']]){
-        const b=button('',cn,()=>{if(editorBusy)return;editorTab=key;renderEditor();});b.append(el('em','',en));b.setAttribute('role','tab');b.setAttribute('aria-selected',String(editorTab===key));tabs.append(b);editorButtons.push(b);
+        const b=button('',cn,()=>{if(editorBusy||editorTab===key)return;root.MamoBarAudio?.play('select');editorTab=key;renderEditor();});b.append(el('em','',en));b.setAttribute('role','tab');b.setAttribute('aria-selected',String(editorTab===key));tabs.append(b);editorButtons.push(b);
       }
       layout.append(tabs);const body=el('div','bar-editor-body');const hint=el('p','bar-editor-hint');
       hint.textContent='修改方法详见下，按照格式写';

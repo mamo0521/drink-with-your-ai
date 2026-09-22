@@ -125,7 +125,7 @@
      row.append(dot,input,remove);wrap.append(row);list.append(wrap);
     });
     if(draft.cells.length<12)list.append(button('+　加一格（'+draft.cells.length+' / 12）',()=>{
-     if(!finishEdit(true))return;
+     if(!finishEdit(true))return;root.MamoBarAudio?.play('select');
      const colors=themes[draft.theme].colors,last=draft.cells.at(-1).color,light=colors[0],index=draft.cells.length;
      draft.cells.push({text:'',color:last.toUpperCase()===light.toUpperCase()?colors[1+Math.floor(index/2)%(colors.length-1)]:light});
      editing={index,original:'',added:true};drawList();drawActions();const input=list.querySelectorAll('input')[index];input.focus();input.scrollIntoView({block:'nearest'});
@@ -135,7 +135,7 @@
     palette.replaceChildren();
     themes.forEach((theme,i)=>{
      const row=el('div','ww-theme'),choose=button('',()=>{
-      if(!finishEdit(true))return;draft.theme=i;draft.cells.forEach((c,j)=>c.color=colorAt(theme,j));drawList();drawThemes();
+      if(!finishEdit(true))return;root.MamoBarAudio?.play('select');draft.theme=i;draft.cells.forEach((c,j)=>c.color=colorAt(theme,j));drawList();drawThemes();
      },'ww-theme-choice');
      choose.setAttribute('aria-label','应用'+theme.name+'主题');choose.setAttribute('aria-pressed',String(draft.theme===i));
      choose.append(el('span','ww-theme-name',theme.name));

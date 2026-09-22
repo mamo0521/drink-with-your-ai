@@ -49,6 +49,7 @@
     if(button.disabled)return;
     const label=(button.textContent||text).replace(/\s/g,'').toLowerCase();
     if(button.dataset.sound==='drink')return;
+    if(button.matches('.bar-edit-link,.ww-dot,.ww-swatch')){play('select');return;}
     if(['确认','确定','保存','选这杯','用这个作为赌注','查看结果','带着结果找ta','带着结果去找ta'].includes(label))play('confirm');
     else if(['取消','cancel'].includes(label))play('cancel');
     else if(button.classList.contains('bar-back')||button.classList.contains('bf-close')||['收起','关闭','close','知道了','回到赌桌'].includes(label))play('back');
@@ -66,9 +67,9 @@
   root.document?.addEventListener('visibilitychange',()=>{if(root.document.hidden)stop();});
   root.addEventListener?.('pagehide',()=>stop());
   // One looping music player, independent of the short effect voice.
-  let musicEnabled=true,musicGesture=false,musicPlayer,musicContext,musicGain,musicLoading,musicURL;
+  let musicEntered=false,musicEnabled=true,musicGesture=false,musicPlayer,musicContext,musicGain,musicLoading,musicURL;
   try{musicEnabled=root.localStorage.getItem('bar-music-enabled')!=='off';}catch(_){}
-  const musicActive=()=>!!root.document.querySelector('[data-bar-music-home],.bar-screen:not([hidden])');
+  const musicActive=()=>{if(root.document.querySelector('[data-bar-music-home],.bar-screen:not([hidden])'))musicEntered=true;return musicEntered;};
   function musicLabels(){root.document.querySelectorAll('.bar-music-toggle').forEach(b=>{b.querySelector('span').textContent=musicEnabled?'on':'off';b.setAttribute('aria-pressed',String(musicEnabled));b.setAttribute('aria-label',musicEnabled?'关闭背景音乐':'开启背景音乐');});}
   async function musicSync(){
     musicLabels();
