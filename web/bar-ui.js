@@ -83,9 +83,9 @@
     async function json(url,init){const r=await (options.fetch||root.fetch)(url,init);const data=await r.json();if(!r.ok||data.ok===false)throw new Error(data.error||'读取失败，请重试');return data;}
     function activate(){
       if(screen.hidden){lastFocus=doc.activeElement;inertRestore=[...doc.body.children].filter(n=>n!==screen&&n.tagName!=='SCRIPT'&&n.tagName!=='STYLE').map(n=>[n,n.inert]);inertRestore.forEach(([n])=>n.inert=true);}
-      screen.hidden=false;screen.focus({preventScroll:true});
+      screen.hidden=false;root.MamoBarMusic?.sync();screen.focus({preventScroll:true});
     }
-    function hide(){openVersion++;editorVersion++;screen.hidden=true;screen.replaceChildren();inertRestore.forEach(([n,v])=>n.inert=v);inertRestore=[];lastFocus?.focus?.({preventScroll:true});}
+    function hide(){openVersion++;editorVersion++;screen.hidden=true;root.MamoBarMusic?.sync();screen.replaceChildren();inertRestore.forEach(([n,v])=>n.inert=v);inertRestore=[];lastFocus?.focus?.({preventScroll:true});}
     function leave(){if(editorDirty&&!root.confirm('放弃尚未保存的修改，返回酒单？'))return;editorDirty=false;hide();options.onClose?.();}
     function titleNodes(title,subtitle,parent){
       const t=el('h1','bar-title'+(cjk(title)?' has-cjk':''),title);
@@ -101,7 +101,7 @@
         for(const [name,cls] of [['star-base','bar-star-base'],['star-lines','bar-star-lines'],['star-ne','bar-star-ray bar-star-ne'],['star-se','bar-star-ray bar-star-se'],['star-nw','bar-star-ray bar-star-nw'],['star-sw','bar-star-ray bar-star-sw']]){const i=icon(name);i.className=cls;star.append(i);}
         const leftStar=el('span','bar-header-corner left');leftStar.append(icon('header-corners'));
         const rightStar=el('span','bar-header-corner right');rightStar.append(icon('header-corners'));
-        header.append(star,leftStar,rightStar);
+        header.append(star,leftStar,rightStar);if(root.MamoBarMusic)header.append(root.MamoBarMusic.button());
         titleNodes(meta.title||"AMBER",meta.subtitle??'AFTERHOURS',header);
         const guide=button('bar-edit-link bar-guide-link','',()=>openGuide());guide.append(icon('guide'),el('span','','guide'));guide.setAttribute('aria-label','吧台玩法说明');header.append(guide);
         const edit=button('bar-edit-link','',()=>openEditor());edit.append(icon('edit'),el('span','','edit'));edit.setAttribute('aria-label','编辑酒单');header.append(edit);

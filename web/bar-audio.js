@@ -65,5 +65,28 @@
   }
   root.document?.addEventListener('visibilitychange',()=>{if(root.document.hidden)stop();});
   root.addEventListener?.('pagehide',()=>stop());
+  // One looping music player, independent of the short effect voice.
+  let musicEnabled=true,musicGesture=false,musicPlayer,musicContext,musicGain,musicLoading,musicURL;
+  try{musicEnabled=root.localStorage.getItem('bar-music-enabled')!=='off';}catch(_){}
+  const musicActive=()=>!!root.document.querySelector('[data-bar-music-home],.bar-screen:not([hidden])');
+  function musicLabels(){root.document.querySelectorAll('.bar-music-toggle').forEach(b=>{b.querySelector('span').textContent=musicEnabled?'on':'off';b.setAttribute('aria-pressed',String(musicEnabled));b.setAttribute('aria-label',musicEnabled?'关闭背景音乐':'开启背景音乐');});}
+  async function musicSync(){
+    musicLabels();
+    if(!musicEnabled||!musicGesture||root.document.hidden||!musicActive()){musicPlayer?.pause();return;}
+    try{
+      const AC=root.AudioContext||root.webkitAudioContext;if(!AC)return;
+      if(!musicPlayer){musicPlayer=new root.Audio();musicPlayer.loop=true;musicPlayer.preload='none';musicContext=new AC();musicGain=musicContext.createGain();musicGain.gain.value=.12;musicContext.createMediaElementSource(musicPlayer).connect(musicGain);musicGain.connect(musicContext.destination);}
+      await musicContext.resume();
+      if(!musicURL){await (musicLoading ||= root.fetch('/assets/bar/audio/last-round-v1.json').then(r=>{if(!r.ok)throw Error('music unavailable');return r.json();}).then(d=>root.fetch('data:audio/mpeg;base64,'+d.base64).then(r=>r.blob())).then(blob=>{musicURL=URL.createObjectURL(blob);musicPlayer.src=musicURL;}).finally(()=>{musicLoading=null;}));}
+      if(musicEnabled&&!root.document.hidden&&musicActive())await musicPlayer.play();
+    }catch(_){/* A later gesture can retry a blocked or failed load. */}
+  }
+  function musicButton(){const b=root.document.createElement('button');b.type='button';b.className='bar-music-toggle';b.innerHTML='<svg viewBox="0 0 30 30" aria-hidden="true"><path d="M10 23V7l16-4v17M10 11l16-4"/><ellipse cx="6" cy="23" rx="4" ry="3.5"/><ellipse cx="22" cy="20" rx="4" ry="3.5"/></svg><span></span>';b.onclick=()=>{musicGesture=true;musicEnabled=!musicEnabled;try{root.localStorage.setItem('bar-music-enabled',musicEnabled?'on':'off');}catch(_){}musicSync();};b.querySelector('span').textContent=musicEnabled?'on':'off';b.setAttribute('aria-label',musicEnabled?'关闭背景音乐':'开启背景音乐');b.setAttribute('aria-pressed',String(musicEnabled));return b;}
+  function musicWake(e){if(e.target.closest?.('.bar-music-toggle'))return;musicGesture=true;musicSync();}
+  root.document.addEventListener('pointerdown',musicWake,{passive:true});
+  root.document.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')musicWake(e);});
+  root.document.addEventListener('visibilitychange',musicSync);
+  root.addEventListener('pagehide',()=>musicPlayer?.pause());
+  root.MamoBarMusic={button:musicButton,sync:()=>queueMicrotask(musicSync)};
   root.MamoBarAudio={prepare,play,stop,isStraight,confirmCue,buttonCue};
 })(typeof window!=='undefined'?window:globalThis);
