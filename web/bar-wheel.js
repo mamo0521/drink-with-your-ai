@@ -114,6 +114,7 @@
      const wrap=el('div','ww-row-wrap'),row=el('div','ww-row'),dot=button('',()=>openPalette(i,wrap,dot),'ww-dot');
      dot.style.background=c.color;dot.setAttribute('aria-label','第'+(i+1)+'格颜色');dot.setAttribute('aria-pressed','false');
      const input=el('input');input.value=c.text;input.maxLength=24;input.placeholder='写下这一格';input.setAttribute('aria-label','第'+(i+1)+'格内容');
+     input.onclick=()=>root.MamoBarAudio?.play('select');
      input.onfocus=()=>{
       if(editing&&editing.index!==i){if(!draft.cells[editing.index].text.trim()){list.querySelectorAll('.ww-row input')[editing.index]?.focus();return;}editing=null;}
       if(!editing)editing={index:i,original:c.text,added:false};drawActions();
