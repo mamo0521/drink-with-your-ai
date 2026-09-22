@@ -71,3 +71,5 @@ Sprite v7 adds Vrymaa — Glass Cheers Champagne (734622), clip 01, for opening 
 Background music: Last_Round_at_AM.mp3, supplied by mamo as a Gemini-generated track for this application. Not covered by the CC licenses of the sound effects.
 
 Sprite v8 adds Currency_08 (Cute & Cozy, purchased license above) for game navigation.
+
+Sprite v9 adds Dialogue_Blip_12 (paper), Dialogue_Expression_Angry_01 (scissors), and Dialogue_Expression_Negative_04 (rock), from the purchased Cute & Cozy pack under the license above.

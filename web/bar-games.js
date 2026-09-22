@@ -111,7 +111,7 @@
    }
    let choices;
    if(kind==='hands'){
-    choices=el('div','gg-hands-choices');for(const hand of [0,2,1]){const b=btn(HANDS[hand],()=>{if(busy||game.state.done)return;if(choice!==hand)root.MamoBarAudio?.play('select');choice=hand;choices.querySelectorAll('button').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));action.disabled=false;},'gg-hand-choice');b.setAttribute('aria-label',HAND_NAMES[hand]);b.setAttribute('aria-pressed','false');b.disabled=game.state.done;choices.append(b);}content.append(choices);
+    choices=el('div','gg-hands-choices');for(const hand of [0,2,1]){const b=btn(HANDS[hand],()=>{if(busy||game.state.done)return;if(choice!==hand)root.MamoBarAudio?.play(['handRock','handPaper','handScissors'][hand]);choice=hand;choices.querySelectorAll('button').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));action.disabled=false;},'gg-hand-choice');b.setAttribute('aria-label',HAND_NAMES[hand]);b.setAttribute('aria-pressed','false');b.disabled=game.state.done;choices.append(b);}content.append(choices);
     const score=el('div','gg-match-score');for(const who of ['ta','me']){const p=el('div');p.append(el('span','',who==='ta'?'Ta':'我'));scoreNodes[who]=number(game.state[who]);p.append(scoreNodes[who]);score.append(p);}content.append(score);
    }
    const progress=el('p','gg-progress',kind==='dice'&&game.state.mode===3?game.state.rounds.length+' / 3':'');progress.setAttribute('aria-live','polite');footer.append(progress);
