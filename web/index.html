@@ -144,7 +144,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
     onReload:loadDef
   });
   async function openMenu(){try{await loadDef();}catch(e){toast(e.message);}ui.open(barDef);}
-  $('open-menu').onclick=openMenu;
+  $('open-menu').onclick=()=>{MamoBarAudio?.play('paper');openMenu();};
   // 结束营业：把今晚的记录收进历史、首页清空；小机的醉意不动（照常慢慢醒），没揭完的盲品也留着。
   $('close-night').onclick=async()=>{if(!$('log').children.length){toast('今晚还没开张呢');return;}if(!confirm('结束营业？今晚的记录会收进历史，首页清空。\nTa 的醉意不会清零，没揭完的盲品也还在。'))return;try{await api('/bar/close',{});toast('打烊了。明晚见');}catch(e){toast(e.message);}refresh();};
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
