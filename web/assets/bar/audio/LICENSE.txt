@@ -91,3 +91,5 @@ Sprite v16 replaces dice audio with joanneneedsthesound, Dice Rolling - Dungeon 
 Current background music: Last_Glass_at_Midnight.mp3, supplied by mamo as Gemini-generated music. Replaces Last Round at AM; playback gain remains 12%.
 
 Sprite v17 adds Vrymaa champagne clink excerpt 13, https://freesound.org/people/Vrymaa/sounds/734622/ (CC0), and KVV Audio excerpt03 for dice selection (CC BY 4.0, source and edits above). Converted to mono/44.1kHz.
+
+Sprite v18 adds tony_bear, prize wheel, https://freesound.org/people/tony_bear/sounds/274007/ (CC0 1.0). Excerpt 32.675–36.675 seconds, converted to mono, original speed.
