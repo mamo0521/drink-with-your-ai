@@ -73,3 +73,5 @@ Background music: Last_Round_at_AM.mp3, supplied by mamo as a Gemini-generated t
 Sprite v8 adds Currency_08 (Cute & Cozy, purchased license above) for game navigation.
 
 Sprite v9 adds Dialogue_Blip_12 (paper), Dialogue_Expression_Angry_01 (scissors), and Dialogue_Expression_Negative_04 (rock), from the purchased Cute & Cozy pack under the license above.
+
+Sprite v10 replaces rock with Dialogue_Expression_Neutral_04 (same purchased Cute & Cozy license). Rock and scissors playback gain is 70%; paper unchanged.
