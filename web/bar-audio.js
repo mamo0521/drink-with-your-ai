@@ -100,7 +100,7 @@
       const AC=root.AudioContext||root.webkitAudioContext;if(!AC)return;
       if(!musicPlayer){musicPlayer=new root.Audio();musicPlayer.loop=true;musicPlayer.preload='none';musicContext=new AC();musicGain=musicContext.createGain();musicGain.gain.value=.12;musicContext.createMediaElementSource(musicPlayer).connect(musicGain);musicGain.connect(musicContext.destination);}
       await musicContext.resume();
-      if(!musicURL){await (musicLoading ||= root.fetch('/assets/bar/audio/last-round-v1.json').then(r=>{if(!r.ok)throw Error('music unavailable');return r.json();}).then(d=>root.fetch('data:audio/mpeg;base64,'+d.base64).then(r=>r.blob())).then(blob=>{musicURL=URL.createObjectURL(blob);musicPlayer.src=musicURL;}).finally(()=>{musicLoading=null;}));}
+      if(!musicURL){await (musicLoading ||= root.fetch('/assets/bar/audio/last-glass-v1.json').then(r=>{if(!r.ok)throw Error('music unavailable');return r.json();}).then(d=>root.fetch('data:audio/mpeg;base64,'+d.base64).then(r=>r.blob())).then(blob=>{musicURL=URL.createObjectURL(blob);musicPlayer.src=musicURL;}).finally(()=>{musicLoading=null;}));}
       if(musicEnabled&&!root.document.hidden&&musicActive())await musicPlayer.play();
     }catch(_){/* A later gesture can retry a blocked or failed load. */}
   }
