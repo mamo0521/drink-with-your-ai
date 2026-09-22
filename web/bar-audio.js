@@ -63,7 +63,7 @@
     if(['让ta自选游戏','游戏'].includes(label)){play('currency');return;}
     if(button.matches('.bar-edit-link,.ww-dot,.ww-swatch')){play('select');return;}
     if(['再来一轮','确认','确定','保存','选这杯','用这个作为赌注','查看结果','带着结果找ta','带着结果去找ta'].includes(label))play('confirm');
-    else if(['取消','cancel'].includes(label))play('cancel');
+    else if(button.classList.contains('ww-remove')||['取消','cancel'].includes(label))play('cancel');
     else if(button.classList.contains('bar-back')||button.classList.contains('bf-close')||['收起','关闭','close','知道了','回到赌桌'].includes(label))play('back');
   }
   function isStraight(item){return !!item?.flight||(!item?.special&&STRAIGHT.has(item?.name));}
