@@ -98,3 +98,5 @@ Sprite v19 adds Warning_03, Clock_Tick_06, Menu_Open_01, Menu_Close_02 (purchase
 
 Sprite v20: soda uses Taira Komori, Pouring_coke.mp3, https://freesound.org/people/Taira%20Komori/sounds/212735/ (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/). Excerpt 0.5–4.0s, final 0.5s fade-out, mono/44.1kHz. Beer retains megashroom above.
 Tea and owner-reserve drink use paul_sutyrin, pouring tea, https://freesound.org/people/paul_sutyrin/sounds/262322/ (CC BY 4.0). Combined respectively with nikerk, teacup set down, https://freesound.org/people/nikerk/sounds/764772/ (CC0), and Vrymaa ceramic box excerpt03, https://freesound.org/people/Vrymaa/sounds/734625/ (CC0). Edits: ceramic +5dB, silence trimmed, 80ms joining gap, short edge fades, mono/44.1kHz.
+
+Sprite v21 extends the same Taira Komori soda excerpt to source 0.5–5.0s, fading from source 4.0–5.0s. Other cues unchanged.
