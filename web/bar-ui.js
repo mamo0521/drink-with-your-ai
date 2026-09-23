@@ -35,6 +35,7 @@
     if(/常备/.test(t))return 'House classics';
     if(/特调/.test(t))return 'House creations';
     if(/茶|无酒精/.test(t))return 'Tea & soft drinks';
+    if(/私藏/.test(t))return 'Owner’s reserve';
     return '';
   }
   function nameEnglish(item){
