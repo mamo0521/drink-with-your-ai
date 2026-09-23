@@ -2,6 +2,11 @@
  * been revealed and asks the server to reveal one more. */
 (function(root){
   'use strict';
+  function expiresAt(flight){
+    const started=flight?.started;if(!started)return NaN;
+    return Date.parse(/(?:Z|[+-]\d{2}:?\d{2})$/.test(started)?started:started+'+08:00')+70*60*1000;
+  }
+  function isExpired(flight){return !!flight?.expired||Date.now()>=expiresAt(flight);}
   const WHO={me:'你',ta:'Ta'};
   // Strip copy for an active flight; null when there is none.
   function stripText(flight){
@@ -45,21 +50,27 @@
     const el=(tag,cls,text)=>{const n=doc.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;};
     const button=(cls,text,fn)=>{const b=el('button',cls,text);b.type='button';b.onclick=e=>{if(fn){root.MamoBarAudio?.buttonCue(b,text);return fn.call(b,e);}};return b;};
     const reduced=()=>root.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let flight=null,panel=null,busy=false,focusBefore=null,revealed=null,announcedOwed='',opening=false,openVersion=0,refreshing=null;
+    let flight=null,panel=null,busy=false,focusBefore=null,revealed=null,announcedOwed='',opening=false,openVersion=0,refreshing=null,expiryTimer=null;
+    function changed(){
+      clearTimeout(expiryTimer);
+      if(isExpired(flight)){flight={...flight,done:true,expired:true,turn:null};delete flight.owed;revealed=null;}
+      else if(Number.isFinite(expiresAt(flight)))expiryTimer=setTimeout(changed,Math.max(0,expiresAt(flight)-Date.now()));
+      options.onChange?.(flight);
+    }
     async function call(url,body){
       // 连不上（吧台进程正在重启 / 换班）≠ 出错：等一下再试，揭杯这类请求服务器端是幂等的，重发安全。
       let r,tries=0;
       for(;;){try{r=await (options.fetch||root.fetch)(url,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined);break;}
         catch(e){if(++tries>2)throw new Error('吧台暂时没有回应。等几秒再点一次');await new Promise(done=>setTimeout(done,1500));}}
       const data=await r.json().catch(()=>({}));
-      if(data.flight!==undefined){flight=data.flight;options.onChange?.(flight);const owedKey=flight?.owed?flight.id+':'+flight.owed.cup:'';if(owedKey&&owedKey!==announcedOwed&&!revealed){announcedOwed=owedKey;options.onCarry?.({...flight.owed,who:'me',flight});}}
+      if(data.flight!==undefined){flight=data.flight;changed();const owedKey=flight?.owed?flight.id+':'+flight.owed.cup:'';if(owedKey&&owedKey!==announcedOwed&&!revealed){announcedOwed=owedKey;options.onCarry?.({...flight.owed,who:'me',flight});}}
       if(!r.ok||data.ok===false)throw new Error(data.error||'吧台没有回应，请重试');
       return data;
     }
     function refresh(){return refreshing||(refreshing=call('/barflight').catch(()=>{}).then(()=>flight).finally(()=>{refreshing=null;}));}
     async function start(){const data=await call('/barflight/start',{intimate:!!root.MamoBarBank?.intimate()});return data.flight;}
     // Any way out after a reveal takes the cup along: the ×, the shade, Escape or the button.
-    function close(){root.MamoBarAudio?.stop('flightPour');root.MamoBarAudio?.stop('cupTap');openVersion++;opening=false;if(!panel)return;panel.remove();panel=null;root.MamoBarMusic?.sync();busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick)options.onCarry?.(pick);}
+    function close(){root.MamoBarAudio?.stop('flightPour');root.MamoBarAudio?.stop('cupTap');openVersion++;opening=false;if(!panel)return;panel.remove();panel=null;root.MamoBarMusic?.sync();busy=false;focusBefore?.focus?.({preventScroll:true});const pick=revealed;revealed=null;if(pick&&!isExpired(pick.flight))options.onCarry?.(pick);}
     function glass(cup){
       const b=button('bf-cup','',()=>reveal(cup.n,b));b.dataset.n=cup.n;
       const glass=el('span','bf-glass'),img=el('img','bf-cup-art');img.alt='';img.width=44;img.height=45;glass.append(img);
@@ -100,7 +111,7 @@
         const image=new Image();image.src='/assets/bar/ui/'+art(pick.flight.cups[n-1])+'.svg';
         await Promise.all([image,...b.querySelectorAll('.bf-smoke img')].map(img=>img.decode().catch(()=>{})));
         if(panel!==activePanel)return;
-        flight=pick.flight;options.onChange?.(flight);b.classList.add('is-fresh');
+        flight=pick.flight;changed();b.classList.add('is-fresh');
         // Smoke clears around the empty cup first. Keep geometry fixed through the pour.
         await pause(1350);if(panel!==activePanel)return;
         paint(b,pick.flight.cups[n-1],true);
@@ -130,7 +141,7 @@
       }finally{if(version===openVersion)opening=false;}
     }
     function review(pick){
-      if(panel||opening)return;focusBefore=doc.activeElement;revealed=null;
+      if(panel||opening||isExpired(pick.flight))return;focusBefore=doc.activeElement;revealed=null;
       panel=el('div','bf-panel bf-review');panel.setAttribute('role','dialog');panel.setAttribute('aria-label',pick.cup+'号杯 · '+(pick.prank?'任务':'白水'));
       const shade=el('div','bf-shade');shade.onclick=()=>{root.MamoBarAudio?.play('back');close();};
       const box=el('div','bf-box'),head=el('header','bf-head');
@@ -142,5 +153,5 @@
     }
     return {open,close,refresh,start,review,flight:()=>flight};
   }
-  const api={create,stripText,tone,art,carryText,encode,decode};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.MamoBarFlight=api;
+  const api={isExpired,create,stripText,tone,art,carryText,encode,decode};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.MamoBarFlight=api;
 })(typeof window!=='undefined'?window:globalThis);

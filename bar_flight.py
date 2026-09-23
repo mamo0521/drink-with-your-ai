@@ -134,7 +134,7 @@ def _load(path):
         now = datetime.fromisoformat(_lib.now_iso())
         started = datetime.fromisoformat(flight['started'])
         if now - started >= timedelta(minutes=FLIGHT_TTL_MIN):
-            # 所有入口都在账本锁内读取；已揭记录和未交付任务保留，剩余暗杯作废。
+            # 所有入口都在账本锁内读取；保留已揭历史，暗杯和未发送纸条一起到期。
             flight.update(done=True, expired=True)
             book['last'], book['active'] = flight, None
             _gamestore.atomic_write_json(path, book)
@@ -156,12 +156,13 @@ def _public(flight):
         cups.append(row)
     out = {'id': flight['id'], 'turn': None if flight['done'] else flight['turn'], 'done': flight['done'],
            'left': [c['n'] for c in cups if not c['revealed']], 'cups': cups, 'started': flight['started']}
-    if flight.get('expired'):
-        out['expired'] = True
+    expired = flight.get('expired') or (datetime.fromisoformat(_lib.now_iso()) - datetime.fromisoformat(flight['started']) >= timedelta(minutes=FLIGHT_TTL_MIN))
+    if expired:
+        out.update(expired=True, done=True, turn=None)
     # 她揭了但还没随消息交给 Ta 的那一杯：前端据此把小卡放回待发送区（关弹窗、刷新都甩不掉）。
     # 只看她最近揭的那一杯；更早的杯子已经过去了，不回头翻旧账。
     owed = next((p for p in reversed(flight['picks']) if p['who'] == 'me'), None)
-    if owed and not owed.get('sent'):
+    if owed and not owed.get('sent') and not expired:
         c = flight['cups'][owed['cup'] - 1]
         out['owed'] = {'cup': owed['cup'], 'name': c['name'], 'std': c['std'], 'tier': c['tier'], 'prank': c['prank']}
     return out
