@@ -1,7 +1,7 @@
 /* Shared, gesture-unlocked sound sprite. One fetch, one active voice, no polling. */
 (function(root){
   'use strict';
-  const CUES={wheelReveal:[33.13657596371882, 0.8627437641723356],shuffle:[34.09931972789116, 0.43333333333333335],intimateOn:[34.63265306122449, 0.2219047619047619],intimateOff:[34.95455782312925, 0.16514739229024944],taMenu:[35.2197052154195, 0.8281179138321996],wheelSpin:[29.03657596371882,4],cupTap:[26.97299319727891, 0.6235827664399093],diceSelect:[27.69657596371882, 1.24],diceRoll:[25.530430839002268,1.342562358276644],tie:[24.82548752834467,0.6049433106575963],handStart:[24.649092970521544,0.07639455782312925],handPaper:[23.099773242630384, 0.07965986394557824],handScissors:[23.279433106575965, 0.36741496598639456],handRock:[24.262993197278913, 0.28609977324263036],currency:[22.36562358276644,0.6341496598639456],paper:[21.5821768707483,0.6834467120181406],confirm:[21.2937641723356,0.18841269841269842],failure:[15.032607709750566, 2.2051473922902494],success:[17.337755102040816, 1.9435827664399092],cancel:[19.381337868480724, 0.6138095238095238],back:[20.09514739229025, 0.0981859410430839],select:[20.293333333333333, 0.18793650793650793],start:[20.58126984126984, 0.6124943310657597],fizzy:[9.932607709750567,5],flightPour:[0.1709750566893424,2.681904761904762],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
+  const CUES={soda:[36.1478231292517, 3.5],tonic:[39.7478231292517, 3.1414739229024944],tea:[42.98929705215419, 3.318095238095238],wheelReveal:[33.13657596371882, 0.8627437641723356],shuffle:[34.09931972789116, 0.43333333333333335],intimateOn:[34.63265306122449, 0.2219047619047619],intimateOff:[34.95455782312925, 0.16514739229024944],taMenu:[35.2197052154195, 0.8281179138321996],wheelSpin:[29.03657596371882,4],cupTap:[26.97299319727891, 0.6235827664399093],diceSelect:[27.69657596371882, 1.24],diceRoll:[25.530430839002268,1.342562358276644],tie:[24.82548752834467,0.6049433106575963],handStart:[24.649092970521544,0.07639455782312925],handPaper:[23.099773242630384, 0.07965986394557824],handScissors:[23.279433106575965, 0.36741496598639456],handRock:[24.262993197278913, 0.28609977324263036],currency:[22.36562358276644,0.6341496598639456],paper:[21.5821768707483,0.6834467120181406],confirm:[21.2937641723356,0.18841269841269842],failure:[15.032607709750566, 2.2051473922902494],success:[17.337755102040816, 1.9435827664399092],cancel:[19.381337868480724, 0.6138095238095238],back:[20.09514739229025, 0.0981859410430839],select:[20.293333333333333, 0.18793650793650793],start:[20.58126984126984, 0.6124943310657597],fizzy:[9.932607709750567,5],flightPour:[0.1709750566893424,2.681904761904762],detail:[0,0.0709750566893424],pour:[0.1709750566893424,2.681904761904762],openPour:[2.9528798185941043,2.9410204081632654],cocktail:[5.993900226757369,3.9387074829931974]};
   const STRAIGHT=new Set(['清酒','梅子酒','威士忌','白兰地','黑朗姆','朗姆','朗姆酒','白朗姆','伏特加','龙舌兰','金酒']);
   let context,loading,buffer,voice,voiceGain,kind,epoch=0;
   function prepare(){
@@ -12,7 +12,7 @@
       // Called synchronously by the actual click, before network/animation awaits.
       if(context.state==='suspended')context.resume().catch(()=>{});
       if(buffer)return Promise.resolve(buffer);
-      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v19.json')
+      return loading ||= root.fetch('/assets/bar/audio/bar-sfx-v20.json')
         .then(r=>{if(!r.ok)throw new Error('audio unavailable');return r.json();})
         .then(data=>context.decodeAudioData(Uint8Array.from(root.atob(data.wav),c=>c.charCodeAt(0)).buffer)).then(data=>buffer=data)
         .catch(()=>null).finally(()=>{loading=null;});
@@ -67,8 +67,11 @@
   function confirmCue(item){
     if(isStraight(item))return 'openPour';
     if(item?.special)return 'cocktail';
-    if(['啤酒','可乐','气泡水'].includes(item?.name))return 'fizzy';
-    if(['红茶','热水','普洱','绿茶','白水'].includes(item?.name))return 'pour';
+    if(['可乐','气泡水'].includes(item?.name))return 'soda';
+    if(item?.name==='啤酒')return 'fizzy';
+    if(item?.name==='十全大补酒')return 'tonic';
+    if(item?.name==='红茶')return 'tea';
+    if(['热水','普洱','绿茶','白水'].includes(item?.name))return 'pour';
     const name=String(item?.name||'').replace(/[「」『』]/g,'');
     if(Number(item?.std)>0&&(/特调|鸡尾酒/.test(item?.group||'')||['金汤力','长岛冰茶','莫斯科骡子'].includes(name)))return 'cocktail';
     return null;

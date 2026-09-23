@@ -95,3 +95,6 @@ Sprite v17 adds Vrymaa champagne clink excerpt 13, https://freesound.org/people/
 Sprite v18 adds tony_bear, prize wheel, https://freesound.org/people/tony_bear/sounds/274007/ (CC0 1.0). Excerpt 32.675–36.675 seconds, converted to mono, original speed.
 
 Sprite v19 adds Warning_03, Clock_Tick_06, Menu_Open_01, Menu_Close_02 (purchased Cute & Cozy pack), and Vrymaa cork opening excerpt02 (CC0): https://freesound.org/people/Vrymaa/sounds/734620/ . Converted to mono/44.1kHz.
+
+Sprite v20: soda uses Taira Komori, Pouring_coke.mp3, https://freesound.org/people/Taira%20Komori/sounds/212735/ (CC BY 4.0, https://creativecommons.org/licenses/by/4.0/). Excerpt 0.5–4.0s, final 0.5s fade-out, mono/44.1kHz. Beer retains megashroom above.
+Tea and owner-reserve drink use paul_sutyrin, pouring tea, https://freesound.org/people/paul_sutyrin/sounds/262322/ (CC BY 4.0). Combined respectively with nikerk, teacup set down, https://freesound.org/people/nikerk/sounds/764772/ (CC0), and Vrymaa ceramic box excerpt03, https://freesound.org/people/Vrymaa/sounds/734625/ (CC0). Edits: ceramic +5dB, silence trimmed, 80ms joining gap, short edge fades, mono/44.1kHz.
