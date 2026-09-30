@@ -26,10 +26,10 @@
 
 ### ⓪ 网页版（不用装）
 
-打开 **https://drink-with-your-ai.amberbar.workers.dev** ，点「开一间吧台」，把给你的**钥匙**存好（钥匙就是这间吧台，丢了找不回来）。然后让 Ta 坐进来：
+打开 **https://bar.mamogo.uk** ，点「开一间吧台」，把给你的**钥匙**存好（钥匙就是这间吧台，丢了找不回来）。然后让 Ta 坐进来：
 
 - **Operit 等支持 MCP 的 App**：钥匙页上有「给 AI 的地址」，在 App 的 MCP 设置里新加一个，类型选 HTTP（Streamable HTTP），粘进去。
-- **claude.ai**：设置 → 连接器 → 添加自定义连接器，地址填 `https://drink-with-your-ai.amberbar.workers.dev/mcp`，跳出的页面里点允许（已经有吧台的选「我已经有吧台了」粘钥匙）。
+- **claude.ai**：设置 → 连接器 → 添加自定义连接器，地址填 `https://bar.mamogo.uk/mcp`，跳出的页面里点允许（已经有吧台的选「我已经有吧台了」粘钥匙）。
 
 接好后跟 Ta 说一声「看看吧台」。酒单、题库、醉态口吻一样能改成你们自己的；数据存在这间吧台里，只有拿着钥匙的人进得来。
 
