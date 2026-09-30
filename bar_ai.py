@@ -37,6 +37,29 @@ def _now_line():
     return line + (f"这一档的你：{voice}" if voice else "")
 
 
+def _full_desc(name):
+    """酒单原文里这杯的整段讲究（菜单卡片上的简介截了 200 字，这里要全文）。"""
+    lines = menu._bar_text().splitlines()
+    head = re.compile(r"^\*\*[「『\"]?" + re.escape(name) + r"[」』\"]?(?:\s*·[^*]*)?\*\*")
+    for i, line in enumerate(lines):
+        if head.match(line.strip()):
+            out = []
+            for l in lines[i + 1:]:
+                s = l.strip()
+                if s.startswith(("**", "## ", "---", "# ")):
+                    break
+                if s and not s.startswith(("英文名", ">")):
+                    out.append(s)
+            return " ".join(out)
+    return ""
+
+
+def _about(item):
+    """酒单上这杯的讲究（它的来历、喝下去会怎样）。只靠工具的 AI 不一定看过酒单，喝的时候直接告诉它。"""
+    desc = _full_desc(item["name"]) if item else ""
+    return f"酒单上这杯写着：{desc}" + ("" if desc.endswith(("。", "！", "？", "…")) else "。") if desc else ""
+
+
 def drink(inp):
     name = str((inp or {}).get("name") or "").strip()
     if not name or len(name) > 80:
@@ -53,10 +76,10 @@ def drink(inp):
         return "没有喝：std 要在 0–5 之间。"
     if std == 0:
         barlog.add("ta", f"你喝了一杯{name}（不含酒精）。", "drink")
-        return f"你喝了一杯{name}，不加醉意。" + _now_line()
+        return f"你喝了一杯{name}，不加醉意。" + _about(item) + _now_line()
     r = state.settle_bar_game(str(uuid.uuid4()), name, std, "bar-drink")
     barlog.add("ta", f"你喝下一杯{name}，{std:g} 标准杯。", "drink")
-    return f"你喝下一杯{name}（{std:g} 标准杯），醉意增加 {r['increase']:g}。" + _now_line()
+    return f"你喝下一杯{name}（{std:g} 标准杯），醉意增加 {r['increase']:g}。" + _about(item) + _now_line()
 
 
 def look(inp):
