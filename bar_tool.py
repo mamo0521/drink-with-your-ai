@@ -58,6 +58,7 @@ def _draw(p, game_id):
     if p['wager']=='drink':
         drink=next((x for x in _menu() if x['name']==p['drink']),None)
         if not drink:raise ValueError('酒单中没有这杯，请用真实名称')
+        if float(drink.get('std') or 0)<0:raise ValueError('醒酒丸这类不是酒，不能当赌注')
     me=ta=0; rounds=[]
     for _ in range(1000):
         a,b=(secrets.randbelow(6)+1,secrets.randbelow(6)+1) if p['game']=='dice' else (secrets.randbelow(3),secrets.randbelow(3))

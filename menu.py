@@ -37,6 +37,7 @@ def _bar_menu():
     """酒单机制层：**优先解析 vault prompts/activities/bar.md**（小机的酒单；在吧台编辑器里改）。
     v3（mamo 效果图版）：按 `##` 小节分组（group）+ 条目后的散文当简介（desc）——
     `**名字 · X 杯** emoji` = 酒；茶水类小节（标题含 茶水/无酒精/不入醉）里 `**名字** emoji` = 0 杯。
+    任何小节里 `**名字 · 无酒精**` = 0 杯（秋冬限定里的姜茶、热可可）；`**名字 · 醉意 -3**` = 负数，喝下去醒酒（醒酒丸）。
     条目下一行可写 `英文名：Whisky`，返回可选展示字段 name_en；留空/省略不自动补译。
     其他小节里没有杯数的加粗（规矩强调）不当条目。解析不到 → 内置默认单。config 仍可整体覆盖。"""
     text = _bar_text()
@@ -44,7 +45,7 @@ def _bar_menu():
     if text:
         parts = re.split(r"^##\s*(.+?)\s*$", text, flags=re.M)
         pairs = [("", parts[0])] + [(parts[i], parts[i + 1]) for i in range(1, len(parts) - 1, 2)]
-        entry_re = re.compile(r"\*\*[「『\"]?(.+?)[」』\"]?(?:\s*·\s*(?:醉意\s*\+?\s*)?([0-9.]+)\s*(?:杯)?)?\*\*[ \t]*([^\s*]*)")
+        entry_re = re.compile(r"\*\*[「『\"]?(.+?)[」』\"]?(?:\s*·\s*(?:(?:醉意\s*)?([+\-−]?\s*[0-9.]+)\s*(?:杯)?|(无酒精)))?\*\*[ \t]*([^\s*]*)")
         for head, body in pairs:
             tea_sec = any(k in head for k in ("茶水", "无酒精", "不入醉"))
             ms = list(entry_re.finditer(body))
@@ -52,9 +53,11 @@ def _bar_menu():
                 name = m.group(1).strip()
                 if m.group(2):
                     try:
-                        std = float(m.group(2))
+                        std = float(re.sub(r"\s+", "", m.group(2)).replace("−", "-"))
                     except ValueError:
                         continue
+                elif m.group(3):
+                    std = 0.0
                 elif tea_sec:
                     if "·" in name or "杯" in name:
                         continue
@@ -70,6 +73,6 @@ def _bar_menu():
                 desc = re.sub(r"^[ \t>·—-]+", "", desc.strip())
                 desc = re.sub(r"\s*\n+\s*", " ", desc).strip()[:200]
                 items.append({"name": name, "name_en": name_en, "std": std,
-                              "emoji": (m.group(3) or ("🍵" if std == 0 else "🍶")).strip(),
+                              "emoji": (m.group(4) or ("🍵" if std == 0 else "🍶")).strip(),
                               "group": head.strip(), "desc": desc})
     return items if items else list(_BAR_MENU_DEFAULT)

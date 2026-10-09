@@ -17,7 +17,7 @@ TOOLS = [
     bar_tool.SCHEMA,
     {"name": "bar_drink",
      "description": "在吧台喝下一整杯，记进你的醉意。name 填酒单上的真实酒名；自己调的、酒单上没有的，另填 std（标准杯数，啤酒约 0.5、威士忌约 1、长岛约 2.5）。"
-                    "你有不喝的权利：决定喝了才调用；推回去、换一杯回敬，在对话里说就行。回执会告诉你现在几杯、到了哪一档、这一档你会怎么说话。茶水不加醉意。",
+                    "你有不喝的权利：决定喝了才调用；推回去、换一杯回敬，在对话里说就行。回执会告诉你现在几杯、到了哪一档、这一档你会怎么说话。茶水不加醉意；酒单上醉意写成负数的（比如醒酒丸）吃下去会醒酒。",
      "input_schema": {"type": "object", "properties": {
          "name": {"type": "string", "description": "酒名"},
          "std": {"type": "number", "minimum": 0, "maximum": 5, "description": "只有酒单上没有的酒才填"}},
@@ -72,6 +72,11 @@ def drink(inp):
         std = float(std)
     except (TypeError, ValueError):
         return "没有喝：std 要是数字。"
+    if item and math.isfinite(std) and -10 <= std < 0:
+        # 酒单上醉意写成负数的（醒酒丸）：吃下去当场醒这么多。只认酒单上的，不能自己报一个负数来醒酒。
+        r = state.settle_bar_game(str(uuid.uuid4()), name, std, "bar-drink")
+        barlog.add("ta", f"你吃下{name}，醉意退了 {-r['increase']:g}。", "drink")
+        return f"你吃下{name}，醉意退了 {-r['increase']:g}。" + _about(item) + _now_line()
     if not math.isfinite(std) or not 0 <= std <= 5:
         return "没有喝：std 要在 0–5 之间。"
     if std == 0:

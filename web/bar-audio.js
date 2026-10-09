@@ -68,10 +68,10 @@
     if(isStraight(item))return 'openPour';
     if(item?.special)return 'cocktail';
     if(['可乐','气泡水'].includes(item?.name))return 'soda';
-    if(item?.name==='啤酒')return 'fizzy';
+    if(['啤酒','热可可'].includes(item?.name))return 'fizzy';
     if(item?.name==='十全大补酒')return 'tonic';
-    if(item?.name==='红茶')return 'tea';
-    if(['热水','普洱','绿茶','白水'].includes(item?.name))return 'pour';
+    if(['红茶','热托蒂'].includes(item?.name))return 'tea';
+    if(['热水','普洱','绿茶','白水','红糖姜茶'].includes(item?.name))return 'pour';
     const name=String(item?.name||'').replace(/[「」『』]/g,'');
     if(Number(item?.std)>0&&(/特调|鸡尾酒/.test(item?.group||'')||['金汤力','长岛冰茶','莫斯科骡子'].includes(name)))return 'cocktail';
     return null;

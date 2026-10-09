@@ -34,6 +34,7 @@
     if(/今日/.test(t))return "Today’s special";
     if(/常备/.test(t))return 'House classics';
     if(/特调/.test(t))return 'House creations';
+    if(/秋冬|冬季|限定/.test(t))return 'Autumn & winter';
     if(/茶|无酒精/.test(t))return 'Tea & soft drinks';
     if(/私藏/.test(t))return 'Owner’s reserve';
     return '';
@@ -48,7 +49,7 @@
     // Only recover the full description for items already supplied by /activities.
     // Never derive or override standard-cup values from the UI/placeholder data.
     for(const section of String(raw||'').split(/^##\s+.+$/m).slice(1)){
-      const re=/^\*\*[「『"]?(.+?)[」』"]?(?:\s*·\s*(?:醉意\s*\+?\s*)?[0-9.]+\s*(?:杯)?)?\*\*[^\n]*\n/gm;
+      const re=/^\*\*[「『"]?(.+?)[」』"]?(?:\s*·\s*(?:(?:醉意\s*)?[+\-−]?\s*[0-9.]+\s*(?:杯)?|无酒精))?\*\*[^\n]*\n/gm;
       const matches=[...section.matchAll(re)];
       matches.forEach((m,i)=>{
         let desc=section.slice(m.index+m[0].length,matches[i+1]?.index??section.length);
@@ -112,7 +113,7 @@
     function drinkImage(item){const image=el('img');image.alt=item.name;image.loading='lazy';image.src='/assets/bar/'+encodeURIComponent((item.special?'今日特调':item.flight?'盲品':item.name).replace(/[:/\\?*"<>|]/g,'-'))+'.png';image.onerror=()=>{image.onerror=null;image.src='/assets/bar/default.svg';};return image;}
     function textInfo(item,parent){
       parent.append(el('span','bar-drink-name',item.name));const en=nameEnglish(item,meta);if(en)parent.append(el('span','bar-drink-en',en));
-      parent.append(el('span','bar-drink-std'+(item.flight?' bar-flight-summary':''),item.flight?'六杯盲喝，\n边喝边玩':+item.std>0?'✦ + '+Number(item.std).toFixed(1):'无酒精'));
+      parent.append(el('span','bar-drink-std'+(item.flight?' bar-flight-summary':''),item.flight?'六杯盲喝，\n边喝边玩':+item.std>0?'✦ + '+Number(item.std).toFixed(1):+item.std<0?'✦ − '+Math.abs(Number(item.std)).toFixed(1):'无酒精'));
     }
     function detail(item,onClose){
       const card=el('article','bar-detail');card.setAttribute('aria-label',item.name+'详情');

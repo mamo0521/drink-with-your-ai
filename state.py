@@ -113,7 +113,7 @@ def settle_bar_game(game_id, name, std, session):
                 raise ValueError("局号已用于其他结算")
             return dict(r)
         before = float(d.get("alcohol") or 0)
-        after = round(min(float(dim_cfg().get("max") or 10), before + float(std)), 3)
+        after = round(max(0.0, min(float(dim_cfg().get("max") or 10), before + float(std))), 3)
         r = {"id": game_id, "name": name, "std": std, "before": before, "after": after,
              "increase": round(after - before, 3), "session": session, "at": _now().isoformat(timespec="seconds")}
         receipts[game_id] = r

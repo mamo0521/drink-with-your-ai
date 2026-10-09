@@ -78,8 +78,9 @@
   function pickDrink(){
    root.MamoBarAudio?.play('detail');
    view='picker';shell('PICK A DRINK','选一杯作为赌注',true,setup);layout.classList.add('gg-picker-layout');content.classList.add('gg-picker');for(const side of ['left','right']){const corner=el('span','bar-header-corner '+side);corner.append(art('header-corners'));layout.querySelector('.gg-header').append(corner);}let selected=wager.drink;
-   const groups=[...new Set(menu.map(i=>i.group))];
-   for(const group of groups){content.append(heading(group));const en=el('em','gg-group-en',root.MamoBarUI.groupEnglish(group));content.append(en);const grid=el('div','gg-drink-grid');for(const item of menu.filter(i=>i.group===group)){
+   const stakes=menu.filter(i=>!(+i.std<0));   // 醒酒丸这类（醉意为负）不是酒，不能当赌注
+   const groups=[...new Set(stakes.map(i=>i.group))];
+   for(const group of groups){content.append(heading(group));const en=el('em','gg-group-en',root.MamoBarUI.groupEnglish(group));content.append(en);const grid=el('div','gg-drink-grid');for(const item of stakes.filter(i=>i.group===group)){
     const b=btn('',()=>{if(selected!==item)root.MamoBarAudio?.play('detail');selected=item;content.querySelectorAll('.gg-drink-choice').forEach(n=>{n.classList.remove('selected');n.setAttribute('aria-pressed','false');});b.classList.add('selected');b.setAttribute('aria-pressed','true');confirm.disabled=false;},'gg-drink-choice'+(selected?.name===item.name?' selected':''));b.setAttribute('aria-pressed',String(selected?.name===item.name));b.append(drinkPic(item));const copy=el('span','bar-drink-copy');copy.append(el('span','bar-drink-name',item.name));if(item.name_en)copy.append(el('span','bar-drink-en',item.name_en));copy.append(el('span','bar-drink-std',item.std?'✦ + '+Number(item.std).toFixed(1):'无酒精'));b.append(copy);grid.append(b);
    }content.append(grid);}
    if(!menu.length)content.append(el('p','gg-empty','酒单暂时为空，先来一轮真心话？'));
