@@ -88,7 +88,9 @@ Sprite v15 uses the same KVV Audio excerpts, with the second roll offset changed
 
 Sprite v16 replaces dice audio with joanneneedsthesound, Dice Rolling - Dungeon and Dragons, https://freesound.org/people/joanneneedsthesound/sounds/177208/ . CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/ . Trimmed from 2.57s to the end (1.34256s); original speed and volume, played once.
 
-Current background music: Last_Glass_at_Midnight.mp3, supplied by mamo as Gemini-generated music. Replaces Last Round at AM; playback gain remains 12%.
+Earlier background music: Last_Glass_at_Midnight.mp3, supplied by mamo as Gemini-generated music. Replaced Last Round at AM.
+
+Current background music: fireside-v2 (吧台v3.mp3, mamo's revised take of fireside-v1), supplied by mamo as Suno-generated music made on her paid plan for this application. Not covered by the CC licenses of the sound effects. Replaces Last Glass at Midnight; used unedited, ends on a chord fading to silence and loops back to the start; playback gain remains 12%.
 
 Sprite v17 adds Vrymaa champagne clink excerpt 13, https://freesound.org/people/Vrymaa/sounds/734622/ (CC0), and KVV Audio excerpt03 for dice selection (CC BY 4.0, source and edits above). Converted to mono/44.1kHz.
 
