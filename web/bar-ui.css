@@ -179,3 +179,61 @@
 .bar-screen .bar-nav .bar-nav-edit{position:static;width:auto;justify-content:center;color:var(--bar-red);font:20px/16px BarCaveat,cursive;padding:10px 0}
 
 .bar-screen .bar-music-toggle{top:30px}
+/* 填格子的编辑器（bar-form.js）：酒单卡片、醉态口吻、题库 */
+.bar-screen .bar-editor-raw{margin-left:6px;padding:2px 0;color:#c9702f;font:11px/16px 'MamoWenKai',serif;text-decoration:underline;text-underline-offset:3px}
+.bar-form{padding:4px 18px 22px;display:flex;flex-direction:column;gap:22px;font-family:'MamoWenKai',serif;color:var(--bar-ink)}
+.bar-form :is(input,textarea){display:block;width:100%;min-width:0;margin:0;border:0;border-bottom:1px solid var(--bar-gold);border-radius:0;padding:6px 0;background:transparent;color:var(--bar-ink);font:16px/25px 'MamoWenKai',serif;outline:none;-webkit-appearance:none;appearance:none}
+.bar-form :is(input,textarea):focus{border-bottom-color:var(--bar-red)}
+.bar-form ::placeholder{color:var(--bar-muted);opacity:.55}
+.bar-form .bform-area{resize:none;overflow:hidden;border:1px solid rgba(217,160,84,.55);padding:8px 10px;background:rgba(255,255,255,.45)}
+.bar-form .bform-area:focus{border-color:var(--bar-red)}
+.bform-section{display:flex;flex-direction:column;gap:8px}
+.bform-heading{display:flex;align-items:baseline;gap:8px;margin:0;color:var(--bar-red);font:600 16px/24px 'MamoWenKai',serif;letter-spacing:1.6px}
+.bform-heading em{color:var(--bar-muted);font:italic 11px/16px 'PlayfairLocal','MamoWenKai',serif;letter-spacing:.4px}
+.bform-note{margin:0;color:#c9702f;font:12px/19px 'MamoWenKai',serif}
+.bform-empty{margin:0;color:var(--bar-muted);font:13px/21px 'MamoWenKai',serif}
+.bform-cat{display:flex;align-items:center;gap:10px}
+.bar-form .bform-cat-name{flex:1;color:var(--bar-red);font:600 16px/24px 'MamoWenKai',serif;letter-spacing:1.6px;border-bottom-style:dashed}
+.bar-screen .bform-link{flex:none;padding:6px 0;color:var(--bar-muted);font:12px/18px 'MamoWenKai',serif;text-decoration:underline;text-underline-offset:3px}
+.bar-screen .bform-link.is-danger{margin-left:auto;color:var(--bar-red)}
+.bform-drink{border:1px solid rgba(217,160,84,.55);background:rgba(255,255,255,.4)}
+.bform-drink.is-open{border-color:var(--bar-gold);background:#fff;box-shadow:0 1px 6px rgba(80,60,30,.08)}
+.bar-screen .bform-row{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:6px 12px;text-align:left;color:var(--bar-ink);font:15px/22px 'MamoWenKai',serif}
+.bform-emoji{flex:none;width:22px;text-align:center}
+.bform-name{flex:none;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bform-row em{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--bar-muted);font:italic 12px/18px 'PlayfairLocal',serif}
+.bform-badge{flex:none;color:var(--bar-red);font:italic 13px/18px 'PlayfairLocal','MamoWenKai',serif;font-variant-numeric:tabular-nums}
+.bform-badge.is-none{color:var(--bar-muted);font:11px/18px 'MamoWenKai',serif}
+.bform-badge.is-sober{color:#5d7a5a}
+.bform-body{display:flex;flex-direction:column;gap:14px;padding:6px 12px 12px;border-top:1px dashed rgba(217,160,84,.55)}
+.bform-line{display:flex;gap:14px}
+.bform-field{display:block;flex:1;min-width:0;color:var(--bar-muted);font:12px/18px 'MamoWenKai',serif}
+.bform-field.is-emoji{flex:0 0 56px}
+.bform-field.is-emoji input{text-align:center}
+.bform-field .bform-area{margin-top:6px}
+.bform-power{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.bform-label{color:var(--bar-muted);font:12px/18px 'MamoWenKai',serif}
+.bform-seg{display:flex;border:1px solid var(--bar-gold)}
+.bar-screen .bform-seg button{min-height:32px;padding:4px 10px;color:var(--bar-muted);font:13px/20px 'MamoWenKai',serif}
+.bform-seg button+button{border-left:1px solid var(--bar-gold)}
+.bar-screen .bform-seg button.is-on{background:var(--bar-red);color:var(--bar-card)}
+.bform-seg.is-banks button{flex:1;min-height:36px}
+.bform-stepper{display:flex;align-items:center;gap:6px;margin-left:auto}
+.bar-screen .bform-stepper button{width:32px;height:32px;border:1px solid var(--bar-gold);border-radius:50%;color:var(--bar-red);font:18px/1 system-ui,sans-serif}
+.bform-stepper output{min-width:44px;text-align:center;color:var(--bar-red);font:italic 18px/24px 'PlayfairLocal',serif;font-variant-numeric:tabular-nums}
+.bform-tip{flex-basis:100%;margin:0;color:var(--bar-muted);font:11px/16px 'MamoWenKai',serif}
+.bform-foot{display:flex;align-items:center;gap:8px}
+.bar-screen .bform-move{width:32px;height:32px;border:1px solid rgba(217,160,84,.55);color:var(--bar-muted);font:15px/1 system-ui,sans-serif}
+.bar-screen .bform-move:disabled{opacity:.3}
+.bar-screen .bform-add{min-height:40px;border:1px dashed var(--bar-gold);color:#c9702f;font:13px/20px 'MamoWenKai',serif;letter-spacing:1px}
+.bar-screen .bform-add.is-cat{border-style:solid;color:var(--bar-red)}
+.bform-item{display:flex;align-items:flex-start;gap:6px}
+.bform-item .bform-area{flex:1}
+.bar-screen .bform-x{flex:none;width:32px;height:41px;color:var(--bar-muted);font:20px/1 system-ui,sans-serif}
+.bform-pic{display:flex;align-items:center;gap:12px}
+.bform-pic img{flex:none;width:54px;height:66px;object-fit:contain}
+.bform-pic-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bform-pic-actions{display:flex;gap:16px}
+.bar-screen .bform-pic .bform-link{color:#c9702f}
+.bform-tip.is-bad{color:var(--bar-red)}
+.bar-form input[type=file]{display:none}

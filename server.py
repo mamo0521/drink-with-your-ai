@@ -16,6 +16,7 @@ import _lib          # noqa: E402
 import bar_ai        # noqa: E402
 import bar_flight    # noqa: E402
 import bar_games     # noqa: E402
+import bar_images    # noqa: E402
 import barlog        # noqa: E402
 import menu          # noqa: E402
 import state         # noqa: E402
@@ -78,6 +79,11 @@ def player_result(payload):
     return {"text": barlog.add("me", text, "game", key=str(payload.get("id")))["text"], "receipt": receipt}
 
 
+def IMAGES():
+    """玩家传的酒图：存档文件夹/images/酒名.png（早先手动放进去的图也在这儿，照样认）。"""
+    return _lib.vault_path() / "images"
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "AfterhoursBar/1"
 
@@ -111,7 +117,7 @@ class Handler(BaseHTTPRequestHandler):
         q = parse_qs(u.query)
         try:
             if u.path == "/activities":
-                return self.send_json({"activities": [{"id": "bar", "name": "吧台", "menu": menu._bar_menu(),
+                return self.send_json({"activities": [{"id": "bar", "name": "吧台", "menu": bar_images.attach(menu._bar_menu(), IMAGES()),
                                                        "menu_title": menu._bar_title(), "player_name": bar_games.player_name()}],
                                        "data_dir": str(_lib.vault_path())})
             if u.path == "/state":
@@ -140,8 +146,22 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         u = urlparse(self.path)
+        if u.path == "/barimage":   # 传一张酒图：请求体是 PNG 原始字节，?name=酒名
+            try:
+                n = int(self.headers.get("content-length") or 0)
+                data = self.rfile.read(n) if 0 < n <= bar_images.MAX_BYTES + 1 else b""
+                name = (parse_qs(u.query).get("name") or [""])[0]
+                return self.send_json({"ok": True, "name": bar_images.safe_name(name), "img": bar_images.save(IMAGES(), name, data)})
+            except ValueError as e:
+                return self.send_json({"ok": False, "error": str(e)}, 400)
+            except Exception as e:
+                return self.send_json({"ok": False, "error": f"{type(e).__name__}: {e}"}, 500)
         b = self.body()
         try:
+            if u.path == "/barimage/rename":   # 酒改名了，图跟过去
+                return self.send_json({"ok": True, "img": bar_images.rename(IMAGES(), b.get("from"), b.get("to"))})
+            if u.path == "/barimage/delete":
+                return self.send_json({"ok": True, "removed": bar_images.remove(IMAGES(), b.get("name"))})
             if u.path == "/barfile/save":
                 which, text = b.get("which"), b.get("text")
                 if which not in FILES or not isinstance(text, str):
@@ -225,10 +245,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def static(self, path):
         path = unquote(path)   # 酒图是中文文件名
-        if path.startswith("/assets/bar/") and path.count("/") == 3:   # 玩家自己配的酒图优先：存档文件夹/images/酒名.png
-            mine = (_lib.vault_path() / "images" / path.rsplit("/", 1)[1]).resolve()
-            if mine.is_file() and (_lib.vault_path() / "images").resolve() in mine.parents:
+        if path.startswith("/barimage/") and path.endswith(".png"):   # 玩家在 edit 里传的酒图
+            mine = bar_images.path(IMAGES(), path[len("/barimage/"):-4])
+            if mine is not None and mine.is_file():
                 return self.send_file(mine)
+            self.send_response(404)
+            self.end_headers()
+            return
         rel = "index.html" if path in ("", "/") else path.lstrip("/")
         f = (WEB / rel).resolve()
         if WEB.resolve() not in f.parents and f != WEB.resolve() or not f.is_file():

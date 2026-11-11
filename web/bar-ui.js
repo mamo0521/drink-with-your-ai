@@ -16,6 +16,13 @@
   // 和酒单正文同一个口吻：「我」是吧台里的 Ta，「他」是来喝酒的人。
   const FLIGHT_DESC='六个一模一样的杯子：三杯白水，两杯酒单上的酒，一杯最烈的。\n一人一杯轮流揭。我揭到酒，整杯喝掉；你揭到酒，换一张同样分量的整蛊纸条，当场兑现。\n纸条上的题在 edit 的「题库」里改，「亲密」题开关在下方。';
   const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  // 酒图地址。玩家自己传过图的（酒单条目带 img 版本号，或这次打开后刚传的记在 MamoBarImages 里）取 /barimage/，
+  // 其余取自带的 /assets/bar/。文件名 = 酒名，Mac 不让用的字符换成 -。
+  const imageName=item=>String(item.special?'今日特调':item.flight?'盲品':item.name).replace(/[:/\\?*"<>|]/g,'-');
+  function imageURL(item){
+    const name=imageName(item),fresh=root.MamoBarImages?.[name],v=fresh!==undefined?fresh:item.img;
+    return (v?'/barimage/':'/assets/bar/')+encodeURIComponent(name)+'.png'+(v?'?v='+v:'');
+  }
   function readMeta(raw){
     const m=String(raw||'').match(META);
     if(!m)return {};
@@ -82,6 +89,7 @@
     let def={},meta={},rawBar='',items=[],selection=null,lastFocus=null,layout=null,scroll=null,menuScroll=0;
     let openVersion=0,editorTab='bar',drafts={},base={},editorBusy=false,editorDirty=false;
     let editorStatus=null,editorButtons=[],editorLoaded=new Set(),editorVersion=0;
+    let editorRaw=false,formState={};   // 填格子的编辑器（bar-form.js）在场就用它；editorRaw = 玩家切到「看原文」
     let inertRestore=[];
     async function json(url,init){const r=await (options.fetch||root.fetch)(url,init);const data=await r.json();if(!r.ok||data.ok===false)throw new Error(data.error||'读取失败，请重试');return data;}
     function activate(){
@@ -110,7 +118,7 @@
       }
       layout.append(header);screen.append(layout);return layout;
     }
-    function drinkImage(item){const image=el('img');image.alt=item.name;image.loading='lazy';image.src='/assets/bar/'+encodeURIComponent((item.special?'今日特调':item.flight?'盲品':item.name).replace(/[:/\\?*"<>|]/g,'-'))+'.png';image.onerror=()=>{image.onerror=null;image.src='/assets/bar/default.svg';};return image;}
+    function drinkImage(item){const image=el('img');image.alt=item.name;image.loading='lazy';image.src=imageURL(item);image.onerror=()=>{image.onerror=null;image.src='/assets/bar/default.svg';};return image;}
     function textInfo(item,parent){
       parent.append(el('span','bar-drink-name',item.name));const en=nameEnglish(item,meta);if(en)parent.append(el('span','bar-drink-en',en));
       parent.append(el('span','bar-drink-std'+(item.flight?' bar-flight-summary':''),item.flight?'六杯盲喝，\n边喝边玩':+item.std>0?'✦ + '+Number(item.std).toFixed(1):+item.std<0?'✦ − '+Math.abs(Number(item.std)).toFixed(1):'无酒精'));
@@ -210,7 +218,7 @@
     function exitEditor(){if(editorBusy)return;if(editorDirty&&!root.confirm('放弃尚未保存的修改，返回酒单？'))return;editorVersion++;editorDirty=false;renderMenu();}
     async function openEditor(){
       menuScroll=scroll?.scrollTop||0;
-      drafts={bar:rawBar};base={bar:rawBar};editorLoaded=new Set(['bar']);editorDirty=false;editorTab='bar';await renderEditor();
+      drafts={bar:rawBar};base={bar:rawBar};editorLoaded=new Set(['bar']);editorDirty=false;editorTab='bar';editorRaw=false;formState={};await renderEditor();
     }
     function status(text){if(editorStatus)editorStatus.textContent=text;}
     async function renderEditor(){
@@ -220,11 +228,14 @@
         const b=button('',cn,()=>{if(editorBusy||editorTab===key)return;root.MamoBarAudio?.play('select');editorTab=key;renderEditor();});b.append(el('em','',en));b.setAttribute('role','tab');b.setAttribute('aria-selected',String(editorTab===key));tabs.append(b);editorButtons.push(b);
       }
       layout.append(tabs);const body=el('div','bar-editor-body');const hint=el('p','bar-editor-hint');
-      hint.textContent='修改方法详见下，按照格式写';
-      body.append(hint);layout.append(body);
       const field=FIELDS[editorTab]||'bar';
+      const useForm=!!root.MamoBarForm&&editorTab!=='names'&&!editorRaw;
+      hint.textContent=useForm?'点开一项就能改，改完按保存。':'修改方法详见下，按照格式写';
+      if(root.MamoBarForm&&editorTab!=='names'){const flip=button('bar-editor-raw',editorRaw?'回到卡片':'整份粘贴 / 看原文',()=>{if(editorBusy)return;editorRaw=!editorRaw;renderEditor();});hint.append(' ',flip);editorButtons.push(flip);}
+      body.append(hint);layout.append(body);
       const panel=el('div','bar-editor-panel');
-      const instructions={names:'招牌支持中文和英文，上下两行分别填写。',bar:'橘色的字是说明，文档里的说明可以删；其余按原有格式写。',alcohol:'按照原有格式写。',questions:'真心话（你问 Ta 的）、大冒险（你让 Ta 做的）、盲品（盲喝的游戏中 Ta 让你做的，难度分三档——轻 / 中 / 重）各一段。\n按现有格式写。\n每个题库里的「## 亲密」只在开关打开时用。'};
+      const formHelp={bar:'每杯酒一张卡片，点开就能改；「＋ 加一杯」添新的。\n新加的酒没有图片时，会先显示占位杯。',alcohol:'小机喝到每一档时的样子，用 Ta 自己的口吻写。',questions:'真心话（你问 Ta 的）、大冒险（你让 Ta 做的）、盲品（盲品里 Ta 让你做的，分轻 / 中 / 重三档）。\n「亲密」里的题只在开关打开时用。'};
+      const instructions=useForm?formHelp:{names:'招牌支持中文和英文，上下两行分别填写。',bar:'橘色的字是说明，文档里的说明可以删；其余按原有格式写。'+(root.MamoBarForm?'\n酒图不在这份文字里：回到卡片，点开那杯酒，点「换图片」。这里改了酒名的，图要回卡片重新传。':''),alcohol:'按照原有格式写。',questions:'真心话（你问 Ta 的）、大冒险（你让 Ta 做的）、盲品（盲喝的游戏中 Ta 让你做的，难度分三档——轻 / 中 / 重）各一段。\n按现有格式写。\n每个题库里的「## 亲密」只在开关打开时用。'};
       panel.append(el('p','bar-editor-instructions',instructions[editorTab]));
       const content=el('div','bar-code-editor');panel.append(content);body.append(panel);
       const stat=el('div','bar-editor-status');editorStatus=el('span','','');const count=el('span','','');stat.append(editorStatus,count);body.append(stat);
@@ -243,6 +254,17 @@
         const change=()=>{drafts.bar=withMeta(drafts.bar,current);editorDirty=true;status('有未保存的修改');updateCount();preview.replaceChildren();titleNodes(current.title,current.subtitle,preview);};
         const fieldInput=(label,value,onChange)=>{const l=el('label','',label),input=el('input');input.value=value;input.autocomplete='off';input.oninput=()=>{onChange(input.value);change();};l.append(input);content.append(l);};
         fieldInput('招牌 · 上行',current.title,v=>current.title=v);fieldInput('招牌 · 下行',current.subtitle,v=>current.subtitle=v);
+      }else if(useForm){
+        content.className='';
+        const mark=(name,v)=>{(root.MamoBarImages||={})[imageName({name})]=v;};
+        formState.images={
+          url:name=>imageURL(items.find(i=>i.name===name)||{name}),
+          custom:name=>{const fresh=root.MamoBarImages?.[imageName({name})];return fresh!==undefined?!!fresh:!!items.find(i=>i.name===name)?.img;},
+          upload:async(name,file)=>{const d=await json('/barimage?name='+encodeURIComponent(name),{method:'POST',headers:{'content-type':'image/png'},body:file});mark(name,d.img);},
+          remove:async name=>{await json('/barimage/delete',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name})});mark(name,0);},
+          rename:async(from,to)=>{const d=await json('/barimage/rename',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({from,to})});if(d.img){mark(to,d.img);mark(from,0);}},
+        };
+        root.MamoBarForm.mount(field,content,field==='bar'?drafts.bar.replace(META,''):drafts[field],text=>{const kept=field==='bar'?readMeta(drafts.bar):{};drafts[field]=Object.keys(kept).length?withMeta(text,kept):text;editorDirty=true;status('有未保存的修改');updateCount();},formState);
       }else{
         const pre=el('pre'),ta=el('textarea');pre.setAttribute('aria-hidden','true');ta.setAttribute('aria-label',{bar:'酒单与规矩',alcohol:'醉态口吻',questions:'题库'}[editorTab]+' Markdown');ta.spellcheck=false;ta.value=field==='bar'?drafts[field].replace(META,''):drafts[field];pre.innerHTML=highlight(ta.value);
         ta.oninput=()=>{const kept=field==='bar'?readMeta(drafts.bar):{};drafts[field]=Object.keys(kept).length?withMeta(ta.value,kept):ta.value;editorDirty=true;pre.innerHTML=highlight(ta.value);pre.scrollTop=ta.scrollTop;status('有未保存的修改');updateCount();};
@@ -259,6 +281,7 @@
         await json('/barfile/save',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({which:field,text})});
         drafts[field]=base[field]=text;
         if(field==='bar'){
+          await formState.afterSave?.();   // 改了名的酒把图带过去，删掉的酒把图清掉
           rawBar=text;meta=readMeta(text);
           const fresh=await options.onReload();def=fresh||def;items=withMenuText(def.menu||[],text);
         }
@@ -276,6 +299,6 @@
     });
     return {open,hide,isOpen:()=>!screen.hidden};
   }
-  const api={create,readMeta,withMeta,groupEnglish,nameEnglish,menuTextFields,descriptions,highlight,missingBanks};
+  const api={create,imageURL,readMeta,withMeta,groupEnglish,nameEnglish,menuTextFields,descriptions,highlight,missingBanks};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.MamoBarUI=api;
 })(typeof window!=='undefined'?window:globalThis);

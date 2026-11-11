@@ -20,7 +20,7 @@
  const btn=(text,fn,cls='')=>{const b=el('button',cls,text);b.type='button';b.onclick=e=>{if(fn){root.MamoBarAudio?.buttonCue(b,text);return fn.call(b,e);}};return b;};
  const pic=(src,cls='',alt='')=>{const i=el('img',cls);i.src=src;i.alt=alt;return i;};
  const art=(name,cls='')=>pic(A+name+'.svg',cls);
- function drinkPic(drink){if(!drink)return pic(A+'game-empty-cup.svg','gg-empty-cup','待选酒');const i=pic('/assets/bar/'+encodeURIComponent(drink.name.replace(/[:/\\?*"<>|]/g,'-'))+'.png','gg-drink-art',drink.name);i.onerror=()=>{i.onerror=null;i.src='/assets/bar/default.svg';};return i;}
+ function drinkPic(drink){if(!drink)return pic(A+'game-empty-cup.svg','gg-empty-cup','待选酒');const i=pic(root.MamoBarUI?.imageURL?root.MamoBarUI.imageURL(drink):'/assets/bar/'+encodeURIComponent(drink.name.replace(/[:/\\?*"<>|]/g,'-'))+'.png','gg-drink-art',drink.name);i.onerror=()=>{i.onerror=null;i.src='/assets/bar/default.svg';};return i;}
  function create(options={}){
   const screen=el('section','bar-screen gg-screen');screen.hidden=true;screen.tabIndex=-1;screen.setAttribute('aria-label','吧台游戏');screen.setAttribute('role','dialog');screen.setAttribute('aria-modal','true');document.body.append(screen);
   let menu=[],wager={type:'drink',drink:null,custom:''},kind='dice',modes={dice:1,hands:1},game=null,layout,content,footer,modal=null,focusBefore=null,inerts=[],dice=[],busy=false,choice=null,epoch=0,view='setup',modalFocus=null,pools={truth:[],dare:[]},shownTruths=[],bankText='',factoryText='';
